@@ -1,7 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:get/instance_manager.dart';
 import 'package:newapp/src/common_wighets/form/form_header_widget.dart';
 import 'package:newapp/src/constants/color.dart';
 import 'package:newapp/src/constants/image_string.dart';
@@ -10,7 +8,7 @@ import 'package:newapp/src/constants/text_string.dart';
 import 'package:newapp/src/features/authentication/screens/dashboard_screen/dashboard_screen.dart';
 import 'package:newapp/src/features/authentication/screens/login/login_screen.dart';
 
-import '../../controllers/signup_controllr.dart';
+
 
 class signup_screen extends StatefulWidget {
   const signup_screen({super.key});
@@ -18,7 +16,6 @@ class signup_screen extends StatefulWidget {
   @override
   State<signup_screen> createState() => _signup_screenState();
 }
-
 class _signup_screenState extends State<signup_screen> {
   String fullName = "", Email = "", password = "";
   TextEditingController fullNameController = new TextEditingController();
@@ -36,8 +33,8 @@ class _signup_screenState extends State<signup_screen> {
           password: password,
         );
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text(
+          const SnackBar(
+            content: Text(
               "Registered successfully",
               style: TextStyle(fontSize: 20),
             ),
@@ -50,14 +47,14 @@ class _signup_screenState extends State<signup_screen> {
       } on FirebaseAuthException catch (e) {
         if (e.code == "weak-password") {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: const Text("Password provided is too weak"),
+            const SnackBar(
+              content: Text("Password provided is too weak"),
             ),
           );
         } else if (e.code == "email-already-in-use") {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: const Text(
+            const SnackBar(
+              content: Text(
                 "Account already exists",
                 style: TextStyle(fontSize: 18),
               ),
@@ -102,6 +99,7 @@ class _signup_screenState extends State<signup_screen> {
                             }
                             return null;
                           },
+                          maxLength: 16,
                           controller: fullNameController,
 
                           decoration: const InputDecoration(
@@ -120,21 +118,19 @@ class _signup_screenState extends State<signup_screen> {
                                 borderSide: BorderSide(
                                     width: 2.0, color: tSecondaryColor)),
                           ),
-                          // validator: (value){
-                          //   if(value!.isEmpty ||!RegExp(r'^[a-z A-z]').hasMatch(value!)){
-                          //     return("Please Enter Correct Name");
-                          //   }else{
-                          //     return null;
-                          //   }
-                          // },
+
                         ),
                         const SizedBox(
                           height: 15,
                         ),
                         TextFormField(
+                          maxLength: 30,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return " Please Enter an Email ";
+                              return " Please Enter a valid Email ";
+
+                            }else if (value==" !#''%^&*()+-][}{/,? "){
+                              return "Enter correct email";
                             }
                             return null;
                           },
@@ -155,13 +151,6 @@ class _signup_screenState extends State<signup_screen> {
                                 borderSide: BorderSide(
                                     width: 2.0, color: tSecondaryColor)),
                           ),
-                          // validator: (value){
-                          //   if(value!.isEmpty ||!RegExp(r'^[\w\.-]+@[\w\.-]+\.\w+$').hasMatch(value!)){
-                          //     return("Please Enter Correct Email");
-                          //   }else{
-                          //     return null;
-                          //   }
-                          // },
                         ),
                         const SizedBox(height: 15),
                         TextFormField(
@@ -169,6 +158,7 @@ class _signup_screenState extends State<signup_screen> {
                             if (value == null || value.isEmpty) {
                               return " Please Enter password";
                             }
+
                             return null;
                           },
                           maxLength: 16,
@@ -201,17 +191,14 @@ class _signup_screenState extends State<signup_screen> {
                               child: ElevatedButton(
                                   onPressed: () {
                                     if (_formkey.currentState!.validate()) {
-                                      //check if form data are valid,
-                                      // your process task ahead if all data are valid
 
-                                      // SignUpController.instance.registerUser(controller.email.text.trim(), controller.password.text.trim());
                                       setState(() {
                                         Email = EmailController.text;
                                         fullName = fullNameController.text;
                                         password = passwordController.text;
                                       });
                                     }
-                                    registration();
+                                   registration();
                                   },
                                   child: Text("SIGNUP".toUpperCase())),
                             ),
