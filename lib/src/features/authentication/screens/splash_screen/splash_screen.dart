@@ -1,6 +1,8 @@
 
 import 'dart:ffi';
+import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:newapp/src/constants/color.dart';
 import 'package:newapp/src/constants/sizes.dart';
 import 'package:newapp/src/constants/text_string.dart';
@@ -20,6 +22,7 @@ class _splashScreenState extends State<splashScreen> {
 
   @override
   void initState() {
+    super.initState();
     startAnimation();
   }
 
@@ -30,13 +33,7 @@ class _splashScreenState extends State<splashScreen> {
         child: Stack(
 
           children: [
-            AnimatedPositioned(
-                duration: const Duration(microseconds: 1600),
-                top: animate ? 0 : -30,
-                left: animate ? 0 : -30,
 
-                child: Image.asset("assets/images/top_logo1.png", width: 100,)
-            ),
             AnimatedPositioned(
                 duration: const Duration(milliseconds: 1600),
                 top: 150,
@@ -64,7 +61,34 @@ class _splashScreenState extends State<splashScreen> {
                 bottom : animate? 100:0,
                 left: 80,
 
-                child: Image.asset("assets/images/top_logo3.png", width:200,height:450,)
+                child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+
+                AvatarGlow(
+                  glowColor: Colors.blue,
+                  endRadius:250.0,
+                  duration: Duration(milliseconds:1010),
+                  repeat: true,
+                  showTwoGlows: true,
+                  repeatPauseDuration: Duration(milliseconds: 100),
+                  child: Material(     // Replace this child with your own
+                    elevation:30.0,
+                    shape: CircleBorder(),
+                    child: CircleAvatar(
+                      backgroundColor: Colors.grey[100],
+                      child: Image.asset(
+                        'assets/images/top_logo3.png',
+                        height: 400,
+                      ),
+                      radius:150.0,
+                    ),
+                  ),
+                ),
+
+              ],
+            ),
             ),
             Positioned(
                 bottom: 100,
@@ -89,9 +113,9 @@ class _splashScreenState extends State<splashScreen> {
   }
 
   Future startAnimation() async {
-    await Future.delayed(Duration(milliseconds: 500));
+    await Future.delayed(Duration(seconds: 2));
     setState(() => animate = true);
-    await Future.delayed(Duration(milliseconds: 5000));
+    await Future.delayed(Duration(seconds: 3));
     Navigator.pushReplacement(context, MaterialPageRoute(builder:(contaxt)=> Welcome() ),);
 
   }

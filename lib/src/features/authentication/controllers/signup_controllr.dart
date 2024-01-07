@@ -9,12 +9,11 @@ static SignUpController get instance => Get.find();
 
 //text-field controller to get data from text-field
 final email= TextEditingController();
-final password= TextEditingController();
 final fullName= TextEditingController();
 final phoneNo= TextEditingController();
   //call this function from the controller it will do the rest
 void registerUser (String email, String password){
-  AuthenticationRepository.instance.createUserWithEmailAndPassword(email, password);
+//  AuthenticationRepository.instance.createUserWithEmailAndPassword(email, password);
 
 }
 }

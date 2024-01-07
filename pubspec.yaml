@@ -43,7 +43,16 @@ dependencies:
   firebase_auth: ^4.15.0
   firebase_storage: ^11.5.3
   google_sign_in: ^6.1.6
+  gap: ^3.0.1
+  avatar_glow: ^2.0.2
+  full_screen_image: ^2.0.0
+  flutter_animate: ^4.3.0
   font_awesome_flutter: ^10.6.0
+  line_awesome_flutter: ^2.0.0
+  connectivity_plus: ^5.0.2
+  path_provider: ^2.1.1
+  shared_preferences: ^2.2.2
+  sqflite: ^2.3.0
 
 
   get:
@@ -72,11 +81,13 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - assets/images/
     - assets/images/top_logo1.png
     - assets/images/top_logo3.png
     - assets/images/welcome_image/welcom_image.png
     - assets/images/welcome_image/google_logo.png
     - assets/images/forget_password-image/tForget_password_image.png
+
 
 
 

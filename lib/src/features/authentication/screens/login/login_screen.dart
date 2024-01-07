@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:newapp/src/constants/image_string.dart';
 import 'package:newapp/src/constants/sizes.dart';
 import 'package:newapp/src/constants/text_string.dart';
 import 'package:newapp/src/features/authentication/screens/forget_password/forget_password_email/forget_password_email.dart';
+import 'package:newapp/src/features/authentication/screens/signup/signup.dart';
 
 class login_screen extends StatefulWidget {
   const login_screen({super.key});
@@ -51,6 +53,8 @@ class _login_screenState extends State<login_screen> {
                         height: 10.0,
                       ),
                       const TextField(
+                        maxLength: 16,
+                        obscureText: true,
                         keyboardType: TextInputType.visiblePassword,
                         decoration: InputDecoration(
                           prefixIcon: Icon(Icons.fingerprint),
@@ -130,50 +134,7 @@ class _login_screenState extends State<login_screen> {
                                           ),
                                         ),
                                       ),
-                                      GestureDetector(
-                                        child: Container(
-                                          padding: EdgeInsets.all(20),
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            color: Colors.grey.shade200,
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              const Icon(
-                                                Icons.mobile_friendly_outlined,
-                                                size: 60,
-                                              ),
-                                              Column(
-                                                children: [
-                                                  Text(
-                                                    tPhoneNo,
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyLarge,
-                                                  ),
-                                                  TextButton(
-                                                      onPressed: () {
-                                                        Navigator
-                                                            .pushReplacement(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              builder: (contaxt) =>
-                                                                  forget_pass_mail_screen()),
-                                                        );
-                                                      },
-                                                      child: const Text(
-                                                        tResetViaPhone,
-                                                        style: TextStyle(
-                                                            fontSize: 15,
-                                                            color: Colors.blue),
-                                                      ))
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      )
+
                                     ],
                                   ),
                                 ),
@@ -207,7 +168,9 @@ class _login_screenState extends State<login_screen> {
                                 label: Text(tSignInWithGoogle)),
                           ),
                           TextButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=>const signup_screen() ));
+                              },
                               child: Text.rich(TextSpan(
                                   text: tDontHaveAnAccount,
                                   style: Theme.of(context).textTheme.bodyLarge,

@@ -11,23 +11,23 @@ class forget_pass_mail_screen extends StatelessWidget {
     return Scaffold(
       body: SingleChildScrollView(
         child:Container(
-          padding: EdgeInsets.all(tDefaultSize),
+          padding: const EdgeInsets.all(tDefaultSize),
           child: Container(
-            padding: EdgeInsets.symmetric(),
-            margin: EdgeInsets.all(1),
+            padding: const EdgeInsets.symmetric(),
+            margin: const EdgeInsets.all(1),
             child: Column(
 
               crossAxisAlignment: CrossAxisAlignment.center,
         
               children: [
                Image.asset(tForgetPasswordImage, height: 200,width: 400,),
-                Text(tForgetPassword, style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),
-                Text(tForgetMailSubTitle,style: TextStyle(fontSize: 18),),
-                SizedBox(height: 30,),
+                const Text(tForgetPassword, style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),
+                const Text(tForgetMailSubTitle,style: TextStyle(fontSize: 18),),
+                const SizedBox(height: 30,),
                 Column(
 
                   children: [
-                    TextField(
+                    const TextField(
                         decoration: InputDecoration(label: Text(tEmail,style: TextStyle(fontSize: 20, ),),
                           border: OutlineInputBorder(),
                           prefixIcon: Icon(Icons.email)
@@ -35,14 +35,14 @@ class forget_pass_mail_screen extends StatelessWidget {
                         ),
 
                     ),
-                    SizedBox(height: 20,),
+                    const SizedBox(height: 20,),
                     SizedBox(width: double.infinity,
                   child:  ElevatedButton(onPressed: (){
-                    Navigator.pushReplacement(context, MaterialPageRoute(builder:(contaxt)=> otp_screen() ),);
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder:(contaxt)=> const otp_screen() ),);
 
 
                   },
-                      child: Text("NEXT",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),)),
+                      child: const Text("NEXT",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),)),
 
                     ),
                   ],
