@@ -1,8 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:newapp/src/features/authentication/screens/common_screen/Privacy_Policy.dart';
+import 'package:newapp/src/features/authentication/screens/common_screen/about_us.dart';
 import 'package:newapp/src/features/authentication/screens/dashboard_screen/customer_screen/add_customer.dart';
+import 'package:newapp/src/features/authentication/screens/dashboard_screen/customer_screen/gallery_screen.dart';
+import 'package:newapp/src/features/authentication/screens/login/login_screen.dart';
 import 'package:newapp/src/features/authentication/screens/welcome/welcome_screen.dart';
+import '../forget_password/forget_password_email/forget_password_email.dart';
 
 class dashboard extends StatefulWidget {
   const dashboard({super.key});
@@ -10,11 +16,113 @@ class dashboard extends StatefulWidget {
   @override
   State<dashboard> createState() => _dashboardState();
 }
+final auth = FirebaseAuth.instance;
+
 
 class _dashboardState extends State<dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //---------------------------------------------------------drawer navigation bar-------------------------------------------//
+      drawer: Drawer(
+        width: MediaQuery.of(context).size.width * 0.60, // Set the desired width of the draw
+        child:ListView(
+          children:  [
+            const UserAccountsDrawerHeader(
+                accountName: Text("Arain",style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),
+                accountEmail:Text("0093780700709", style: TextStyle(fontSize:16),),
+              currentAccountPicture: CircleAvatar(
+                backgroundImage: AssetImage("assets/images/amin.jpg"),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.language),
+              title:Text("Languages"),
+              onTap: (){},
+            ),
+            ListTile(
+              leading: Icon(Icons.security),
+              title:Text("Change password"),
+              onTap: (){
+
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (contaxt) =>forget_pass_mail_screen()),
+                  );
+
+                  print('Item clicked!');
+
+              },
+            ),
+
+            ListTile(
+              leading: Icon(Icons.font_download),
+              title:Text("Font size"),
+              onTap: (){},
+            ),
+            ListTile(
+              leading: Icon(Icons.note),
+              title:Text("Privacy Policy"),
+              onTap: (){
+
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (contaxt) =>Privacy_Policy()),
+                );
+
+                print('Item clicked!');
+
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.exit_to_app),
+              title:Text("Log out"),
+              onTap: (){
+
+                auth.signOut().then((value) =>
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (contaxt) =>  login_screen()),
+                )
+                );
+
+                print('Item clicked!');
+
+              },
+            ),
+            const Divider(
+              color: Colors.blue, // Customize the color of the divider
+              thickness: 2.6, // Set the thickness of the divider
+              indent: 20, // Set the indent or left-padding of the divider
+              endIndent: 20, // Set the end-indent or right-padding of the divider
+            ),
+            ListTile(
+              leading: Icon(Icons.person_pin_circle),
+              title:Text("About Us"),
+              onTap: (){
+                setState(() {
+                  Navigator.pop(context);
+                });
+
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (contaxt) =>about_us()),
+                );
+
+                print('Item clicked!');
+
+              },
+            ),
+          ],
+
+
+        ),
+        
+      ),
+      appBar: AppBar(
+        title: Text("Home"),
+      ),
+      //----------------------------------------------------------------body ---------------------------------------------------------//
       body: ListView(
         padding: EdgeInsets.zero,
         children: [
@@ -27,6 +135,7 @@ class _dashboardState extends State<dashboard> {
             ),
             child: Column(
               children: [
+
                 const SizedBox(height: 50),
                 ListTile(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 30),
@@ -84,7 +193,7 @@ class _dashboardState extends State<dashboard> {
                         print('Item clicked!');
                       },
                       child: itemDashboard(
-                          'View CUSTOMER', CupertinoIcons.phone, Colors.pinkAccent),
+                          'CUSTOMER List', CupertinoIcons.person_2, Colors.pinkAccent),
                     ),
                     GestureDetector(
                       onTap: () {
@@ -102,7 +211,7 @@ class _dashboardState extends State<dashboard> {
                       onTap: () {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (contaxt) => Welcome()),
+                          MaterialPageRoute(builder: (contaxt) => GalleryScreen()),
                         );
 
                         print('Item clicked!');
@@ -114,7 +223,8 @@ class _dashboardState extends State<dashboard> {
                       onTap: () {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (contaxt) => Welcome()),
+                          MaterialPageRoute(builder: (contaxt) =>  GalleryScreen()),
+
                         );
 
                         print('Item clicked!');
@@ -126,7 +236,7 @@ class _dashboardState extends State<dashboard> {
                       onTap: () {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (contaxt) => Welcome()),
+                          MaterialPageRoute(builder: (contaxt) =>GalleryScreen()),
                         );
 
                         print('Item clicked!');
@@ -136,12 +246,7 @@ class _dashboardState extends State<dashboard> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (contaxt) => Welcome()),
-                        );
 
-                        print('Item clicked!');
                       },
                       child: itemDashboard('Analytics',
                           CupertinoIcons.graph_circle, Colors.green),
@@ -180,8 +285,11 @@ class _dashboardState extends State<dashboard> {
                 child: Icon(iconData, color: Colors.white)),
             const SizedBox(height: 8),
             Text(title.toUpperCase(),
-                style: Theme.of(context).textTheme.titleMedium)
+                style: Theme.of(context).textTheme.titleMedium),
+
+
           ],
+
         ),
       );
 }

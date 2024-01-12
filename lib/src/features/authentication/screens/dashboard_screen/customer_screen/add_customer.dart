@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:newapp/src/constants/text_string.dart';
@@ -28,6 +29,16 @@ class _MeasurementFormState extends State<MeasurementForm> {
   TextEditingController _pantslController = TextEditingController();
   TextEditingController _lengthController = TextEditingController();
   TextEditingController _noteController = TextEditingController();
+  TextEditingController _other1Controller = TextEditingController();
+  TextEditingController _other2Controller = TextEditingController();
+  TextEditingController _other3Controller = TextEditingController();
+  late DatabaseReference dbref;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    dbref= FirebaseDatabase.instance.ref().child("customer");
+  }
 
 
 
@@ -106,6 +117,8 @@ class _MeasurementFormState extends State<MeasurementForm> {
                     validator: (value) {
                       if (value!.isEmpty) {
                         return treturn;
+                      }if(tcustomerId==_customeridController){
+                        return "data is allraedy in database";
                       }
                       return null;
                     },
@@ -543,7 +556,7 @@ class _MeasurementFormState extends State<MeasurementForm> {
                               width: 100,
                               child: TextFormField(
                                 maxLength: 4,
-                                controller: _kneeController,
+                                controller: _other1Controller,
                                 keyboardType: TextInputType.number,
                                 decoration: const InputDecoration(
                                     labelText:tother1,
@@ -557,7 +570,7 @@ class _MeasurementFormState extends State<MeasurementForm> {
                             SizedBox(
                               width: 100,
                               child: TextFormField(
-                                controller: _pantslController,
+                                controller: _other2Controller,
                                 maxLength: 6,
                                 keyboardType: TextInputType.number,
                                 decoration: const InputDecoration(
@@ -570,7 +583,7 @@ class _MeasurementFormState extends State<MeasurementForm> {
                             SizedBox(
                               width: 100,
                               child: TextFormField(
-                                controller: _lengthController,
+                                controller: _other3Controller,
                                 maxLength: 6,
                                 keyboardType: TextInputType.number,
                                 decoration: const InputDecoration(
@@ -619,21 +632,81 @@ class _MeasurementFormState extends State<MeasurementForm> {
                     margin: EdgeInsets.all(15),
                   padding: EdgeInsets.only(bottom:0),
                     width: double.infinity,
-                    child: ElevatedButton(
+                    child:ElevatedButton(
                       onPressed: () {
                         _submitForm();
-                      },
+                        Map<String, String> customer = {
+                          // Your customer data here
+                          "customerID":_customeridController.text,
+                          "customerName":_nameController.text,
+                          "customerPhone":_phoneController.text,
+                          "customerAmount":_amountController.text,
+                          "customerOrder":_orderController.text,
+                          "customerDelevary":_deliveryController.text,
+                          "customerChest":_chestController.text,
+                          "customerWaist":_waistController.text,
+                          "customerShouder":_shoulderController.text,
+                          "customerHip":_hipController.text,
+                          "customerInsaem":_inseamController.text,
+                          "customerNeck":_neckController.text,
+                          "customerSleeve":_sleeveController.text,
+                          "customerFront":_frontController.text,
+                          "customerThigh":_thighController.text,
+                          "customerKnee":_kneeController.text,
+                          "customerPants":_pantslController.text,
+                          "customerLength":_lengthController.text,
+                          "customerNote":_noteController.text,
+                          "customerOther1":_other1Controller.text,
+                          "customerOther2":_other2Controller.text,
+                          "customerOther3":_other3Controller.text,
+                        };
 
+                        String customerID = _customeridController.text;
+
+
+                        dbref
+                            .orderByChild("customerID")
+                            .equalTo(customerID)
+                            .once()
+                            .then((DatabaseEvent event) {
+                          DataSnapshot snapshot = event.snapshot;
+                          if (snapshot.value != null) {
+                            // Data already exists, handle the duplicate case
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  backgroundColor: Colors.white,
+                                  content: Text("data already exist ",textAlign: TextAlign.center,style: TextStyle(fontSize: 15,color:Colors.red,backgroundColor: Colors.white,),),
+                                ));
+                          } else {
+                            // Data does not exist, push the new data
+                            dbref.push().set(customer);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  backgroundColor: Colors.white,
+                                  content: Text(" 'Data saved successfully';",textAlign: TextAlign.center,style: TextStyle(fontSize: 15,color:Colors.green,backgroundColor: Colors.white,),),
+                                ));
+                          }
+                        })
+                            .catchError((error) {
+                          // Handle any err  ors that occur
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                backgroundColor: Colors.white,
+                                content: Text("Error happened : ",textAlign: TextAlign.center,style: TextStyle(fontSize: 20,color:Colors.green,backgroundColor: Colors.white,),),
+                              ));
+                        });
+                      },
                       style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 10), // Button padding
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                         shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(10), // Button border radius
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      child: Text('Save',style: TextStyle(fontSize: 25),),
-                    )),
+                      child: Text(
+                        'Save',
+                        style: TextStyle(fontSize: 25),
+                      ),
+                    ),),
               ],
             ),
           ),

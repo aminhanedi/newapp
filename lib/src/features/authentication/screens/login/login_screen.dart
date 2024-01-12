@@ -1,3 +1,4 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,6 +8,7 @@ import 'package:newapp/src/constants/text_string.dart';
 import 'package:newapp/src/features/authentication/screens/forget_password/forget_password_email/forget_password_email.dart';
 import 'package:newapp/src/features/authentication/screens/signup/signup.dart';
 
+import '../../../../services/google_auth.dart';
 import '../dashboard_screen/dashboard_screen.dart';
 
 class login_screen extends StatefulWidget {
@@ -22,6 +24,12 @@ class _login_screenState extends State<login_screen> {
   TextEditingController EmailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
   final _formkey = GlobalKey<FormState>();
+  void dispose() {
+
+    EmailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
   Future<void> userLoginRegistration() async {
 
@@ -51,8 +59,27 @@ class _login_screenState extends State<login_screen> {
       }
     }
   }
+  //-------------email validator--------------//
+  void  validEmail(){
+    bool isValid= EmailValidator.validate(EmailController.text.trim());
+    if(isValid){
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            backgroundColor: Colors.white,
+            content: Text("Valid Email ",textAlign: TextAlign.center,style: TextStyle(fontSize: 20,color:Colors.green,backgroundColor: Colors.white,),),
+          ));
+    }else{
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.white,
+          content: Text("Enter a Registered Email ",textAlign: TextAlign.center,style: TextStyle(fontSize: 20,color:Colors.red,backgroundColor: Colors.white,),),
+        ),);
+    }
+    //------------------------finished------------------------//
+  }
 
 
+  bool _passwordVisible = false;
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -109,14 +136,29 @@ class _login_screenState extends State<login_screen> {
                          return null;
                        },
                         maxLength: 16,
-                        obscureText: true,
-                        keyboardType: TextInputType.visiblePassword,
+
+
                         decoration: InputDecoration(
                           prefixIcon: Icon(Icons.fingerprint),
                           labelText: tPassword,
                           border: OutlineInputBorder(),
-                        ),
-                      ),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _passwordVisible
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _passwordVisible = !_passwordVisible;
+                                });
+                              },
+                            ),
+                          ),
+                          ),
+
+
+
                       const SizedBox(height: 20), //forget password //
                       Align(
                         alignment: Alignment.centerRight,
@@ -205,6 +247,8 @@ class _login_screenState extends State<login_screen> {
                                      setState(() {
                                        email = EmailController.text;
                                        password = passwordController.text;
+                                       validEmail();
+
                                      });
                                    }
 
@@ -228,7 +272,9 @@ class _login_screenState extends State<login_screen> {
                                   image: AssetImage(tGoogleImage),
                                   width: 20,
                                 ),
-                                onPressed: () {},
+                                onPressed: () {
+                                  AuthMethods().signInWithGoogle(context);
+                                },
                                 label: Text(tSignInWithGoogle)),
                           ),
                           TextButton(

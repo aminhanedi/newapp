@@ -6,6 +6,7 @@ import 'package:gap/gap.dart';
 import 'package:newapp/src/constants/color.dart';
 import 'package:newapp/src/constants/sizes.dart';
 import 'package:newapp/src/constants/text_string.dart';
+import 'package:newapp/src/features/authentication/controllers/splash_screen_controller/splash_screen_controller.dart';
 import '../welcome/welcome_screen.dart';
 
 
@@ -18,13 +19,15 @@ class splashScreen extends StatefulWidget {
 
 class _splashScreenState extends State<splashScreen> {
   bool animate = false;
- 
 
+  splash_controoler splashScreen = splash_controoler();
   @override
   void initState() {
     super.initState();
+    splashScreen.isLogin(context);
     startAnimation();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -116,7 +119,6 @@ class _splashScreenState extends State<splashScreen> {
     await Future.delayed(Duration(seconds: 2));
     setState(() => animate = true);
     await Future.delayed(Duration(seconds: 3));
-    Navigator.pushReplacement(context, MaterialPageRoute(builder:(contaxt)=> Welcome() ),);
 
   }
 }

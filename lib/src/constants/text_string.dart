@@ -45,7 +45,7 @@ const String tResetViaPhone = "Reset via Phone Verification";
 const String tForgetPhoneSubTitle = "Enter your registered Phone No to receive OTP";
 
 // -- Forget Password Via E-Mail - Text
-const String tForgetMailSubTitle = "Enter your registered E-Mail to receive OTP";
+const String tForgetMailSubTitle = "Enter your registered E-Mail to receive OTP link";
 // -- Profile ScreenText
 
 const String tProfile = "Profile";
