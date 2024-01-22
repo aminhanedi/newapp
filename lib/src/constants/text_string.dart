@@ -41,18 +41,14 @@ const String tForgetPasswordSubTitle = "Select one of the options given below to
 const String tResetViaEMail = "Reset via Mail Verification";
 const String tResetViaPhone = "Reset via Phone Verification";
 
-// -- Forget Password Via Phone - Text
-const String tForgetPhoneSubTitle = "Enter your registered Phone No to receive OTP";
-
 // -- Forget Password Via E-Mail - Text
 const String tForgetMailSubTitle = "Enter your registered E-Mail to receive OTP link";
 // -- Profile ScreenText
 
 const String tProfile = "Profile";
 const String tEditProfile = "Edit Profile";
-const String tLogoutDialogHeading = "Logout";const String tProfileHeading = "Coding with T";
 const String tProfileSubHeading = "superAdmin@codingwitht.com";
-const String tMenu5 = "tLogot";
+const String tMenu5 = "tLogout";
 const String tMenul = "Settings";
 const String tMenu4="Information";
 const String tMenu2 = "Billing Details";
@@ -87,21 +83,22 @@ const String twaist="Waist(in cm)";
 const String thip="Hip(in cm)";
 const String tinseam="Inseam(in cm)";
 const String tcollar="Collar(in cm)";
-const String tfront="Neck(in cm)";
+const String tfront="Skirt(in cm)";
 const String tthigh="Thigh(in cm)";
 const String tknee="Knee(in cm)";
 const String tbutton="pants length(in cm)";
 const String tother1="Other 1(in cm)";
 const String tother2="Other 2(in cm)";
 const String tother3="Other 3(in cm)";
+const String tnote="note";
 //--------------measurement return text--------------//
 const String tchestreturn="Please enter customer chest";
 const String twaistreturn="Please enter customer waist";
 const String thipreturn="Please enter customer hip";
 const String tinseamreturn="Please enter customer inseam ";
 const String tshoulderreturn="Please enter customer shoulder";
-const String tsleevereturn="Please enter customer sleev";
-const String tcollarreturn="Please enter customer neck arount";
+const String tsleevereturn="Please enter customer sleeve";
+const String tcollarreturn="Please enter customer neck around";
 const String tfrontreturn="Please enter customer front ";
 const String tthighreturn="Please enter customer thigh";
 const String tkneereturn="Please enter customer knee";

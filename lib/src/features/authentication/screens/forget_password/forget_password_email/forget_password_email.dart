@@ -1,10 +1,13 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:newapp/src/constants/image_string.dart';
 import 'package:newapp/src/constants/sizes.dart';
-import 'package:newapp/src/constants/text_string.dart';
-import 'package:newapp/src/features/authentication/screens/forget_password/forget_password_otp/otp_screen.dart';
+import 'package:flutter_gen/gen_l10n/app-localization.dart';
+import '../../login/login_screen.dart';
+
 class forget_pass_mail_screen extends StatefulWidget {
   const forget_pass_mail_screen({super.key});
 
@@ -20,18 +23,18 @@ class _forget_pass_mail_screenState extends State<forget_pass_mail_screen> {
     try {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+           SnackBar(
             dismissDirection: DismissDirection.up,
             backgroundColor: Colors.white,
-            content: Text("password reset Email has been send check your E-mail"
-              ,maxLines: 3,textAlign: TextAlign.center,style: TextStyle(fontSize: 20,color:Colors.blue,backgroundColor: Colors.white,),),
+            content: Text(AppLocalizations.of(context)!.checkE,
+              maxLines: 3,textAlign: TextAlign.center,style: TextStyle(fontSize: 20,color:Colors.blue,backgroundColor: Colors.white,),),
           ));
     }on FirebaseAuthException catch (e){
       if (e.code=="user email not fount "){
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+           SnackBar(
             backgroundColor: Colors.white,
-            content: Text("User not found Enter a Registered Email ",textAlign: TextAlign.center,style: TextStyle(fontSize: 20,color:Colors.red,backgroundColor: Colors.white,),),
+            content: Text(AppLocalizations.of(context)!.noteFound,textAlign: TextAlign.center,style: TextStyle(fontSize: 20,color:Colors.red,backgroundColor: Colors.white,),),
           ),);
       }
     }
@@ -50,9 +53,9 @@ class _forget_pass_mail_screenState extends State<forget_pass_mail_screen> {
           ));
     }else{
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+         SnackBar(
           backgroundColor: Colors.white,
-          content: Text("Not a valid E-mail ",textAlign: TextAlign.center,style: TextStyle(fontSize: 20,color:Colors.red,backgroundColor: Colors.white,),),
+          content: Text(AppLocalizations.of(context)!.notValid,textAlign: TextAlign.center,style: TextStyle(fontSize: 20,color:Colors.red,backgroundColor: Colors.white,),),
         ),);
     }}
 
@@ -73,9 +76,9 @@ class _forget_pass_mail_screenState extends State<forget_pass_mail_screen> {
 
               children: [
                Image.asset(tForgetPasswordImage, height: 200,width: 400,),
-                const Text(tForgetPassword, style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),
-                const Text(tForgetMailSubTitle,style: TextStyle(fontSize: 18),),
-                const SizedBox(height: 30,),
+                 Text( AppLocalizations.of(context)!.forgetP, style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),
+                 Text( AppLocalizations.of(context)!.enterEmailto,style: TextStyle(fontSize: 18),),
+                 SizedBox(height: 30,),
                 Column(
 
                   children: [
@@ -85,7 +88,7 @@ class _forget_pass_mail_screenState extends State<forget_pass_mail_screen> {
                         controller: EmailController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return " Please Enter a valid Email ";
+                            return AppLocalizations.of(context)!.requiredField;
 
 
                           }
@@ -93,7 +96,7 @@ class _forget_pass_mail_screenState extends State<forget_pass_mail_screen> {
                         },
 
 
-                          decoration: InputDecoration(label: Text(tEmail,style: TextStyle(fontSize: 20, ),),
+                          decoration: InputDecoration(label: Text(AppLocalizations.of(context)!.email,style: TextStyle(fontSize: 20, ),),
                             border: OutlineInputBorder(),
                             prefixIcon: Icon(Icons.email)
 
@@ -114,9 +117,41 @@ class _forget_pass_mail_screenState extends State<forget_pass_mail_screen> {
                     }
 
                   },
-                      child: const Text("Send Email",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),)),
+                      child:  Text(AppLocalizations.of(context)!.sentEmail,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),)),
 
                     ),
+                    Container(
+                      margin: EdgeInsets.only(top: 30),
+                      child: IconButton(onPressed: (){
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text(AppLocalizations.of(context)!.conformation),
+                              content:  Text(AppLocalizations.of(context)!.areYouSure),
+                              actions: [
+                                TextButton(
+                                  child: Text(AppLocalizations.of(context)!.no),
+                                  onPressed: () {
+                                    // Dismiss the dialog
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                                TextButton(
+                                  child: Text(AppLocalizations.of(context)!.yes),
+                                  onPressed: () {
+                                    // Sign out and navigate to the login screen
+                                     Get.to(() => login_screen());
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+
+                      }, icon:Icon(Icons.arrow_forward,size: 40,)),
+
+                    )
                   ],
                 )
               ],

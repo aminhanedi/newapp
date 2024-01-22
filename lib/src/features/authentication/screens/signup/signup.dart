@@ -1,6 +1,8 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:newapp/src/common_wighets/form/form_header_widget.dart';
 import 'package:newapp/src/constants/color.dart';
 import 'package:newapp/src/constants/image_string.dart';
@@ -9,6 +11,7 @@ import 'package:newapp/src/constants/text_string.dart';
 import 'package:newapp/src/features/authentication/screens/dashboard_screen/dashboard_screen.dart';
 import 'package:newapp/src/features/authentication/screens/login/login_screen.dart';
 import 'package:newapp/src/services/google_auth.dart';
+import 'package:flutter_gen/gen_l10n/app-localization.dart';
 
 
 
@@ -47,29 +50,31 @@ class _signup_screenState extends State<signup_screen> {
           password: password,
         );
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+           SnackBar(
             content: Text(
-              "Registered successfully",
+                AppLocalizations.of(context)!.registered,
               style: TextStyle(fontSize: 20),
             ),
           ),
         );
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const dashboard()),
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => dashboard(),
+            maintainState: false,
+          ),
         );
       } on FirebaseAuthException catch (e) {
         if (e.code == "weak-password") {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text("Password provided is too weak"),
+             SnackBar(
+              content: Text(    AppLocalizations.of(context)!.weakP,),
             ),
           );
         } else if (e.code == "email-already-in-use") {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
+             SnackBar(
               content: Text(
-                "Account already exists",
+                AppLocalizations.of(context)!.accountA,
                 style: TextStyle(fontSize: 18),
               ),
             ),
@@ -85,15 +90,15 @@ class _signup_screenState extends State<signup_screen> {
        bool isValid= EmailValidator.validate(EmailController.text.trim());
        if(isValid){
          ScaffoldMessenger.of(context).showSnackBar(
-             const SnackBar(
+             SnackBar(
                backgroundColor: Colors.white,
-               content: Text("Valid Email ",textAlign: TextAlign.center,style: TextStyle(fontSize: 20,color:Colors.green,backgroundColor: Colors.white,),),
+               content: Text(    AppLocalizations.of(context)!.validE,textAlign: TextAlign.center,style: TextStyle(fontSize: 20,color:Colors.green,backgroundColor: Colors.white,),),
              ));
        }else{
          ScaffoldMessenger.of(context).showSnackBar(
-             const SnackBar(
+             SnackBar(
                backgroundColor: Colors.white,
-               content: Text("Enter a Valid Email ",textAlign: TextAlign.center,style: TextStyle(fontSize: 20,color:Colors.red,backgroundColor: Colors.white,),),
+               content: Text(    AppLocalizations.of(context)!.enterA,textAlign: TextAlign.center,style: TextStyle(fontSize: 20,color:Colors.red,backgroundColor: Colors.white,),),
              ),);
        }
 
@@ -103,191 +108,192 @@ class _signup_screenState extends State<signup_screen> {
   Widget build(BuildContext context) {
     // final controller=Get.put(SignUpController());
 
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text("  "),
-        ),
-        body: SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.all(tDefaultSize),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const FormHeaderWidget(
-                    image: twelcon_image,
-                    title: tSignupTitle,
-                    subTitle: tSignupSubTitle),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: tDefaultSize - 10),
-                  child: Form(
-                    key: _formkey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        TextFormField(
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return " Please Eenter Name";
-                            }
-                            return null;
-                          },
-                          maxLength: 16,
-                          controller: fullNameController,
+    return WillPopScope(
+      onWillPop: () async => false,
 
-                          decoration: const InputDecoration(
-                            label: Text(
-                              "FULL NAME",
-                            ),
-                            border: OutlineInputBorder(),
-                            prefixIcon: Icon(
-                              Icons.person_2_rounded,
-                              color: tSecondaryColor,
-                            ),
-                            labelStyle: TextStyle(
-                              color: tSecondaryColor,
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    width: 2.0, color: tSecondaryColor)),
-                          ),
+      child: SafeArea(
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text("  "),
+          ),
+          body: SingleChildScrollView(
+            child: Container(
+              padding: const EdgeInsets.all(tDefaultSize),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                   FormHeaderWidget(
+                      image: twelcon_image,
+                      title: AppLocalizations.of(context)!.getO,
+                      subTitle:AppLocalizations.of(context)!.createYourAcc),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: tDefaultSize - 10),
+                    child: Form(
+                      key: _formkey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return AppLocalizations.of(context)!.pleaseN;
+                              }
+                              return null;
+                            },
+                            maxLength: 16,
+                            controller: fullNameController,
 
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        TextFormField(
-                          maxLength: 30,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return " Please Enter a valid Email ";
-
-                            }else if (value==" !#''%^&*()+-][}{/,? "){
-                              return "Enter correct email";
-                            }
-                            return null;
-                          },
-                          controller: EmailController,
-                          decoration: const InputDecoration(
-                            label: Text(
-                              "E-MAIL",
-                            ),
-                            border: OutlineInputBorder(),
-                            prefixIcon: Icon(
-                              Icons.email,
-                              color: tSecondaryColor,
-                            ),
-                            labelStyle: TextStyle(
-                              color: tSecondaryColor,
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    width: 2.0, color: tSecondaryColor)),
-                          ),
-                        ),
-                        const SizedBox(height: 15),
-                        TextFormField(
-                          controller: passwordController,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return " Please Enter password";
-                            }
-                            return null;
-                          },
-                          maxLength: 16,
-
-
-                          decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.fingerprint),
-                            labelText: tPassword,
-                            border: const OutlineInputBorder(),
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                _passwordVisible
-                                    ? Icons.visibility_off
-                                    : Icons.visibility,
+                            decoration:  InputDecoration(
+                              label: Text(
+                                AppLocalizations.of(context)!.name
                               ),
-                              onPressed: () {
-                                setState(() {
-                                  _passwordVisible = !_passwordVisible;
-                                });
-                              },
+                              border: OutlineInputBorder(),
+                              prefixIcon: Icon(
+                                Icons.person_2_rounded,
+                                color: tSecondaryColor,
+                              ),
+                              labelStyle: TextStyle(
+                                color: tSecondaryColor,
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      width: 2.0, color: tSecondaryColor)),
+                            ),
+
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          TextFormField(
+                            maxLength: 30,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return AppLocalizations.of(context)!.requiredField;
+
+                              }else if (value==" !#''%^&*()+-][}{/,? "){
+                                return AppLocalizations.of(context)!.pleaseE;
+                              }
+                              return null;
+                            },
+                            controller: EmailController,
+                            decoration:  InputDecoration(
+                              label: Text(
+                                  AppLocalizations.of(context)!.email,
+                              ),
+                              border: OutlineInputBorder(),
+                              prefixIcon: Icon(
+                                Icons.email,
+                                color: tSecondaryColor,
+                              ),
+                              labelStyle: TextStyle(
+                                color: tSecondaryColor,
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      width: 2.0, color: tSecondaryColor)),
                             ),
                           ),
-                        ),
+                          const SizedBox(height: 15),
+                          TextFormField(
+                            controller: passwordController,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                AppLocalizations.of(context)!.requiredField;
+                              }
+                              return null;
+                            },
+                            maxLength: 16,
 
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Column(
-                          children: [
-                            SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                  onPressed: () {
-                                    if (_formkey.currentState!.validate()) {
 
-                                      setState(() {
-                                        Email = EmailController.text;
-                                        fullName = fullNameController.text;
-                                        password = passwordController.text;
-                                       // validEmail();
-                                      });
-                                    }
-                                    validEmail();
-                                   registration();
-                                  },
-                                  child: Text("SIGNUP".toUpperCase())),
-                            ),
-                            SizedBox(
-                              height: 10.0,
-                            ),
-                            Text(
-                              "OR",
-                            ),
-                            SizedBox(
-                              height: 10.0,
-                            ),
-                            SizedBox(
-                              width: double.infinity,
-                              child: OutlinedButton.icon(
-                                onPressed: () {
-                                  AuthMethods().signInWithGoogle(context);
-
-                                },
-                                icon: Image.asset(
-                                  tGoogleImage,
-                                  width: 20.0,
+                            decoration: InputDecoration(
+                              prefixIcon: Icon(Icons.fingerprint),
+                              labelText: AppLocalizations.of(context)!.password,
+                              border: const OutlineInputBorder(),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  _passwordVisible
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
                                 ),
-                                label: Text("Signup with google"),
+                                onPressed: () {
+                                  setState(() {
+                                    _passwordVisible = !_passwordVisible;
+                                  });
+                                },
                               ),
                             ),
-                            TextButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const login_screen()));
-                                },
-                                child: Text.rich(TextSpan(children: [
-                                  TextSpan(
-                                      text: "Already Have An Account ",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall),
-                                  TextSpan(
-                                    text: "LOGIN ",
-                                  )
-                                ])))
-                          ],
-                        )
-                      ],
+                          ),
+
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          Column(
+                            children: [
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                    onPressed: () {
+                                      if (_formkey.currentState!.validate()) {
+
+                                        setState(() {
+                                          Email = EmailController.text;
+                                          fullName = fullNameController.text;
+                                          password = passwordController.text;
+                                         // validEmail();
+                                        });
+                                      }
+                                      validEmail();
+                                     registration();
+                                    },
+                                    child: Text(AppLocalizations.of(context)!.signup.toUpperCase())),
+                              ),
+                              SizedBox(
+                                height: 10.0,
+                              ),
+                              Text(
+                                "OR",
+                              ),
+                              SizedBox(
+                                height: 10.0,
+                              ),
+                              SizedBox(
+                                width: double.infinity,
+                                child: OutlinedButton.icon(
+                                  onPressed: () {
+                                    AuthMethods().signInWithGoogle(context);
+
+                                  },
+                                  icon: Image.asset(
+                                    tGoogleImage,
+                                    width: 20.0,
+                                  ),
+                                  label: Text(AppLocalizations.of(context)!.signW),
+                                ),
+                              ),
+                              TextButton(
+                                  onPressed: () {
+                                    Get.to(() => const login_screen());
+
+                                  },
+                                  child: Text.rich(TextSpan(children: [
+                                    TextSpan(
+                                        text:AppLocalizations.of(context)!.alreadyH,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall),
+                                    TextSpan(
+                                      text: "LOGIN ",
+                                    )
+                                  ])))
+                            ],
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                )
-              ],
+                  )
+                ],
+              ),
             ),
           ),
         ),

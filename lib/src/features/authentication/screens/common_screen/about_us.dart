@@ -14,18 +14,6 @@ class _about_usState extends State<about_us> {
     return Scaffold(
       appBar: AppBar(
         title: Text('About Us'),
-        actions: [
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              setState(() {
-
-              });
-            },
-            child:Icon(Icons.arrow_back),
-          )
-        ],
-
       ),
       body: Container(
         padding: EdgeInsets.all(20),
