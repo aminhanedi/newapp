@@ -1,8 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:flutter_gen/gen_l10n/app-localization.dart';
-import 'package:get/get.dart';
 import 'package:newapp/src/constants/text_string.dart';
 
 class MeasurementForm extends StatefulWidget {
@@ -51,14 +51,28 @@ class _MeasurementFormState extends State<MeasurementForm> {
     _nameController.dispose();
     _phoneController.dispose();
     _amountController.dispose();
-    _customeridController.dispose();
+    _orderController.dispose();
+    _deliveryController.dispose();
     _shoulderController.dispose();
     _chestController.dispose();
     _waistController.dispose();
     _hipController.dispose();
     _inseamController.dispose();
+    _neckController.dispose();
+    _sleeveController.dispose();
+    _frontController.dispose();
+    _thighController.dispose();
+    _kneeController.dispose();
+    _pantslController.dispose();
+    _lengthController.dispose();
+    _noteController.dispose();
+    _other1Controller.dispose();
+    _other2Controller.dispose();
+    _other3Controller.dispose();
     super.dispose();
   }
+
+
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
@@ -218,10 +232,18 @@ class _MeasurementFormState extends State<MeasurementForm> {
                           return null;
                         },
                         decoration:  InputDecoration(
+                          filled: true,
+                          prefixIcon: Icon(Icons.calendar_today,
+                          color:Colors.blue,),
                           labelText: AppLocalizations.of(context)!.orderDate,
                           labelStyle: TextStyle(fontSize: 15),
                           border: OutlineInputBorder(),
                         ),
+                        readOnly: true,
+                        onTap: (){
+
+                          _selectDateOrder(context);
+                        },
                       ),
                     ),
                     SizedBox(
@@ -240,9 +262,15 @@ class _MeasurementFormState extends State<MeasurementForm> {
                         },
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
+                          filled: true,
+                          prefixIcon: Icon(Icons.calendar_today,color:  Colors.blue,),
                           labelText: AppLocalizations.of(context)!.deliveryDate,
                           border: OutlineInputBorder(),
                         ),
+                        readOnly: true,
+                        onTap: (){
+                          _selectDateDelivery(context);
+                        },
                       ),
                     ),
                   ],
@@ -691,4 +719,37 @@ class _MeasurementFormState extends State<MeasurementForm> {
       ),
     );
   }
+  void _selectDateOrder(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+
+    if (picked != null) {
+      final formattedDate = DateFormat('yyyy-MM-dd').format(picked);
+      setState(() {
+        _orderController.text = formattedDate;
+      });
+    }
+  }
+
+  void _selectDateDelivery(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+
+    if (picked != null) {
+      final formattedDate = DateFormat('yyyy-MM-dd').format(picked);
+      setState(() {
+        _deliveryController.text = formattedDate;
+      });
+    }
+  }
+
 }
+
