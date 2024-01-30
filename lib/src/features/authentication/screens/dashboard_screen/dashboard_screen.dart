@@ -159,7 +159,7 @@ class _dashboardState extends State<dashboard> {
               ),
               const Divider(
                 color: Colors.blue, // Customize the color of the divider
-                thickness: 2.6, // Set the thickness of the divider
+                thickness: 2.6, // Set the thickness of the divider 
                 indent: 20, // Set the indent or left-padding of the divider
                 endIndent: 20, // Set the end-indent or right-padding of the divider
               ),
@@ -177,11 +177,12 @@ class _dashboardState extends State<dashboard> {
               ListTile(
 
                 leading: Icon(Icons.share),
-                title: const Text(
+                title:  Text(
                "share app",
                   style: TextStyle(fontFamily: "roboto"),
                 ),
-                onTap: ()async{
+                onTap: (){
+
 
                 },
               ),
@@ -254,7 +255,7 @@ class _dashboardState extends State<dashboard> {
                             .headlineSmall
                             ?.copyWith(color: Colors.white)),
                     subtitle: Text(AppLocalizations.of(context)!.goodMorning,
-                        style: Theme.of(context)
+                        style: Theme.of(context) 
                             .textTheme
                             .titleMedium
                             ?.copyWith(color: Colors.white54)),

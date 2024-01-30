@@ -2,8 +2,10 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:newapp/src/constants/text_string.dart';
+import 'package:newapp/src/features/authentication/screens/dashboard_screen/Search_screen/searchScreenCL.dart';
 import 'package:newapp/src/features/authentication/screens/dashboard_screen/customer_screen/update_record.dart';
 import 'package:flutter_gen/gen_l10n/app-localization.dart';
 
@@ -333,41 +335,17 @@ class _customer_list_scerrnState extends State<customer_list_scerrn> {
   Query dbref = FirebaseDatabase.instance.ref().child("customer");
   DatabaseReference reference=FirebaseDatabase.instance.ref().child("customer");
 
-  TextEditingController _searchController = TextEditingController();
-  List<Map<dynamic, dynamic>> customerList = [];
-  void filterCustomers(String searchTerm) {
-    setState(() {
-      if (searchTerm.isEmpty) {
-        customerList = []; // Show an empty list if the search term is empty
-      } else {
-        customerList = customerList.where((customer) {
-          String customerID = customer['customerName'] ?? '';
-          String email = customer['customerID'] ?? '';
-          return customerID.toLowerCase().contains(searchTerm.toLowerCase()) ||
-              email.toLowerCase().contains(searchTerm.toLowerCase());
-        }).toList();
-      }
-    });
-  }
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: TextField(
-          controller: _searchController,
-          onChanged: (value) {
-            filterCustomers(value);
-          },
-          decoration: InputDecoration(
+       actions: [
+         ElevatedButton(onPressed: (){
 
-            border: OutlineInputBorder(),
-            hintText: 'Search',
-            prefixIcon: Icon(Icons.search),
-          ),
-        ),
+           Get.to(()=>SearchScreen());
+         }, child: Icon(Icons.search,size: 35,),
+         )
+       ],
       ),
       body: Container(
           child:StreamBuilder(

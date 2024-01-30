@@ -61,17 +61,16 @@ dependencies:
   provider: ^6.1.1
   easy_localization: ^3.0.3
   intl: ^0.18.0
-
-
-
-
-
-
-
-
   get:
   fluttertoast: ^8.2.4
   flutter_easyloading: ^3.0.5
+
+
+
+
+
+
+
 
 dev_dependencies:
   flutter_test:

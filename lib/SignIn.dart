@@ -7,6 +7,7 @@ import 'package:newapp/src/features/authentication/screens/splash_screen/splash_
 import 'package:flutter_gen/gen_l10n/app-localization.dart';
 import 'package:newapp/src/localization/language_localization.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:newapp/src/utils/theme.dart';
 
 
 Future<void> main() async {
@@ -53,8 +54,12 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return  GetMaterialApp(
+      // theme: AppTheme.lightTheme,
+      //   darkTheme: AppTheme.darkTheme,
+      // themeMode: ThemeMode.system,
 
-      localizationsDelegates: [
+
+      localizationsDelegates: const [
         AppLocalizations.delegate, // Add this line
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
