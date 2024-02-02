@@ -14,10 +14,14 @@ import 'package:newapp/src/localization/language.dart';
 import '../../../../../SignIn.dart';
 import '../../../../localization/language_localization.dart';
 import '../forget_password/forget_password_email/forget_password_email.dart';
-import 'customer_screen/analys_screen.dart';
+
 import 'customer_screen/backup_screen.dart';
 import 'customer_screen/customer_list.dart';
 import 'package:flutter_gen/gen_l10n/app-localization.dart';
+import 'package:share_plus/share_plus.dart';
+
+import 'customer_screen/data_analyes/Analystics.dart';
+
 
 class dashboard extends StatefulWidget {
   const dashboard({super.key});
@@ -29,6 +33,7 @@ final auth = FirebaseAuth.instance;
 
 
 class _dashboardState extends State<dashboard> {
+  String text = "check out my app ";
 
   @override
   Widget build(BuildContext context) {
@@ -43,10 +48,10 @@ class _dashboardState extends State<dashboard> {
           child:ListView(
             children:  [
               const UserAccountsDrawerHeader(
-                  accountName: Text("Amin Hamedi",style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),
+                  accountName: Text("Arian tailoring",style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),
                   accountEmail:Text("0093780700709", style: TextStyle(fontSize:16),),
                 currentAccountPicture: CircleAvatar(
-                  backgroundImage: AssetImage("assets/images/amin.jpg"),
+                  backgroundImage: AssetImage("assets/images/profile.jpg"),
                 ),
               ),
               ListTile(
@@ -104,6 +109,7 @@ class _dashboardState extends State<dashboard> {
                 leading: Icon(Icons.font_download),
                 title:Text(AppLocalizations.of(context)!.fontSize,),
                 onTap: (){
+
 
                 },
               ),
@@ -182,8 +188,7 @@ class _dashboardState extends State<dashboard> {
                   style: TextStyle(fontFamily: "roboto"),
                 ),
                 onTap: (){
-
-
+                  Share.share(text);
                 },
               ),
             ],
@@ -330,7 +335,7 @@ class _dashboardState extends State<dashboard> {
                       ),
                   GestureDetector(
                     onTap: () {
-                      Get.to(() => MonthlyOrderWidget());
+                      Get.to(()=>Analystic());
                     },
                         child: itemDashboard(translation(context).analyes,
                             CupertinoIcons.graph_circle, Colors.green),

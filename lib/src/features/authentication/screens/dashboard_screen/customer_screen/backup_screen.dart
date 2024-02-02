@@ -37,7 +37,7 @@ class _BackupWidgetState extends State<BackupWidget> {
     ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.white,
-          content: Text('Backup completed successfully! File saved at: ${backupFile.path}',textAlign: TextAlign.center,style: TextStyle(fontSize: 20,color:Colors.green,backgroundColor: Colors.white,),),
+          content: Text('${AppLocalizations.of(context)!.backupCompleted} ${backupFile.path}',textAlign: TextAlign.center,style: TextStyle(fontSize: 20,color:Colors.green,backgroundColor: Colors.white,),),
         ));
 
     print('Backup completed successfully! File saved at: ${backupFile.path}');
@@ -59,14 +59,14 @@ class _BackupWidgetState extends State<BackupWidget> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Image.asset("assets/images/img.jpg"),
-            Text("TO Protect your data. Take a backup today! Don't risk losing it.",style: TextStyle(fontSize: 25),),
+            Text(AppLocalizations.of(context)!.toProtectYour,style: TextStyle(fontSize: 18),),
             SizedBox(height: 40,),
             ElevatedButton(
               onPressed: () {
                 createDatabaseBackup();
               },
               child: SizedBox(
-                  child:Text('Create Backup',style: TextStyle(fontSize: 20,),)),
+                  child:Text(AppLocalizations.of(context)!.createBackup,style: TextStyle(fontSize: 20,),)),
             ),
           ],
         ),

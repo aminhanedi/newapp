@@ -64,7 +64,6 @@
   "conformationD":"Delete Conformation",
   "areD": "Are you sure you want to delete this record?",
   "cl":"Customer list",
-  "br":"baz",
  "next" : "Next",
   "login": "Login",
  "signup" : "Signup",
@@ -89,7 +88,7 @@
   "pleaseP":  " Please Eenter Password",
   "validE": "Email is valid",
   "alreadyH":"Already Have An Account",
-  "welcomeSubtitle":"This app well protect your info please first login or signn up",
+  "welcomeSubtitle":"This app well protect your info please first login or sign up",
    "makeA":"Make Selection!",
  "selectOne": "Select one of the options given below to reset your password.",
  "resetVia": "Reset via Mail Verification",
@@ -98,5 +97,8 @@
   "conformation": "Conformation",
   "checkE":"password reset Email has been send check your E-mail",
   "noteFound":"User not found Enter a Registered Email ",
-  "notValid":"Not a valid E-mail "
+  "notValid":"Not a valid E-mail ",
+  "toProtectYour":"TO Protect your data. Take a backup today! Don't risk losing your data.",
+  "createBackup":"Create backup",
+  "backupCompleted":"Backup completed successfully! File saved at:"
 }

@@ -3,9 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:flutter_gen/gen_l10n/app-localization.dart';
-import 'package:get/get.dart';
-
-import '../customer_screen/customer_list.dart';
 
 
 class SearchScreen extends StatefulWidget {
@@ -92,14 +89,7 @@ class _SearchScreenState extends State<SearchScreen> {
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              // child: TextField(
-              //   controller: searchController,
-              //   onChanged: filterCustomers,
-              //   decoration: InputDecoration(
-              //     labelText: "SEARCH",
-              //     border: OutlineInputBorder(),
-              //   ),
-              // ),
+
             ),
             Expanded(
               child: ListView.builder(

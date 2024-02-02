@@ -9,7 +9,6 @@ import 'package:newapp/src/localization/language_localization.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:newapp/src/utils/theme.dart';
 
-
 Future<void> main() async {
   //---------------------firebase database initialization--------------------//
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,7 +16,6 @@ Future<void> main() async {
 //-------------network controller ------------------------//
   DependencyInjection.init();
   runApp(const MyApp());
-
 }
 
 class MyApp extends StatefulWidget {
@@ -25,8 +23,8 @@ class MyApp extends StatefulWidget {
 
   @override
   State<MyApp> createState() => _MyAppState();
-  static void setLocale(BuildContext context,Locale newLocal ){
-    _MyAppState? state=context.findAncestorStateOfType<_MyAppState>();
+  static void setLocale(BuildContext context, Locale newLocal) {
+    _MyAppState? state = context.findAncestorStateOfType<_MyAppState>();
     state?.setLocale(newLocal);
   }
 }
@@ -50,14 +48,12 @@ class _MyAppState extends State<MyApp> {
     super.didChangeDependencies();
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return  GetMaterialApp(
+    return GetMaterialApp(
       // theme: AppTheme.lightTheme,
       //   darkTheme: AppTheme.darkTheme,
       // themeMode: ThemeMode.system,
-
 
       localizationsDelegates: const [
         AppLocalizations.delegate, // Add this line
@@ -70,18 +66,11 @@ class _MyAppState extends State<MyApp> {
         Locale('fa'), // Spanish
         // Add more supported locales as needed
       ],
-      locale:_locale ,
+      locale: _locale,
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: splashScreen(),
-
-
       ),
     );
   }
-
 }
-
-
-
-

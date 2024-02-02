@@ -21,15 +21,14 @@ class MonthlyOrder {
   Future<void> fetchDataFromFirebase() async {
     try {
       DatabaseReference dbRef =
-      FirebaseDatabase.instance.ref().child("customer"); // Updated 'ref' to 'reference'
-      DataSnapshot snapshot = await dbRef.get(); // Removed unnecessary cast
+      FirebaseDatabase.instance.ref().child("customer");
+      DataSnapshot snapshot = await dbRef.get();
 
       if (snapshot.value != null) {
-        Map<dynamic, dynamic> data =
-        snapshot.value as Map<dynamic, dynamic>;
+        Map<dynamic, dynamic> myMap = snapshot.value as Map<dynamic, dynamic>;
         Map<int, int> orderCountByDay = {};
 
-        data.forEach((key, value) {
+        myMap.forEach((key, value) {
           int day = DateTime.parse(value["orderDate"]).day;
           orderCountByDay[day] = (orderCountByDay[day] ?? 0) + 1;
         });
