@@ -1,6 +1,7 @@
 {
 
   "homePage": "Home Page",
+  "insertPage": "Insert page",
   "personalInformation": "Personal Information",
   "name": "Name",
   "nameHint": "Enter your name",
@@ -100,5 +101,7 @@
   "notValid":"Not a valid E-mail ",
   "toProtectYour":"TO Protect your data. Take a backup today! Don't risk losing your data.",
   "createBackup":"Create backup",
-  "backupCompleted":"Backup completed successfully! File saved at:"
+  "backupCompleted":"Backup completed successfully! File saved at:",
+  "formValidator": "Please enter only number"
+
 }

@@ -13,18 +13,18 @@ class GalleryScreen extends StatefulWidget {
 }
 
 class _GalleryScreenState extends State<GalleryScreen> {
-  List<XFile> imageFileList = [];
+  List<XFile> imageFileList = []; // A list to store selected image files
 
   Future<void> getImage() async {
-    final ImagePicker imagePicker = ImagePicker();
-    final List<XFile>? selectedImages = await imagePicker.pickMultiImage();
+    final ImagePicker imagePicker = ImagePicker(); // Create an instance of ImagePicker
+    final List<XFile>? selectedImages = await imagePicker.pickMultiImage(); // Open the image picker to select multiple images
+
     if (selectedImages != null && selectedImages.isNotEmpty) {
       setState(() {
-        imageFileList.addAll(selectedImages);
+        imageFileList.addAll(selectedImages); // Add the selected images to the imageFileList
       });
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,7 +62,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: getImage,
         tooltip: "Select Images",
-        child: Icon(Icons.camera),
+        child: Icon(Icons.photo_camera_back),
       ),
     );
   }

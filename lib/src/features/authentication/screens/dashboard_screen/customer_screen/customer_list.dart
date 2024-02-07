@@ -3,12 +3,10 @@ import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:newapp/src/constants/text_string.dart';
 import 'package:newapp/src/features/authentication/screens/dashboard_screen/Search_screen/searchScreenCL.dart';
 import 'package:newapp/src/features/authentication/screens/dashboard_screen/customer_screen/update_record.dart';
 import 'package:flutter_gen/gen_l10n/app-localization.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 
 class customer_list_scerrn extends StatefulWidget {
   const customer_list_scerrn({super.key});
@@ -22,30 +20,33 @@ class _customer_list_scerrnState extends State<customer_list_scerrn> {
     return SingleChildScrollView(
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.blue,  // Background color of the container
-          borderRadius: BorderRadius.circular(15),  // Rounded corner radius
+          color: Colors.blue, // Background color of the container
+          borderRadius: BorderRadius.circular(15), // Rounded corner radius
           border: Border.all(
             color: Colors.amberAccent,
-            width:2,
-          ),  // Border properties
+            width: 2,
+          ), // Border properties
           boxShadow: [
             BoxShadow(
               color: Colors.grey,
               offset: Offset(0, 2),
               blurRadius: 4,
             ),
-          ],  // Box shadow properties
+          ], // Box shadow properties
         ),
         margin: EdgeInsets.only(bottom: 10),
         padding: EdgeInsets.all(10),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
-
           children: [
             Row(
               children: [
-                Icon(Icons.important_devices,size: 18,color: Colors.amberAccent,),
+                Icon(
+                  Icons.important_devices,
+                  size: 18,
+                  color: Colors.amberAccent,
+                ),
                 Gap(10),
                 Text(
                   '${AppLocalizations.of(context)!.customerId} ${customers["customerID"]}',
@@ -56,32 +57,63 @@ class _customer_list_scerrnState extends State<customer_list_scerrn> {
                 ),
               ],
             ),
-            Gap(10),
+            Gap(5),
             Row(
               children: [
-                Icon(Icons.person,size: 18,color: Colors.amberAccent,),
+                Icon(
+                  Icons.person,
+                  size: 18,
+                  color: Colors.amberAccent,
+                ),
                 Gap(10),
                 Text(
-                    '${AppLocalizations.of(context)!.customerName} ${customers["customerName"]}',
+                  '${AppLocalizations.of(context)!.customerName} ${customers["customerName"]}',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
                 ),
               ],
             ),
-            Gap(10),
-            Row(
-              children: [
-                Icon(Icons.call,size: 18,color: Colors.amberAccent,),
-                Gap(10),
-                Text(
-                  '${AppLocalizations.of(context)!.customerPhone} ${customers["customerPhone"]}',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+            Gap(5),
+
+                Row(
+                  children: [
+                    Icon(
+                      Icons.numbers,
+                      size: 18,
+                      color: Colors.amberAccent,
+                    ),
+                    SizedBox(width: 10),
+                    Text(
+                      '${AppLocalizations.of(context)!.customerPhone}${customers["customerPhone"]}',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                    ),
+                        Gap(40),
+                    IconButton(
+                      onPressed: () async {
+                        String uri = 'tel:${customers["customerPhone"]}';
+
+                        if (await canLaunch(uri)) {
+                          await launch(uri);
+                        } else {
+                          throw 'Could not launch $uri';
+                        }
+                      },
+                      icon: Icon(Icons.call,
+                          color: Colors.lightGreenAccent,
+                          size: 30,
+                          shadows: [BoxShadow(offset: Offset(0, 5))]),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            Gap(10),
+
+            Gap(5),
             Row(
               children: [
-                Icon(Icons.monetization_on,size: 18,color: Colors.amberAccent,),
+                Icon(
+                  Icons.monetization_on,
+                  size: 18,
+                  color: Colors.amberAccent,
+                ),
                 Gap(10),
                 Text(
                   '${AppLocalizations.of(context)!.customerAmount}  ${customers["customerAmount"]}',
@@ -89,19 +121,22 @@ class _customer_list_scerrnState extends State<customer_list_scerrn> {
                 ),
               ],
             ),
-            Gap(10),
+            Gap(5),
             Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Wrap(children: [
                     SizedBox(
-                        width: 170,
+                        width: 160,
                         child: Text(
                           '${AppLocalizations.of(context)!.orderDate}  ${customers["customerOrder"]}',
                           style: TextStyle(
                               fontSize: 16, fontWeight: FontWeight.w400),
                         )),
+                    SizedBox(
+                      width: 10,
+                    ),
                     SizedBox(
                       width: 170,
                       child: Text(
@@ -279,14 +314,17 @@ class _customer_list_scerrnState extends State<customer_list_scerrn> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-
                   GestureDetector(
                     onTap: () {
-                     Navigator.push(context, MaterialPageRoute(builder: (_)=> upddate_record(customerskey:customers["key"])));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => upddate_record(
+                                  customerskey: customers["key"])));
                     },
                     child: Icon(
                       Icons.edit,
-                      color:Colors.amberAccent,
+                      color: Colors.amberAccent,
                     ),
                   ),
                   SizedBox(
@@ -299,20 +337,23 @@ class _customer_list_scerrnState extends State<customer_list_scerrn> {
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            title: Text(AppLocalizations.of(context)!.conformationD),
+                            title: Text(
+                                AppLocalizations.of(context)!.conformationD),
                             content: Text(AppLocalizations.of(context)!.areD),
                             actions: <Widget>[
                               TextButton(
                                 child: Text(AppLocalizations.of(context)!.no),
                                 onPressed: () {
-                                  Navigator.of(context).pop(); // Close the alert dialog
+                                  Navigator.of(context)
+                                      .pop(); // Close the alert dialog
                                 },
                               ),
                               TextButton(
                                 child: Text(AppLocalizations.of(context)!.yes),
                                 onPressed: () {
                                   reference.child(customers["key"]).remove();
-                                  Navigator.of(context).pop(); // Close the alert dialog
+                                  Navigator.of(context)
+                                      .pop(); // Close the alert dialog
                                 },
                               ),
                             ],
@@ -333,69 +374,85 @@ class _customer_list_scerrnState extends State<customer_list_scerrn> {
   }
 
   Query dbref = FirebaseDatabase.instance.ref().child("customer");
-  DatabaseReference reference=FirebaseDatabase.instance.ref().child("customer");
+  DatabaseReference reference =
+      FirebaseDatabase.instance.ref().child("customer");
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-       actions: [
-         ElevatedButton(onPressed: (){
-
-           Get.to(()=>SearchScreen());
-         }, child: Icon(Icons.search,size: 35,),
-         )
-       ],
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              Get.to(() =>
+                  SearchScreen()); // Navigate to the SearchScreen when the button is pressed
+            },
+            child: Icon(
+              Icons.search,
+              size: 35,
+            ),
+          )
+        ],
       ),
       body: Container(
-          child:StreamBuilder(
-            stream: dbref.onValue, // Replace 'dbref' with your Firebase database reference
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                // Show loader while data is loading
-                return  Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(AppLocalizations.of(context)!.loading,style: TextStyle(color: Colors.green),),
-                      Gap(15),
-                      CircularProgressIndicator(),
-                    ],
-                  ),
-                );
-              }
-
-
-              if (snapshot.hasError) {
-                // Handle error state
-                return Center(
-                  child: Text('Error: ${snapshot.error}'),
-                );
-              }
-
-              if (!snapshot.hasData) {
-                // Handle empty data state
-                return Center(
-                  child: Text(AppLocalizations.of(context)!.noData),
-                );
-              }
-
-              // Data is available
-              Map customers = snapshot.data.snapshot.value as Map;
-              customers["key"] = snapshot.data.snapshot.key;
-
-              return FirebaseAnimatedList(
-                query: dbref,
-                itemBuilder: (BuildContext context, DataSnapshot snapshot,
-                    Animation<double> animation, int index) {
-                  Map customers = snapshot.value as Map;
-                  customers["key"]=snapshot.key;// Use the 'customers' map here to build your list items
-                  return listItem(customers: customers);
-                },
+        child: StreamBuilder(
+          stream:
+              dbref.onValue, // Subscribe to a Firebase Realtime Database stream
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              // Show a loader while data is loading
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.loading,
+                      style: TextStyle(color: Colors.green),
+                    ),
+                    Gap(15),
+                    CircularProgressIndicator(),
+                  ],
+                ),
               );
-            },
-          )
+            }
+
+            if (snapshot.hasError) {
+              // Handle error state
+              return Center(
+                child: Text('Error: ${snapshot.error}'),
+              );
+            }
+
+            if (!snapshot.hasData) {
+              // Handle empty data state
+              return Center(
+                child: Text(AppLocalizations.of(context)!.noData),
+              );
+            }
+
+            // Data is available
+            Map customers = snapshot.data.snapshot.value
+                as Map; // Extract the data from the snapshot
+            customers["key"] = snapshot.data.snapshot
+                .key; // Add the snapshot key to the 'customers' map
+
+            return FirebaseAnimatedList(
+              query:
+                  dbref, // Pass the database reference to the FirebaseAnimatedList
+              itemBuilder: (BuildContext context, DataSnapshot snapshot,
+                  Animation<double> animation, int index) {
+                Map customers =
+                    snapshot.value as Map; // Extract the data from the snapshot
+                customers["key"] =
+                    snapshot.key; // Add the snapshot key to the 'customers' map
+                return listItem(
+                    customers:
+                        customers); // Use the 'customers' map to build your list items
+              },
+            );
+          },
+        ),
       ),
     );
   }

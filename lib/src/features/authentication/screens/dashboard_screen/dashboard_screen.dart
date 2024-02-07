@@ -335,7 +335,7 @@ class _dashboardState extends State<dashboard> {
                       ),
                   GestureDetector(
                     onTap: () {
-                      Get.to(()=>Analystic());
+                      Get.to(()=>MyWidget());
                     },
                         child: itemDashboard(translation(context).analyes,
                             CupertinoIcons.graph_circle, Colors.green),

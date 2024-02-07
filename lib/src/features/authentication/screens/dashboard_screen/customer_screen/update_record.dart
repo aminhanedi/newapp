@@ -1,5 +1,4 @@
 
-
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -17,6 +16,9 @@ class upddate_record extends StatefulWidget {
 }
 
 class _upddate_recordState extends State<upddate_record> {
+  // Define text editing controllers for each input field
+  // These controllers will be used to get and set the text in the input fields
+
   TextEditingController _customeridController = TextEditingController();
   TextEditingController _nameController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
@@ -44,14 +46,19 @@ class _upddate_recordState extends State<upddate_record> {
   @override
   void initState() {
     super.initState();
+    // Initialize the DatabaseReference to interact with the "customer" node in the Firebase database
     dbref = FirebaseDatabase.instance.ref().child("customer");
+    // Call the geCustomerData method to fetch and populate the customer data
     geCustomerData();
+
   }
 
   void geCustomerData() async {
     DataSnapshot snapshot = await dbref.child(widget.customerskey).get();
+    // Fetch the customer data from the database using the customerskey passed from the widge
     if (snapshot.value != null) {
       Map customers = snapshot.value as Map;
+      // Get the customer data from the Map and set the corresponding text in the input fields using the text editing controllers
       _customeridController.text = customers["customerID"] ?? '';
       _nameController.text = customers["customerName"] ?? '';
       _phoneController.text = customers["customerPhone"] ?? '';
@@ -608,8 +615,9 @@ class _upddate_recordState extends State<upddate_record> {
                   width: double.infinity,
                   child:ElevatedButton(
                     onPressed: () {
-                      if (widget.customerskey != null) {
-                        Map<String, String> customer = {
+
+                      if (widget.customerskey != null) {   // Check if widget.customerskey is not null
+                        Map<String, String> customer = {     // Create a Map to store the customer data
                           "customerID": _customeridController.text,
                           "customerName": _nameController.text,
                           "customerPhone": _phoneController.text,
@@ -633,7 +641,7 @@ class _upddate_recordState extends State<upddate_record> {
                           "customerOther2": _other2Controller.text,
                           "customerOther3": _other3Controller.text,
                         };
-
+                        // Update the customer data in the database using the customerskey
                         dbref.child(widget.customerskey).update(customer).then((value) {
                           Navigator.pop(context);
                         }).catchError((error) {

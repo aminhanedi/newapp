@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:flutter_gen/gen_l10n/app-localization.dart';
 import 'package:newapp/src/constants/text_string.dart';
@@ -34,6 +35,8 @@ class _MeasurementFormState extends State<MeasurementForm> {
   TextEditingController _other1Controller = TextEditingController();
   TextEditingController _other2Controller = TextEditingController();
   TextEditingController _other3Controller = TextEditingController();
+  final RegExp numberRegex = RegExp(r'^[0-9]+$');
+
   late DatabaseReference dbref;
   @override
   void initState() {
@@ -84,6 +87,7 @@ class _MeasurementFormState extends State<MeasurementForm> {
       double hip = double.parse(_hipController.text);
       double inseam = double.parse(_inseamController.text);
 
+
       // Process the data or navigate to the next screen
       // ...
     }
@@ -94,7 +98,7 @@ class _MeasurementFormState extends State<MeasurementForm> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          thome,
+          AppLocalizations.of(context)!.insertPage,
           textAlign: TextAlign.center,
         ),
       ),
@@ -135,8 +139,7 @@ class _MeasurementFormState extends State<MeasurementForm> {
                     validator: (value) {
                       if (value!.isEmpty) {
                         return AppLocalizations.of(context)!.requiredField;
-                      }if(tcustomerId==_customeridController){
-                        return "data is already in database";
+
                       }
                       return null;
                     },
@@ -196,14 +199,17 @@ class _MeasurementFormState extends State<MeasurementForm> {
                   width: double.infinity,
                   child: TextFormField(
                     controller: _amountController,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(numberRegex), // Only allows input that matches the regular expression
+                    ],
                     keyboardType: TextInputType.phone,
                     maxLength: 15,
                     validator: (value) {
                       if (value!.isEmpty) {
                         return AppLocalizations.of(context)!.requiredField;
                       }
-                      if(value! == "a-z,A-z,-"){
-                        return tvalide;
+                      if (!numberRegex.hasMatch(value)) {
+                        return AppLocalizations.of(context)!.formValidator;
                       }
                       return null;
                     },
@@ -310,6 +316,9 @@ class _MeasurementFormState extends State<MeasurementForm> {
                               width: 100,
                               child: TextFormField(
                                 controller: _waistController,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(numberRegex), // Only allows input that matches the regular expression
+                                ],
                                 maxLength: 4,
                                 validator: (value) {
                                   if (value!.isEmpty) {
@@ -331,6 +340,9 @@ class _MeasurementFormState extends State<MeasurementForm> {
                             SizedBox(
                               width: 100,
                               child: TextFormField(
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(numberRegex), // Only allows input that matches the regular expression
+                                ],
                                 maxLength: 4,
                                   controller: _hipController,
                                 validator: (value) {
@@ -352,12 +364,17 @@ class _MeasurementFormState extends State<MeasurementForm> {
                             SizedBox(
                               width: 100,
                               child: TextFormField(
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(numberRegex), // Only allows input that matches the regular expression
+                                ],
                                 controller: _shoulderController,
                                 validator: (value) {
                                   if (value!.isEmpty) {
                                     return AppLocalizations.of(context)!.requiredField;
                                   }
-
+                                  if (!numberRegex.hasMatch(value)) {
+                                    return AppLocalizations.of(context)!.formValidator;
+                                  }
                                   return null;
                                 },
                                 maxLength: 4,
@@ -374,13 +391,18 @@ class _MeasurementFormState extends State<MeasurementForm> {
                             SizedBox(
                               width: 100,
                               child: TextFormField(
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(numberRegex), // Only allows input that matches the regular expression
+                                ],
                                  controller: _inseamController,
                                 maxLength: 4,
                                 validator: (value) {
                                   if (value!.isEmpty) {
                                     return AppLocalizations.of(context)!.requiredField;
                                   }
-
+                                  if (!numberRegex.hasMatch(value)) {
+                                    return AppLocalizations.of(context)!.formValidator;
+                                  }
                                   return null;
                                 },
                                 keyboardType: TextInputType.number,
@@ -395,6 +417,9 @@ class _MeasurementFormState extends State<MeasurementForm> {
                             SizedBox(
                               width: 100,
                               child: TextFormField(
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(numberRegex), // Only allows input that matches the regular expression
+                                ],
                                 controller: _chestController,
                                 maxLength: 4,
                                 validator: (value) {
@@ -403,6 +428,9 @@ class _MeasurementFormState extends State<MeasurementForm> {
                                   }
                                   if (double.tryParse(value) == null) {
                                     return tvalide;
+                                  }
+                                  if (!numberRegex.hasMatch(value)) {
+                                    return AppLocalizations.of(context)!.formValidator;
                                   }
                                   return null;
                                 },
@@ -417,14 +445,18 @@ class _MeasurementFormState extends State<MeasurementForm> {
                             SizedBox(
                               width: 100,
                               child: TextFormField(
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(numberRegex), // Only allows input that matches the regular expression
+                                ],
                                 controller: _neckController,
                                 maxLength: 4,
                                 validator: (value) {
                                   if (value!.isEmpty) {
                                     return AppLocalizations.of(context)!.requiredField;
                                   }
-
-
+                                  if (!numberRegex.hasMatch(value)) {
+                                    return AppLocalizations.of(context)!.formValidator;
+                                  }
                                   return null;
                                 },
                                 keyboardType: TextInputType.number,
@@ -440,11 +472,17 @@ class _MeasurementFormState extends State<MeasurementForm> {
                             SizedBox(
                               width: 100,
                               child: TextFormField(
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(numberRegex), // Only allows input that matches the regular expression
+                                ],
                                 maxLength: 4,
                                 controller: _sleeveController,
                                 validator: (value) {
                                   if (value!.isEmpty) {
                                     return AppLocalizations.of(context)!.requiredField;
+                                  }
+                                  if (!numberRegex.hasMatch(value)) {
+                                    return AppLocalizations.of(context)!.formValidator;
                                   }
                                   return null;
                                 },
@@ -460,10 +498,16 @@ class _MeasurementFormState extends State<MeasurementForm> {
                             SizedBox(
                               width: 100,
                               child: TextFormField(
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(numberRegex), // Only allows input that matches the regular expression
+                                ],
                                 controller: _frontController,
                                 validator: (value) {
                                   if (value!.isEmpty) {
                                     return AppLocalizations.of(context)!.requiredField;
+                                  }
+                                  if (!numberRegex.hasMatch(value)) {
+                                    return AppLocalizations.of(context)!.formValidator;
                                   }
                                   return null;
                                 },
@@ -479,13 +523,19 @@ class _MeasurementFormState extends State<MeasurementForm> {
                             SizedBox(
                               width: 100,
                               child: TextFormField(
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(numberRegex), // Only allows input that matches the regular expression
+                                ],
                                 controller: _thighController,
                                 maxLength: 4,
                                 validator: (value) {
                                   if (value!.isEmpty) {
                                     return AppLocalizations.of(context)!.requiredField;
                                   }
-
+                                  if (!numberRegex.hasMatch(value)) {
+                                    return AppLocalizations.of(context)!.formValidator;
+                                  }
+                                  return null;
                                 },
                                 keyboardType: TextInputType.number,
                                 decoration:  InputDecoration(
@@ -501,11 +551,17 @@ class _MeasurementFormState extends State<MeasurementForm> {
                             SizedBox(
                               width: 100,
                               child: TextFormField(
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(numberRegex), // Only allows input that matches the regular expression
+                                ],
                                 maxLength: 4,
                                  controller: _kneeController,
                                 validator: (value) {
                                   if (value!.isEmpty) {
                                     return AppLocalizations.of(context)!.requiredField;
+                                  }
+                                  if (!numberRegex.hasMatch(value)) {
+                                    return AppLocalizations.of(context)!.formValidator;
                                   }
                                   return null;
                                 },
@@ -521,12 +577,17 @@ class _MeasurementFormState extends State<MeasurementForm> {
                             SizedBox(
                               width: 100,
                               child: TextFormField(
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(numberRegex), // Only allows input that matches the regular expression
+                                ],
                                 controller: _pantslController,
                                 validator: (value) {
                                   if (value!.isEmpty) {
                                     return AppLocalizations.of(context)!.requiredField;
                                   }
-
+                                  if (!numberRegex.hasMatch(value)) {
+                                    return AppLocalizations.of(context)!.formValidator;
+                                  }
                                   return null;
                                 },
                                 maxLength: 4,
@@ -541,11 +602,17 @@ class _MeasurementFormState extends State<MeasurementForm> {
                             SizedBox(
                               width: 100,
                               child: TextFormField(
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(numberRegex), // Only allows input that matches the regular expression
+                                ],
                                  controller: _lengthController,
-                                maxLength: 6,
+                                maxLength: 4,
                                 validator: (value) {
                                   if (value!.isEmpty) {
                                     return AppLocalizations.of(context)!.requiredField;
+                                  }
+                                  if (!numberRegex.hasMatch(value)) {
+                                    return AppLocalizations.of(context)!.formValidator;
                                   }
                                   return null;
                                 },
@@ -560,6 +627,9 @@ class _MeasurementFormState extends State<MeasurementForm> {
                             SizedBox(
                               width: 100,
                               child: TextFormField(
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(numberRegex), // Only allows input that matches the regular expression
+                                ],
                                 maxLength: 4,
                                 controller: _other1Controller,
                                 keyboardType: TextInputType.number,
@@ -575,8 +645,11 @@ class _MeasurementFormState extends State<MeasurementForm> {
                             SizedBox(
                               width: 100,
                               child: TextFormField(
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(numberRegex), // Only allows input that matches the regular expression
+                                ],
                                 controller: _other2Controller,
-                                maxLength: 6,
+                                maxLength: 4,
                                 keyboardType: TextInputType.number,
                                 decoration:  InputDecoration(
                                   labelText: AppLocalizations.of(context)!.other2,
@@ -588,8 +661,11 @@ class _MeasurementFormState extends State<MeasurementForm> {
                             SizedBox(
                               width: 100,
                               child: TextFormField(
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(numberRegex), // Only allows input that matches the regular expression
+                                ],
                                 controller: _other3Controller,
-                                maxLength: 6,
+                                maxLength: 4,
                                 keyboardType: TextInputType.number,
                                 decoration:  InputDecoration(
                                   labelText: AppLocalizations.of(context)!.other3,

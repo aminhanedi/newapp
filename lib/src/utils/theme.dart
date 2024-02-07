@@ -6,9 +6,9 @@ class AppTheme{
   static ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
     textTheme: TextTheme(
-      titleLarge: GoogleFonts.montserrat(
+      displaySmall: GoogleFonts.montserrat(
         color: Colors.black,
-        fontSize: 26,
+        fontSize: 20,
       )
     ),
       outlinedButtonTheme: TOutlineButtonTheme.lightOutlineBTN,

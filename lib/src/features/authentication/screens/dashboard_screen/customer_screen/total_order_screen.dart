@@ -5,6 +5,8 @@ import 'package:gap/gap.dart';
 import 'package:flutter_gen/gen_l10n/app-localization.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 
 import '../Search_screen/search_screenTCl.dart';
 
@@ -40,7 +42,7 @@ class _TotalListScreenState extends State<TotalListScreen> {
             color: Colors.amberAccent,
             width: 2,
           ),
-          boxShadow: [
+          boxShadow: const [
             BoxShadow(
               color: Colors.grey,
               offset: Offset(0, 2),
@@ -96,10 +98,26 @@ class _TotalListScreenState extends State<TotalListScreen> {
                   size: 18,
                   color: Colors.amberAccent,
                 ),
-                Gap(10),
+                SizedBox(width: 10),
                 Text(
                   '${AppLocalizations.of(context)!.customerPhone}${customers["customerPhone"]}',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                ),
+                Gap(40),
+                IconButton(
+                  onPressed: () async {
+
+                    String uri = 'tel:${customers["customerPhone"]}';
+
+                    if (await canLaunch(uri)) {
+                      await launch(uri);
+                    } else {
+                      throw 'Could not launch $uri';
+                    }
+                  },
+                  icon: Icon(Icons.call, color: Colors.lightGreenAccent,
+                      size: 30,
+                      shadows: [BoxShadow(offset: Offset(4, 0))]),
                 ),
               ],
             ),
@@ -126,19 +144,34 @@ class _TotalListScreenState extends State<TotalListScreen> {
   }
 
   Query dbref = FirebaseDatabase.instance.ref().child("customer");
+// Create a Query object named dbref that represents the "customer" node in the Firebase database
 
   @override
   void initState() {
     super.initState();
+    // Call the initState method of the superclass
+
     dbref.onChildAdded.listen((event) {
+      // Listen for child added events on the dbref query
+      // This will be triggered whenever a new child is added to the "customer" node
+
       Map customers = event.snapshot.value as Map;
+      // Extract the customer data from the event snapshot and cast it to a Map
+
       customers["key"] = event.snapshot.key;
+      // Add a new key called "key" to the customers map and assign it the key of the snapshot
+      // This is useful for identifying each customer record
+
       customersList.add(customers);
+      // Add the customers map to the customersList list
+
       calculateTotalAmount();
-      setState(() {}); // Trigger a rebuild to update the UI
+      // Calculate the total amount based on the updated customersList
+
+      setState(() {});
+      // Trigger a rebuild of the widget tree to update the UI
     });
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

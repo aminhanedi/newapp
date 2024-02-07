@@ -8,7 +8,7 @@ const tAccentColor= Color (0x8A0F39A0);
 
 const tCardBgColor= Color (0xFF1CDFBF);
 const twhiteColor = Color (0xffffffff);
-const tDarkColor = Color (0xFF000000);
+const tDarkColor = Color (0xFF0F0F10);
 
 
 
