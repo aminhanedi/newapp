@@ -1,4 +1,3 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,17 +10,15 @@ import 'package:newapp/src/features/authentication/screens/dashboard_screen/cust
 import 'package:newapp/src/features/authentication/screens/dashboard_screen/customer_screen/total_order_screen.dart';
 import 'package:newapp/src/features/authentication/screens/welcome/welcome_screen.dart';
 import 'package:newapp/src/localization/language.dart';
-import '../../../../../SignIn.dart';
+import '../../../../../main.dart';
 import '../../../../localization/language_localization.dart';
 import '../forget_password/forget_password_email/forget_password_email.dart';
-
+import 'customer_screen/MeasurementForm.dart';
 import 'customer_screen/backup_screen.dart';
 import 'customer_screen/customer_list.dart';
 import 'package:flutter_gen/gen_l10n/app-localization.dart';
 import 'package:share_plus/share_plus.dart';
-
 import 'customer_screen/data_analyes/Analystics.dart';
-
 
 class dashboard extends StatefulWidget {
   const dashboard({super.key});
@@ -29,8 +26,8 @@ class dashboard extends StatefulWidget {
   @override
   State<dashboard> createState() => _dashboardState();
 }
-final auth = FirebaseAuth.instance;
 
+final auth = FirebaseAuth.instance;
 
 class _dashboardState extends State<dashboard> {
   String text = "check out my app ";
@@ -40,16 +37,21 @@ class _dashboardState extends State<dashboard> {
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
-
-
         //---------------------------------------------------------drawer navigation bar-------------------------------------------//
         drawer: Drawer(
-          width: MediaQuery.of(context).size.width * 0.65, // Set the desired width of the draw
-          child:ListView(
-            children:  [
+          width: MediaQuery.of(context).size.width *
+              0.65, // Set the desired width of the draw
+          child: ListView(
+            children: [
               const UserAccountsDrawerHeader(
-                  accountName: Text("Arian tailoring",style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),
-                  accountEmail:Text("0093780700709", style: TextStyle(fontSize:16),),
+                accountName: Text(
+                  "Arian tailoring",
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                ),
+                accountEmail: Text(
+                  "0093780700709",
+                  style: TextStyle(fontSize: 16),
+                ),
                 currentAccountPicture: CircleAvatar(
                   backgroundImage: AssetImage("assets/images/profile.jpg"),
                 ),
@@ -58,7 +60,9 @@ class _dashboardState extends State<dashboard> {
                 leading: Icon(Icons.language),
                 title: Row(
                   children: [
-                    Text(AppLocalizations.of(context)!.language,),
+                    Text(
+                      AppLocalizations.of(context)!.language,
+                    ),
                     DropdownButton<Language>(
                       underline: const SizedBox(),
                       icon: const Icon(
@@ -67,83 +71,83 @@ class _dashboardState extends State<dashboard> {
                       ),
                       onChanged: (Language? language) async {
                         if (language != null) {
-                          Locale _locale = await setLocale(language.languageCode);
+                          Locale _locale =
+                              await setLocale(language.languageCode);
                           MyApp.setLocale(context, _locale);
                         }
                       },
                       items: Language.languageList()
                           .map<DropdownMenuItem<Language>>(
                             (e) => DropdownMenuItem<Language>(
-                          value: e,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: <Widget>[
-                              Text(
-                                e.flag,
-                                style: const TextStyle(fontSize:20),
+                              value: e,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: <Widget>[
+                                  Text(
+                                    e.flag,
+                                    style: const TextStyle(fontSize: 20),
+                                  ),
+                                  Text(e.name)
+                                ],
                               ),
-                              Text(e.name)
-                            ],
-                          ),
-                        ),
-                      )
+                            ),
+                          )
                           .toList(),
                     ),
-
                   ],
-
                 ),
                 onTap: () {},
               ),
               ListTile(
                 leading: Icon(Icons.security),
-                title:Text(AppLocalizations.of(context)!.changePassword,),
-                onTap: (){
+                title: Text(
+                  AppLocalizations.of(context)!.changePassword,
+                ),
+                onTap: () {
                   //---------------------empty ---------------//
-                  Get.to((()=>forget_pass_mail_screen()));
-
-                },
-              ),
-
-              ListTile(
-                leading: Icon(Icons.font_download),
-                title:Text(AppLocalizations.of(context)!.fontSize,),
-                onTap: (){
-
-
+                  Get.to((() => forget_pass_mail_screen()));
                 },
               ),
               ListTile(
                 leading: Icon(Icons.note),
-                title:Text(AppLocalizations.of(context)!.privacyP,),
-                onTap: (){
-                  Get.to(()=> Privacy_Policy() );
+                title: Text(
+                  AppLocalizations.of(context)!.privacyP,
+                ),
+                onTap: () {
+                  Get.to(() => Privacy_Policy());
 
                   print('Item clicked!');
-
                 },
               ),
               ListTile(
                 leading: Icon(Icons.exit_to_app),
-                title:Text(AppLocalizations.of(context)!.logOut,),
-                onTap: (){
-
+                title: Text(
+                  AppLocalizations.of(context)!.logOut,
+                ),
+                onTap: () {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
                         title: Text('Confirmation'),
-                        content: Text(AppLocalizations.of(context)!.areYouSure,),
+                        content: Text(
+                          AppLocalizations.of(context)!.areYouSure,
+                        ),
                         actions: [
                           TextButton(
-                            child: Text(AppLocalizations.of(context)!.no,),
+                            child: Text(
+                              AppLocalizations.of(context)!.no,
+                            ),
                             onPressed: () {
                               // Dismiss the dialog
                               Navigator.of(context).pop();
                             },
                           ),
                           TextButton(
-                            child: Text(AppLocalizations.of(context)!.yes,),
+                            child: Text(
+                              AppLocalizations.of(context)!.yes,
+                            ),
                             onPressed: () {
                               // Sign out and navigate to the login screen
                               auth.signOut().then((value) {
@@ -152,7 +156,6 @@ class _dashboardState extends State<dashboard> {
                                     builder: (context) => Welcome(),
                                     maintainState: false,
                                   ),
-
                                 );
                               });
                             },
@@ -165,37 +168,34 @@ class _dashboardState extends State<dashboard> {
               ),
               const Divider(
                 color: Colors.blue, // Customize the color of the divider
-                thickness: 2.6, // Set the thickness of the divider 
+                thickness: 2.6, // Set the thickness of the divider
                 indent: 20, // Set the indent or left-padding of the divider
-                endIndent: 20, // Set the end-indent or right-padding of the divider
+                endIndent:
+                    20, // Set the end-indent or right-padding of the divider
               ),
               ListTile(
                 leading: Icon(Icons.person_pin_circle),
-                title:Text(AppLocalizations.of(context)!.aboutUs,),
-                onTap: (){
-                Get.to((()=>about_us())
-                  );
+                title: Text(
+                  AppLocalizations.of(context)!.aboutUs,
+                ),
+                onTap: () {
+                  Get.to((() => about_us()));
 
                   print('Item clicked!');
-
                 },
               ),
               ListTile(
-
                 leading: Icon(Icons.share),
-                title:  Text(
-               "share app",
+                title: Text(
+                  "share app",
                   style: TextStyle(fontFamily: "roboto"),
                 ),
-                onTap: (){
+                onTap: () {
                   Share.share(text);
                 },
               ),
             ],
-
-
           ),
-          
         ),
 
         appBar: AppBar(
@@ -218,24 +218,23 @@ class _dashboardState extends State<dashboard> {
                 items: Language.languageList()
                     .map<DropdownMenuItem<Language>>(
                       (e) => DropdownMenuItem<Language>(
-                    value: e,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: <Widget>[
-                        Text(
-                          e.flag,
-                          style: const TextStyle(fontSize: 30),
+                        value: e,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: <Widget>[
+                            Text(
+                              e.flag,
+                              style: const TextStyle(fontSize: 30),
+                            ),
+                            Text(e.name)
+                          ],
                         ),
-                        Text(e.name)
-                      ],
-                    ),
-                  ),
-                )
+                      ),
+                    )
                     .toList(),
               ),
             ),
           ],
-
         ),
         //----------------------------------------------------------------body ---------------------------------------------------------//
         body: ListView(
@@ -250,7 +249,6 @@ class _dashboardState extends State<dashboard> {
               ),
               child: Column(
                 children: [
-
                   const SizedBox(height: 50),
                   ListTile(
                     contentPadding: const EdgeInsets.symmetric(horizontal: 30),
@@ -260,7 +258,7 @@ class _dashboardState extends State<dashboard> {
                             .headlineSmall
                             ?.copyWith(color: Colors.white)),
                     subtitle: Text(AppLocalizations.of(context)!.goodMorning,
-                        style: Theme.of(context) 
+                        style: Theme.of(context)
                             .textTheme
                             .titleMedium
                             ?.copyWith(color: Colors.white54)),
@@ -272,7 +270,7 @@ class _dashboardState extends State<dashboard> {
             Container(
               color: Theme.of(context).primaryColor,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal:20),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 decoration: const BoxDecoration(
                     color: Colors.white,
                     borderRadius:
@@ -287,56 +285,57 @@ class _dashboardState extends State<dashboard> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          Get.to(()=>MeasurementForm());
-
+                          Get.to(() => TMeasurementForm());
 
                           print('Item clicked!');
                         },
                         child: itemDashboard(translation(context).addCustomer,
                             CupertinoIcons.add, Colors.deepOrange),
                       ),
-
                       GestureDetector(
                         onTap: () {
-                          Get.to(()=>const customer_list_scerrn());
+                          Get.to(() => const customer_list_scerrn());
 
                           print('Item clicked!');
                         },
-                        child: itemDashboard(
-                            translation(context).customerList, CupertinoIcons.person_2, Colors.pinkAccent),
+                        child: itemDashboard(translation(context).customerList,
+                            CupertinoIcons.person_2, Colors.pinkAccent),
                       ),
                       GestureDetector(
                         onTap: () {
-                         Get.to(()=>const TotalListScreen()
+                          Get.to(() => const TotalListScreen());
+
+                          print('Item clicked!');
+                        },
+                        child: itemDashboard(translation(context).totalOrder,
+                            CupertinoIcons.person_2_fill, Colors.blue),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Get.to(
+                            () => const GalleryScreen(),
                           );
 
                           print('Item clicked!');
                         },
                         child: itemDashboard(
-                            translation(context).totalOrder, CupertinoIcons.person_2_fill, Colors.blue),
+                            translation(context).gallery,
+                            CupertinoIcons.photo_fill_on_rectangle_fill,
+                            Colors.indigo),
                       ),
                       GestureDetector(
                         onTap: () {
-                        Get.to(() => const GalleryScreen(),);
+                          Get.to(() => BackupWidget());
 
                           print('Item clicked!');
                         },
-                        child: itemDashboard(translation(context).gallery,
-                            CupertinoIcons.photo_fill_on_rectangle_fill, Colors.indigo),
+                        child: itemDashboard(translation(context).backup,
+                            CupertinoIcons.cloud_upload, Colors.purple),
                       ),
                       GestureDetector(
                         onTap: () {
-                         Get.to(() =>BackupWidget  ());
-
-                          print('Item clicked!');
+                          Get.to(() => MyWidget());
                         },
-                        child: itemDashboard(
-                            translation(context).backup, CupertinoIcons.cloud_upload, Colors.purple),
-                      ),
-                  GestureDetector(
-                    onTap: () {
-                      Get.to(()=>MyWidget());
-                    },
                         child: itemDashboard(translation(context).analyes,
                             CupertinoIcons.graph_circle, Colors.green),
                       ),
@@ -376,10 +375,7 @@ class _dashboardState extends State<dashboard> {
             const SizedBox(height: 8),
             Text(title.toUpperCase(),
                 style: Theme.of(context).textTheme.titleMedium),
-
-
           ],
-
         ),
       );
 }

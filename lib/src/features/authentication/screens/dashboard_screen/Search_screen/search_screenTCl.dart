@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app-localization.dart';
 import 'package:gap/gap.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class tSearchScreen extends StatefulWidget {
   const tSearchScreen({Key? key}) : super(key: key);
@@ -56,11 +57,25 @@ class _SearchScreenState extends State<tSearchScreen> {
       DatabaseEvent event = await customersRef.once();
       if (event.snapshot.value != null) {
         Map<dynamic, dynamic> values =
-            event.snapshot.value as Map<dynamic, dynamic>;
+        event.snapshot.value as Map<dynamic, dynamic>;
+
+        List<Map<dynamic, dynamic>> tempList = [];
+
         values.forEach((key, item) {
-          setState(() {
-            customerList.add(item);
-          });
+          tempList.add(item);
+        });
+
+        tempList.sort((a, b) {
+          DateTime? aTimestamp = a['timestamp'] != null ? DateTime.tryParse(a['timestamp']) : null;
+          DateTime? bTimestamp = b['timestamp'] != null ? DateTime.tryParse(b['timestamp']) : null;
+          if (aTimestamp != null && bTimestamp != null) {
+            return bTimestamp.compareTo(aTimestamp);
+          }
+          return 0;
+        });
+
+        setState(() {
+          customerList = tempList;
         });
       }
     } catch (error) {
@@ -87,14 +102,6 @@ class _SearchScreenState extends State<tSearchScreen> {
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              // child: TextField(
-              //   controller: searchController,
-              //   onChanged: filterCustomers,
-              //   decoration: InputDecoration(
-              //     labelText: "SEARCH",
-              //     border: OutlineInputBorder(),
-              //   ),
-              // ),
             ),
             Expanded(
               child: ListView.builder(
@@ -154,6 +161,23 @@ class _SearchScreenState extends State<tSearchScreen> {
                                 '${AppLocalizations.of(context)!.customerName} ${customerList[index]["customerName"]}',
                                 style: TextStyle(
                                     fontSize: 16, fontWeight: FontWeight.w400),
+                              ),
+                              Gap(40),
+                              IconButton(
+                                onPressed: () async {
+                                  String uri =
+                                      'tel:${customerList[index]["customerPhone"]}';
+
+                                  if (await canLaunch(uri)) {
+                                    await launch(uri);
+                                  } else {
+                                    throw 'Could not launch $uri';
+                                  }
+                                },
+                                icon: Icon(Icons.call,
+                                    color: Colors.lightGreenAccent,
+                                    size: 30,
+                                    shadows: [BoxShadow(offset: Offset(0, 5))]),
                               ),
                             ],
                           ),

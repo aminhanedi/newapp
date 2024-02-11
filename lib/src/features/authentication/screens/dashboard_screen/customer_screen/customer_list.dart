@@ -73,39 +73,36 @@ class _customer_list_scerrnState extends State<customer_list_scerrn> {
               ],
             ),
             Gap(5),
-
-                Row(
-                  children: [
-                    Icon(
-                      Icons.numbers,
-                      size: 18,
-                      color: Colors.amberAccent,
-                    ),
-                    SizedBox(width: 10),
-                    Text(
-                      '${AppLocalizations.of(context)!.customerPhone}${customers["customerPhone"]}',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-                    ),
-                        Gap(40),
-                    IconButton(
-                      onPressed: () async {
-                        String uri = 'tel:${customers["customerPhone"]}';
-
-                        if (await canLaunch(uri)) {
-                          await launch(uri);
-                        } else {
-                          throw 'Could not launch $uri';
-                        }
-                      },
-                      icon: Icon(Icons.call,
-                          color: Colors.lightGreenAccent,
-                          size: 30,
-                          shadows: [BoxShadow(offset: Offset(0, 5))]),
-                    ),
-                  ],
+            Row(
+              children: [
+                Icon(
+                  Icons.numbers,
+                  size: 18,
+                  color: Colors.amberAccent,
                 ),
+                SizedBox(width: 10),
+                Text(
+                  '${AppLocalizations.of(context)!.customerPhone}${customers["customerPhone"]}',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                ),
+                Gap(40),
+                IconButton(
+                  onPressed: () async {
+                    String uri = 'tel:${customers["customerPhone"]}';
 
+                    if (await canLaunch(uri)) {
+                      await launch(uri);
+                    } else {
+                      throw 'Could not launch $uri';
+                    }
+                  },
+                  icon: Icon(Icons.call,
+                      color: Colors.lightGreenAccent,
+                      size: 30,
+                      shadows: [BoxShadow(offset: Offset(0, 5))]),
+                ),
+              ],
+            ),
             Gap(5),
             Row(
               children: [
