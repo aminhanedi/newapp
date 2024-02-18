@@ -1,4 +1,5 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -44,46 +45,45 @@ class _upddate_recordState extends State<upddate_record> {
   late DatabaseReference dbref;
 
   @override
+  @override
   void initState() {
     super.initState();
-    // Initialize the DatabaseReference to interact with the "customer" node in the Firebase database
-    dbref = FirebaseDatabase.instance.ref().child("customer");
-    // Call the geCustomerData method to fetch and populate the customer data
-    geCustomerData();
-
+    // Initialize the Firestore instance
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    // Call the getCustomerData method to fetch and populate the customer data
+    getCustomerData(firestore);
   }
 
-  void geCustomerData() async {
-    DataSnapshot snapshot = await dbref.child(widget.customerskey).get();
-    // Fetch the customer data from the database using the customerskey passed from the widge
-    if (snapshot.value != null) {
-      Map customers = snapshot.value as Map;
+  void getCustomerData(FirebaseFirestore firestore) async {
+    DocumentSnapshot customerSnapshot =
+    await firestore.collection('customers').doc(widget.customerskey).get();
+    // Fetch the customer data from the "customers" collection using the customerskey passed from the widget
+    if (customerSnapshot.exists) {
+      Map<String, dynamic> customerData =
+      customerSnapshot.data() as Map<String, dynamic>;
       // Get the customer data from the Map and set the corresponding text in the input fields using the text editing controllers
-      _customeridController.text = customers["customerID"] ?? '';
-      _nameController.text = customers["customerName"] ?? '';
-      _phoneController.text = customers["customerPhone"] ?? '';
-      _amountController.text = customers['customerAmount'] ?? '';
-      _orderController.text = customers['customerOrder'] ?? '';
-      _deliveryController.text = customers['customerDelivery'] ?? '';
-      _chestController.text = customers['customerChest'] ?? '';
-      _waistController.text = customers['customerWaist'] ?? '';
-      _shoulderController.text = customers['customerShoulder'] ?? '';
-      _hipController.text = customers['customerHip'] ?? '';
-      _inseamController.text = customers['customerInseam'] ?? '';
-      _neckController.text = customers['customerNeck'] ?? '';
-      _sleeveController.text = customers['customerSleeve'] ?? '';
-      _frontController.text = customers['customerFront'] ?? '';
-      _thighController.text = customers['customerThigh'] ?? '';
-      _kneeController.text = customers['customerKnee'] ?? '';
-      _pantslController.text = customers['customerPants'] ?? '';
-      _lengthController.text = customers['customerLength'] ?? '';
-      _other1Controller.text = customers['customerOther1'] ?? '';
-      _other2Controller.text = customers['customerOther2'] ?? '';
-      _other3Controller.text = customers['customerOther3'] ?? '';
-      _noteController.text = customers['customerNote'] ?? '';
+      _customeridController.text = customerData["customerID"] ?? '';
+      _nameController.text = customerData["customerName"] ?? '';
+      _phoneController.text = customerData["customerPhone"] ?? '';
+      _amountController.text = customerData['customerAmount'] ?? '';
+      _orderController.text = customerData['customerOrder'] ?? '';
+      _deliveryController.text = customerData['customerDelivery'] ?? '';
+
+      // Fetch the measurement data from the "measurement" subcollection
+      QuerySnapshot measurementSnapshot = await firestore
+          .collection('customers')
+          .doc(widget.customerskey)
+          .collection('measurement')
+          .get();
+      if (measurementSnapshot.docs.isNotEmpty) {
+        List<Map<String, dynamic>> measurementData = measurementSnapshot.docs
+            .map((doc) => doc.data() as Map<String, dynamic>)
+            .toList();
+        // Update your logic to handle the measurement data as per your requirements
+        // For example, you can populate the measurement data in a ListView or perform any other operations
+      }
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

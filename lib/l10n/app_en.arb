@@ -26,7 +26,7 @@
   "totalAmount":"Total Amount",
   "customer":"Customer",
   "updateScreen":"Update Screen",
-  "noData":"'No data available'",
+  "noData":"No data available",
   "loading":"Data is loading...",
   "total":"total customer and order",
   "customerId":"Customer ID: ",
@@ -102,6 +102,11 @@
   "toProtectYour":"TO Protect your data. Take a backup today! Don't risk losing your data.",
   "createBackup":"Create backup",
   "backupCompleted":"Backup completed successfully! File saved at:",
-  "formValidator": "Please enter only number"
+  "formValidator": "Please enter only number",
+  "fistPay": "First Pay",
+  "lastPAY": "Last pay",
+
+  "totalPay": "Total amount"
+
 
 }

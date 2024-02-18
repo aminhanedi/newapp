@@ -1,19 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:flutter_gen/gen_l10n/app-localization.dart';
-import 'package:newapp/src/constants/text_string.dart';
-import 'package:uuid/uuid.dart';
 
-class MeasurementForm extends StatefulWidget {
+import '../../../../../../constants/text_string.dart';
+
+class TMeasurementForm extends StatefulWidget {
   @override
   _MeasurementFormState createState() => _MeasurementFormState();
 }
 
-class _MeasurementFormState extends State<MeasurementForm> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+class _MeasurementFormState extends State<TMeasurementForm> {
   int? _selectedNumber; // Define the selectedNumber field
 
   int get selectedNumber =>
@@ -25,19 +24,17 @@ class _MeasurementFormState extends State<MeasurementForm> {
     });
   }
 
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   //------------------customers------------//
-
-
- // TextEditingController _customeridController = TextEditingController();
+  TextEditingController _customeridController = TextEditingController();
   TextEditingController _nameController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
+  TextEditingController _orderController = TextEditingController();
+  TextEditingController _deliveryController = TextEditingController();
   TextEditingController _firstPayController = TextEditingController();
   TextEditingController _lastPayController = TextEditingController();
   TextEditingController _totalPayController = TextEditingController();
-  //------------------order--------------------------//
-  TextEditingController _amountController = TextEditingController();
-  TextEditingController _orderController = TextEditingController();
-  TextEditingController _deliveryController = TextEditingController();
+  //-------------------mian controller-----------------------//
   TextEditingController _chestController = TextEditingController();
   TextEditingController _waistController = TextEditingController();
   TextEditingController _shoulderController = TextEditingController();
@@ -55,67 +52,193 @@ class _MeasurementFormState extends State<MeasurementForm> {
   TextEditingController _other2Controller = TextEditingController();
   TextEditingController _other3Controller = TextEditingController();
 
+  //------------------order--------------------------//
+
   final RegExp numberRegex = RegExp(r'^[0-9]+$');
 
-  late DatabaseReference dbref;
+  CollectionReference<Map<String, dynamic>> collectionRef =
+      FirebaseFirestore.instance.collection('customers');
 
-  int currentCustomerNumber = 0;
-
-
-  @override
   @override
   void initState() {
     super.initState();
-    dbref = FirebaseDatabase.instance.reference().child("customer");
+    collectionRef = FirebaseFirestore.instance.collection('customers');
 
-    dbref.onChildAdded.listen((event) {
-      String? customerId = event.snapshot.key;
-      // Use the customer ID as needed
-      print("New customer ID: $customerId");
+    collectionRef
+        .snapshots()
+        .listen((QuerySnapshot<Map<String, dynamic>> snapshot) {
+      for (var docChange in snapshot.docChanges) {
+        if (docChange.type == DocumentChangeType.added) {
+          String? customerId = docChange.doc.id;
+          // Use the customer ID as needed
+          print("New customer ID: $customerId");
+        }
+      }
     });
   }
 
 
-
   @override
   void dispose() {
-    //_customeridController.dispose();
     _nameController.dispose();
     _phoneController.dispose();
-    _amountController.dispose();
-    _orderController.dispose();
-    _deliveryController.dispose();
-    _shoulderController.dispose();
-    _chestController.dispose();
-    _waistController.dispose();
-    _hipController.dispose();
-    _inseamController.dispose();
-    _neckController.dispose();
-    _sleeveController.dispose();
-    _frontController.dispose();
-    _thighController.dispose();
-    _kneeController.dispose();
-    _pantslController.dispose();
-    _lengthController.dispose();
-    _noteController.dispose();
-    _other1Controller.dispose();
-    _other2Controller.dispose();
-    _other3Controller.dispose();
+
     super.dispose();
   }
 
+  int currentCustomerNumber = 0;
   void _submitForm() {
-    if (_formKey.currentState!.validate()) {
-      // Form fields are valid, perform desired actions
-      String name = _nameController.text;
-      double shoulder = double.parse(_shoulderController.text);
-      double chest = double.parse(_chestController.text);
-      double waist = double.parse(_waistController.text);
-      double hip = double.parse(_hipController.text);
-      double inseam = double.parse(_inseamController.text);
+    if (_formKey.currentState != null && _formKey.currentState!.validate()) {
+      String customerName = _nameController.text;
+      String customerPhone = _phoneController.text;
+      String firstPay = _firstPayController.text;
+      String lastPay = _lastPayController.text;
+      String totalPay = _totalPayController.text;
+      int? _selectedNumber;
+      _selectedNumber = this.selectedNumber;
 
-      // Process the data or navigate to the next screen
-      // ...
+      String customerOrder = _orderController.text;
+      String customerDelivery = _deliveryController.text;
+
+      currentCustomerNumber++; // Increment the current customer number
+      String customerID = 'TMS' + currentCustomerNumber.toString().padLeft(2, '0');
+
+      CollectionReference customersCollection =
+      FirebaseFirestore.instance.collection('customers');
+
+      // Check if a customer with the same phone number already exists
+      customersCollection
+          .where('customerPhone', isEqualTo: customerPhone)
+          .get()
+          .then((QuerySnapshot querySnapshot) {
+        if (querySnapshot.size > 0) {
+          // Customer with the same phone number already exists
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              backgroundColor: Colors.white,
+              content: Text(
+                "Customer with the same phone number already exists",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.red,
+                  backgroundColor: Colors.white,
+                ),
+              ),
+            ),
+          );
+        } else {
+          // Create a new customer document
+          Map<String, dynamic> customer = {
+            "customerID": customerID,
+            "customerName": customerName,
+            "customerPhone": customerPhone,
+            "totalOrder": _selectedNumber.toString(),
+            "firstPay": firstPay,
+            "lastPay": lastPay,
+            "TotalPay": totalPay,
+            "customerOrder": customerOrder,
+            "customerDelivery": customerDelivery,
+          };
+
+          DocumentReference customerDocRef = customersCollection.doc(customerID);
+
+          // Create the customer document
+          customerDocRef.set(customer).then((value) {
+            // Create the measurement documents for each clothing order
+            for (int i = 1; i <= _selectedNumber!; i++) {
+              Map<String, dynamic> measurement = {
+                "measurementID": 'Measurement $i',
+                "customerChest": _chestController.text + ' $i',
+                "customerWaist": _waistController.text + ' $i',
+                "customerShoulder": _shoulderController.text + ' $i',
+                "customerHip": _hipController.text + ' $i',
+                "customerInseam": _inseamController.text + ' $i',
+                "customerNeck": _neckController.text + ' $i',
+                "customerSleeve": _sleeveController.text + ' $i',
+                "customerFront": _frontController.text + ' $i',
+                "customerThigh": _thighController.text + ' $i',
+                "customerKnee": _kneeController.text + ' $i',
+                "customerPants": _pantslController.text + ' $i',
+                "customerLength": _lengthController.text + ' $i',
+                "customerNote": _noteController.text + ' $i',
+                "customerOther1": _other1Controller.text + ' $i',
+                "customerOther2": _other2Controller.text + ' $i',
+                "customerOther3": _other3Controller.text + ' $i',
+                "customerID": customerID,
+              };
+
+              CollectionReference measurementCollection =
+              customerDocRef.collection('measurement');
+              DocumentReference measurementDocRef =
+              measurementCollection.doc();
+
+              // Create the measurement document within the "measurement" subcollection
+              measurementDocRef.set(measurement).then((value) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    backgroundColor: Colors.white,
+                    content: Text(
+                      "Data saved successfully",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.green,
+                        backgroundColor: Colors.white,
+                      ),
+                    ),
+                  ),
+                );
+              }).catchError((error) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    backgroundColor: Colors.white,
+                    content: Text(
+                      "Error occurred while saving measurement data",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.red,
+                        backgroundColor: Colors.white,
+                      ),
+                    ),
+                  ),
+                );
+              });
+            }
+          }).catchError((error) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+              backgroundColor: Colors.white,
+              content: Text(
+              "Error occurred while saving customer data",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+              fontSize: 20,
+              color: Colors.red,
+              backgroundColor: Colors.white,
+              ),
+            ),
+            ),
+            );
+          });
+        }
+      }).catchError((error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            backgroundColor: Colors.white,
+            content: Text(
+              "Error occurred while checking customer data",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 20,
+                color: Colors.red,
+                backgroundColor: Colors.white,
+              ),
+            ),
+          ),
+        );
+      });
     }
   }
 
@@ -136,28 +259,14 @@ class _MeasurementFormState extends State<MeasurementForm> {
           child: SingleChildScrollView(
             child: Column(
               children: [
+
                 SizedBox(
                   width: double.infinity,
-                  child: Container(
-                    padding: EdgeInsets.only(top: 10, left: 10, right: 10),
-                    height: 50,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.black12,
-                        strokeAlign:
-                            BorderSide.strokeAlignOutside, // Border color
-                        width: 1.0, // Border width
-                      ),
-                      borderRadius: BorderRadius.circular(9.9), // Border radius
-                    ),
-                    child: Text(
-                      AppLocalizations.of(context)!.customer,
-                      textAlign: TextAlign.start,
-                      style: TextStyle(fontSize: 25, color: Colors.black54),
-                    ),
-                  ),
                 ),
                 /////////////////////////////////////header//////////////////////////////////////////////////////
+                SizedBox(
+                  width: double.infinity,
+                ),
 
                 Gap(5),
                 SizedBox(
@@ -178,9 +287,7 @@ class _MeasurementFormState extends State<MeasurementForm> {
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: 5,
-                ),
+
                 SizedBox(
                   width: double.infinity,
                   child: TextFormField(
@@ -200,38 +307,7 @@ class _MeasurementFormState extends State<MeasurementForm> {
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: 5,
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  child: TextFormField(
-                    controller: _amountController,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(
-                          numberRegex), // Only allows input that matches the regular expression
-                    ],
-                    keyboardType: TextInputType.phone,
-                    maxLength: 15,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return AppLocalizations.of(context)!.requiredField;
-                      }
-                      if (!numberRegex.hasMatch(value)) {
-                        return AppLocalizations.of(context)!.formValidator;
-                      }
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                      labelText: AppLocalizations.of(context)!.customerAmount,
-                      labelStyle: TextStyle(fontSize: 15),
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 15,
-                ),
+
                 SizedBox(
                   width:100,
                   child: DropdownButtonFormField<int>(
@@ -256,86 +332,88 @@ class _MeasurementFormState extends State<MeasurementForm> {
                     }).toList(),
                   ),
                 ),
-                Wrap(children: [
-                  SizedBox(
-                    width: 120,
-                    child: TextFormField(
-                      controller: _firstPayController,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(
-                            numberRegex), // Only allows input that matches the regular expression
-                      ],
-                      keyboardType: TextInputType.phone,
-                      maxLength:4,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return AppLocalizations.of(context)!.requiredField;
-                        }
-                        if (!numberRegex.hasMatch(value)) {
-                          return AppLocalizations.of(context)!.formValidator;
-                        }
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.customerAmount,
-                        labelStyle: TextStyle(fontSize: 15),
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                  ),
-                  SizedBox(  width:120,
-                    child: TextFormField(
-                      controller: _lastPayController,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(
-                            numberRegex), // Only allows input that matches the regular expression
-                      ],
-                      keyboardType: TextInputType.phone,
-                      maxLength: 4,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return AppLocalizations.of(context)!.requiredField;
-                        }
-                        if (!numberRegex.hasMatch(value)) {
-                          return AppLocalizations.of(context)!.formValidator;
-                        }
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.customerAmount,
-                        labelStyle: TextStyle(fontSize: 15),
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width:120,
-                    child: TextFormField(
-                      controller: _totalPayController,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(
-                            numberRegex), // Only allows input that matches the regular expression
-                      ],
-                      keyboardType: TextInputType.phone,
-                      maxLength: 5,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return AppLocalizations.of(context)!.requiredField;
-                        }
-                        if (!numberRegex.hasMatch(value)) {
-                          return AppLocalizations.of(context)!.formValidator;
-                        }
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.customerAmount,
-                        labelStyle: TextStyle(fontSize: 15),
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                  ),
-                ],),
+                SizedBox(height:10,),
 
+               Wrap(children: [
+                 SizedBox(
+                   width: 120,
+                   child: TextFormField(
+                     controller: _firstPayController,
+                     inputFormatters: [
+                       FilteringTextInputFormatter.allow(
+                           numberRegex), // Only allows input that matches the regular expression
+                     ],
+                     keyboardType: TextInputType.phone,
+                     maxLength:4,
+                     validator: (value) {
+                       if (value!.isEmpty) {
+                         return AppLocalizations.of(context)!.requiredField;
+                       }
+                       if (!numberRegex.hasMatch(value)) {
+                         return AppLocalizations.of(context)!.formValidator;
+                       }
+                       return null;
+                     },
+                     decoration: InputDecoration(
+                       labelText: AppLocalizations.of(context)!.customerAmount,
+                       labelStyle: TextStyle(fontSize: 15),
+                       border: OutlineInputBorder(),
+                     ),
+                   ),
+                 ),
+                 SizedBox(  width:120,
+                   child: TextFormField(
+                     controller: _lastPayController,
+                     inputFormatters: [
+                       FilteringTextInputFormatter.allow(
+                           numberRegex), // Only allows input that matches the regular expression
+                     ],
+                     keyboardType: TextInputType.phone,
+                     maxLength: 4,
+                     validator: (value) {
+                       if (value!.isEmpty) {
+                         return AppLocalizations.of(context)!.requiredField;
+                       }
+                       if (!numberRegex.hasMatch(value)) {
+                         return AppLocalizations.of(context)!.formValidator;
+                       }
+                       return null;
+                     },
+                     decoration: InputDecoration(
+                       labelText: AppLocalizations.of(context)!.customerAmount,
+                       labelStyle: TextStyle(fontSize: 15),
+                       border: OutlineInputBorder(),
+                     ),
+                   ),
+                 ),
+                 SizedBox(
+                   width:120,
+                   child: TextFormField(
+                     controller: _totalPayController,
+                     inputFormatters: [
+                       FilteringTextInputFormatter.allow(
+                           numberRegex), // Only allows input that matches the regular expression
+                     ],
+                     keyboardType: TextInputType.phone,
+                     maxLength: 5,
+                     validator: (value) {
+                       if (value!.isEmpty) {
+                         return AppLocalizations.of(context)!.requiredField;
+                       }
+                       if (!numberRegex.hasMatch(value)) {
+                         return AppLocalizations.of(context)!.formValidator;
+                       }
+                       return null;
+                     },
+                     decoration: InputDecoration(
+                       labelText: AppLocalizations.of(context)!.customerAmount,
+                       labelStyle: TextStyle(fontSize: 15),
+                       border: OutlineInputBorder(),
+                     ),
+                   ),
+                 ),
+               ],),
+                Gap(10),
                 Wrap(
                   children: [
                     SizedBox(
@@ -397,9 +475,9 @@ class _MeasurementFormState extends State<MeasurementForm> {
                     ),
                   ],
                 ),
+
                 Gap(20),
                 /////////////////////////////////////////////////////main /////////////////////////////////////////////
-
 
                 Gap(20),
                 Container(
@@ -428,7 +506,7 @@ class _MeasurementFormState extends State<MeasurementForm> {
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   labelText:
-                                      AppLocalizations.of(context)!.shoulder,
+                                  AppLocalizations.of(context)!.shoulder,
                                   border: OutlineInputBorder(),
                                 ),
                               ),
@@ -455,7 +533,7 @@ class _MeasurementFormState extends State<MeasurementForm> {
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                     labelText:
-                                        AppLocalizations.of(context)!.chest,
+                                    AppLocalizations.of(context)!.chest,
                                     border: OutlineInputBorder()),
                               ),
                             ),
@@ -485,7 +563,7 @@ class _MeasurementFormState extends State<MeasurementForm> {
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   labelText:
-                                      AppLocalizations.of(context)!.skirt,
+                                  AppLocalizations.of(context)!.skirt,
                                   border: OutlineInputBorder(),
                                 ),
                               ),
@@ -516,7 +594,7 @@ class _MeasurementFormState extends State<MeasurementForm> {
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                     labelText:
-                                        AppLocalizations.of(context)!.sleeve,
+                                    AppLocalizations.of(context)!.sleeve,
                                     border: OutlineInputBorder()),
                               ),
                             ),
@@ -549,7 +627,7 @@ class _MeasurementFormState extends State<MeasurementForm> {
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   labelText:
-                                      AppLocalizations.of(context)!.length,
+                                  AppLocalizations.of(context)!.length,
                                   border: OutlineInputBorder(),
                                 ),
                               ),
@@ -580,7 +658,7 @@ class _MeasurementFormState extends State<MeasurementForm> {
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   labelText:
-                                      AppLocalizations.of(context)!.collar,
+                                  AppLocalizations.of(context)!.collar,
                                   border: OutlineInputBorder(),
                                 ),
                               ),
@@ -611,7 +689,7 @@ class _MeasurementFormState extends State<MeasurementForm> {
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                     labelText:
-                                        AppLocalizations.of(context)!.button,
+                                    AppLocalizations.of(context)!.button,
                                     border: OutlineInputBorder()),
                               ),
                             ),
@@ -671,7 +749,7 @@ class _MeasurementFormState extends State<MeasurementForm> {
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   labelText:
-                                      AppLocalizations.of(context)!.inseam,
+                                  AppLocalizations.of(context)!.inseam,
                                   border: OutlineInputBorder(),
                                 ),
                               ),
@@ -702,7 +780,7 @@ class _MeasurementFormState extends State<MeasurementForm> {
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                     labelText:
-                                        AppLocalizations.of(context)!.knee,
+                                    AppLocalizations.of(context)!.knee,
                                     border: OutlineInputBorder()),
                               ),
                             ),
@@ -732,7 +810,7 @@ class _MeasurementFormState extends State<MeasurementForm> {
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   labelText:
-                                      AppLocalizations.of(context)!.thigh,
+                                  AppLocalizations.of(context)!.thigh,
                                   border: OutlineInputBorder(),
                                 ),
                               ),
@@ -763,7 +841,7 @@ class _MeasurementFormState extends State<MeasurementForm> {
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   labelText:
-                                      AppLocalizations.of(context)!.waist,
+                                  AppLocalizations.of(context)!.waist,
                                   border: OutlineInputBorder(),
                                 ),
                               ),
@@ -783,7 +861,7 @@ class _MeasurementFormState extends State<MeasurementForm> {
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                     labelText:
-                                        AppLocalizations.of(context)!.other1,
+                                    AppLocalizations.of(context)!.other1,
                                     border: OutlineInputBorder()),
                               ),
                             ),
@@ -802,7 +880,7 @@ class _MeasurementFormState extends State<MeasurementForm> {
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   labelText:
-                                      AppLocalizations.of(context)!.other2,
+                                  AppLocalizations.of(context)!.other2,
                                   border: OutlineInputBorder(),
                                 ),
                               ),
@@ -822,7 +900,7 @@ class _MeasurementFormState extends State<MeasurementForm> {
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   labelText:
-                                      AppLocalizations.of(context)!.other3,
+                                  AppLocalizations.of(context)!.other3,
                                   border: OutlineInputBorder(),
                                 ),
                               ),
@@ -831,7 +909,6 @@ class _MeasurementFormState extends State<MeasurementForm> {
                         ),
                       ]),
                 ),
-                ///////////////////////////////////////////////foter/////////////////////////////////////////////////////////////
                 Container(
                   margin: EdgeInsets.only(left: 15, right: 15, top: 15),
                   color: Colors.white38,
@@ -843,7 +920,7 @@ class _MeasurementFormState extends State<MeasurementForm> {
                         label: Text(
                           AppLocalizations.of(context)!.note,
                           style:
-                              TextStyle(fontSize: 18, color: Colors.blueAccent),
+                          TextStyle(fontSize: 18, color: Colors.blueAccent),
                         ),
                         prefixIcon: Icon(Icons.note_alt,
                             size: 50,
@@ -855,103 +932,16 @@ class _MeasurementFormState extends State<MeasurementForm> {
                         border: OutlineInputBorder()),
                   ),
                 ),
+                ///////////////////////////////////////////////foter/////////////////////////////////////////////////////////////
+
                 Gap(15),
                 Container(
                   margin: EdgeInsets.all(15),
                   padding: EdgeInsets.only(bottom: 0),
                   width: double.infinity,
-
                   child: ElevatedButton(
-
                     onPressed: () {
-
-                      currentCustomerNumber++; // Increment the current customer number
-                      String customerId = 'TMS${currentCustomerNumber.toString().padLeft(6, '0')}';
-
                       _submitForm();
-                      Map<String, String> customer = {
-                        // Your customer data here
-                        "customerID":customerId,
-                        "customerName": _nameController.text,
-                        "customerPhone": _phoneController.text,
-                        "customerAmount": _amountController.text,
-                        "customerOrder": _orderController.text,
-                        "customerDelivery": _deliveryController.text,
-                        "customerChest": _chestController.text,
-                        "customerWaist": _waistController.text,
-                        "customerShoulder": _shoulderController.text,
-                        "customerHip": _hipController.text,
-                        "customerInseam": _inseamController.text,
-                        "customerNeck": _neckController.text,
-                        "customerSleeve": _sleeveController.text,
-                        "customerFront": _frontController.text,
-                        "customerThigh": _thighController.text,
-                        "customerKnee": _kneeController.text,
-                        "customerPants": _pantslController.text,
-                        "customerLength": _lengthController.text,
-                        "customerNote": _noteController.text,
-                        "customerOther1": _other1Controller.text,
-                        "customerOther2": _other2Controller.text,
-                        "customerOther3": _other3Controller.text,
-                        "totalOrder": _selectedNumber.toString(),
-                      };
-
-                      String customerPhone =_phoneController.text;
-
-                      dbref
-                          .orderByChild("customerPhone")
-                          .equalTo(customerPhone)
-                          .once()
-                          .then((DatabaseEvent event) {
-                        DataSnapshot snapshot = event.snapshot;
-                        if (snapshot.value != null) {
-                          // Data already exists, handle the duplicate case
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(
-                            backgroundColor: Colors.white,
-                            content: Text(
-                              "data already exist ",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 15,
-                                color: Colors.red,
-                                backgroundColor: Colors.white,
-                              ),
-                            ),
-                          ));
-                        } else {
-                          // Data does not exist, push the new data
-                          dbref.push().set(customer);
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(
-                            backgroundColor: Colors.white,
-                            content: Text(
-                              " 'Data saved successfully';",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 15,
-                                color: Colors.green,
-                                backgroundColor: Colors.white,
-                              ),
-                            ),
-                          ));
-                        }
-                      }).catchError((error) {
-                        // Handle any err  ors that occur
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(const SnackBar(
-                          backgroundColor: Colors.white,
-                          content: Text(
-                            "Error happened : ",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.green,
-                              backgroundColor: Colors.white,
-                            ),
-                          ),
-                        ));
-                      });
                     },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
@@ -962,7 +952,7 @@ class _MeasurementFormState extends State<MeasurementForm> {
                     ),
                     child: Text(
                       AppLocalizations.of(context)!.save,
-                      style: TextStyle(fontSize: 25),
+                      style: TextStyle(fontSize: 20),
                     ),
                   ),
                 ),

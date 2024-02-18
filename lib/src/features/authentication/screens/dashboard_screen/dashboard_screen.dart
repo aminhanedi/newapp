@@ -13,7 +13,8 @@ import 'package:newapp/src/localization/language.dart';
 import '../../../../../main.dart';
 import '../../../../localization/language_localization.dart';
 import '../forget_password/forget_password_email/forget_password_email.dart';
-import 'customer_screen/MeasurementForm.dart';
+import 'customer_screen/firestoreDatabase/FetchMeamsurmentForm.dart';
+import 'customer_screen/firestoreDatabase/MeasurementForm.dart';
 import 'customer_screen/backup_screen.dart';
 import 'customer_screen/customer_list.dart';
 import 'package:flutter_gen/gen_l10n/app-localization.dart';
@@ -294,7 +295,7 @@ class _dashboardState extends State<dashboard> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          Get.to(() => const customer_list_scerrn());
+                          Get.to(() =>Tcustomer_list_scerrn());
 
                           print('Item clicked!');
                         },

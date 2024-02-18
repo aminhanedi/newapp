@@ -1,3 +1,4 @@
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,6 +14,7 @@ Future<void> main() async {
   //---------------------firebase database initialization--------------------//
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  FirebaseAppCheck.instance.activate();
 //-------------network controller ------------------------//
   DependencyInjection.init();
   runApp(const MyApp());
