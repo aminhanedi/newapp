@@ -23,7 +23,6 @@
   "analyes":"Analytics",
   "home":"Home",
   "totalO":"Total Order",
-  "totalAmount":"Total Amount",
   "customer":"Customer",
   "updateScreen":"Update Screen",
   "noData":"No data available",
@@ -40,7 +39,7 @@
   "length":"Length: ",
   "sleeve":"Sleeve: ",
   "chest":"Chest: ",
-  "waist":"Wais: t",
+  "waist":"Wais: ",
   "hip":"Hip: ",
   "inseam":"Inseam: ",
   "collar":"Collar: ",
@@ -106,7 +105,14 @@
   "fistPay": "First Pay",
   "lastPAY": "Last pay",
 
-  "totalPay": "Total amount"
+  "totalPay": "Total amount",
+  "startDate": "Start Date",
+  "endDate": "End Date",
+  "cloth": "Cloth Amount:",
+  "firstPay": "First Pay:",
+  "totalAmount": "Total Amount:",
+  "quantity": "Order Quantity: "
+
 
 
 }

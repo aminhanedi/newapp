@@ -21,7 +21,6 @@
   "backup":"پشتبان گیری",
   "analyes":"حساب ها",
   "totalO":"تمام سفارشات",
-  "totalAmount":"تمام حساب",
   "customer":"شهرت مشتری ",
   "updateScreen":"صفحه ویرایش ",
   "noData":" معلومات در دسترس نیست",
@@ -103,7 +102,13 @@
   "formValidator": "لطقا تنها عدد وارید کنید",
   "fistPay": "پرداخت اولبه",
   "lastPAY": "باقی مانده",
-  "totalPay": "کل حساب"
+  "totalPay": "کل حساب",
+  "startDate": "شروع تاریخ جستجو",
+  "endDate": "ختم تاریخ جستجو",
+  "cloth": "پول لباس",
+  "firstPay": "گرداخت اولیه",
+  "totalAmount": "مجموعه پول",
+  "quantity": "تعداد سفارش"
 
 
 }

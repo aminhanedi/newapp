@@ -1,80 +1,84 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
-import 'customer_analyes/analyecontroller.dart';
-
-class MyWidget extends StatefulWidget {
-  const MyWidget({Key? key}) : super(key: key);
+class Report extends StatefulWidget {
+  const Report({Key? key}) : super(key: key);
 
   @override
-  _MyWidgetState createState() => _MyWidgetState();
+  State<Report> createState() => _ReportState();
 }
 
-class _MyWidgetState extends State<MyWidget> {
-  MonthlyOrder monthlyOrder = MonthlyOrder();
-  bool isLoading = true;
+class _ReportState extends State<Report> {
+  final DatabaseReference _dbRef =
+  FirebaseDatabase.instance.ref().child("customer");
 
+  Future<List<dynamic>> getMonthlyOrders() async {
+    DateTime now = DateTime.now();
+    DateTime firstDayOfMonth = DateTime(now.year, now.month, 1);
+    DateTime lastDayOfMonth = DateTime(now.year, now.month + 1, 0);
 
+    DatabaseEvent event = await _dbRef
+        .orderByChild("orderDate")
+        .startAt(firstDayOfMonth.millisecondsSinceEpoch.toDouble())
+        .endAt(lastDayOfMonth.millisecondsSinceEpoch.toDouble())
+        .once();
 
-  Future<void> fetchData() async {
-    await monthlyOrder.fetchDataFromFirebase();
-    setState(() {
-      isLoading = false;
-    });
-  }
-  @override
-  void initState() {
-    super.initState();
-    fetchData();
+    DataSnapshot dataSnapshot = event.snapshot;
+
+    List<dynamic> orders = [];
+
+    if (dataSnapshot.value != null) {
+      Map<dynamic, dynamic> data =
+      dataSnapshot.value as Map<dynamic, dynamic>;
+
+      // Filter customers based on a condition
+      List<dynamic> filteredCustomers = data.values.where((customer) {
+        // Replace the condition below with your own filtering logic
+        DateTime orderDate = DateTime.fromMillisecondsSinceEpoch(customer['orderDate']);
+        return orderDate.isAfter(firstDayOfMonth) && orderDate.isBefore(lastDayOfMonth);
+      }).toList();
+
+      // Retrieve the orders for the filtered customers
+      orders = filteredCustomers;
+    }
+    return orders;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Monthly Orders'),
+        title: Text('Monthly Orders Report'),
       ),
-      body: isLoading
-          ? Center(child: CircularProgressIndicator())
-          : Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Total Orders: ${monthlyOrder.totalOrders}'),
-            ElevatedButton(
-              onPressed: () {
-                Map<int, double> orderPercentage =
-                monthlyOrder.calculateOrderPercentage();
-                print('Order Percentage: $orderPercentage');
+      body: FutureBuilder<List<dynamic>>(
+        future: getMonthlyOrders(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Text('Error: ${snapshot.error}'),
+            );
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(
+              child: Text('No orders found.'),
+            );
+          } else {
+            List<dynamic> orders = snapshot.data!;
+            return ListView.builder(
+              itemCount: orders.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text('Order ID: ${orders[index]['customerID']}'),
+                  subtitle: Text('Order Date: ${orders[index]['customerOrder']}'),
+                  // Add more details as needed
+                );
               },
-              child: const Text('Calculate Order Percentage'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Map<int, int> ordersPerMonth =
-                monthlyOrder.calculateOrdersPerMonth();
-                print('Orders per Month: $ordersPerMonth');
-              },
-              child: const Text('Calculate Orders per Month'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Map<int, int> ordersPerWeek =
-                monthlyOrder.calculateOrdersPerWeek();
-                print('Orders per Week: $ordersPerWeek');
-              },
-              child: const Text('Calculate Orders per Week'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Map<int, int> ordersPerDay =
-                monthlyOrder.calculateOrdersPerDay();
-                print('Orders per Day: $ordersPerDay');
-              },
-              child: const Text('Calculate Orders per Day'),
-            ),
-          ],
-        ),
+            );
+          }
+        },
       ),
     );
-  }
-}
+  }}

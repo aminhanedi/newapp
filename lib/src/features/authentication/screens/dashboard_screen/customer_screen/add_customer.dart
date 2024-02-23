@@ -28,14 +28,14 @@ class _MeasurementFormState extends State<MeasurementForm> {
   //------------------customers------------//
 
 
- // TextEditingController _customeridController = TextEditingController();
   TextEditingController _nameController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
   TextEditingController _firstPayController = TextEditingController();
-  TextEditingController _lastPayController = TextEditingController();
   TextEditingController _totalPayController = TextEditingController();
+  TextEditingController _clothAmountController = TextEditingController();
+
   //------------------order--------------------------//
-  TextEditingController _amountController = TextEditingController();
+
   TextEditingController _orderController = TextEditingController();
   TextEditingController _deliveryController = TextEditingController();
   TextEditingController _chestController = TextEditingController();
@@ -66,7 +66,7 @@ class _MeasurementFormState extends State<MeasurementForm> {
   @override
   void initState() {
     super.initState();
-    dbref = FirebaseDatabase.instance.reference().child("customer");
+    dbref = FirebaseDatabase.instance.ref().child("customer");
 
     dbref.onChildAdded.listen((event) {
       String? customerId = event.snapshot.key;
@@ -82,7 +82,7 @@ class _MeasurementFormState extends State<MeasurementForm> {
     //_customeridController.dispose();
     _nameController.dispose();
     _phoneController.dispose();
-    _amountController.dispose();
+    _clothAmountController.dispose();
     _orderController.dispose();
     _deliveryController.dispose();
     _shoulderController.dispose();
@@ -122,6 +122,7 @@ class _MeasurementFormState extends State<MeasurementForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       appBar: AppBar(
         title: Text(
           AppLocalizations.of(context)!.insertPage,
@@ -136,27 +137,7 @@ class _MeasurementFormState extends State<MeasurementForm> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                SizedBox(
-                  width: double.infinity,
-                  child: Container(
-                    padding: EdgeInsets.only(top: 10, left: 10, right: 10),
-                    height: 50,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.black12,
-                        strokeAlign:
-                            BorderSide.strokeAlignOutside, // Border color
-                        width: 1.0, // Border width
-                      ),
-                      borderRadius: BorderRadius.circular(9.9), // Border radius
-                    ),
-                    child: Text(
-                      AppLocalizations.of(context)!.customer,
-                      textAlign: TextAlign.start,
-                      style: TextStyle(fontSize: 25, color: Colors.black54),
-                    ),
-                  ),
-                ),
+
                 /////////////////////////////////////header//////////////////////////////////////////////////////
 
                 Gap(5),
@@ -206,7 +187,7 @@ class _MeasurementFormState extends State<MeasurementForm> {
                 SizedBox(
                   width: double.infinity,
                   child: TextFormField(
-                    controller: _amountController,
+                    controller: _clothAmountController,
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(
                           numberRegex), // Only allows input that matches the regular expression
@@ -223,7 +204,7 @@ class _MeasurementFormState extends State<MeasurementForm> {
                       return null;
                     },
                     decoration: InputDecoration(
-                      labelText: AppLocalizations.of(context)!.customerAmount,
+                      labelText: AppLocalizations.of(context)!.cloth,
                       labelStyle: TextStyle(fontSize: 15),
                       border: OutlineInputBorder(),
                     ),
@@ -232,30 +213,7 @@ class _MeasurementFormState extends State<MeasurementForm> {
                 SizedBox(
                   height: 15,
                 ),
-                SizedBox(
-                  width:100,
-                  child: DropdownButtonFormField<int>(
-                    value: selectedNumber,
-                    onChanged: (int? value) {
-                      setState(() {
-                        selectedNumber = value!;
-                      });
-                    },
 
-                    decoration: InputDecoration(
-                      labelText: ' تعداد سفارش',
-                      labelStyle: TextStyle(fontSize: 15),
-                      border: OutlineInputBorder(),
-                    ),
-                    items: List<int>.generate(100, (index) => index + 1)
-                        .map((int number) {
-                      return DropdownMenuItem<int>(
-                        value: number,
-                        child: Text(number.toString()),
-                      );
-                    }).toList(),
-                  ),
-                ),
                 Wrap(children: [
                   SizedBox(
                     width: 120,
@@ -277,37 +235,38 @@ class _MeasurementFormState extends State<MeasurementForm> {
                         return null;
                       },
                       decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.customerAmount,
+                        labelText: AppLocalizations.of(context)!.firstPay,
                         labelStyle: TextStyle(fontSize: 15),
                         border: OutlineInputBorder(),
                       ),
                     ),
                   ),
-                  SizedBox(  width:120,
-                    child: TextFormField(
-                      controller: _lastPayController,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(
-                            numberRegex), // Only allows input that matches the regular expression
-                      ],
-                      keyboardType: TextInputType.phone,
-                      maxLength: 4,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return AppLocalizations.of(context)!.requiredField;
-                        }
-                        if (!numberRegex.hasMatch(value)) {
-                          return AppLocalizations.of(context)!.formValidator;
-                        }
-                        return null;
+                  SizedBox(width: 10,),
+                  SizedBox(
+                    width:100,
+                    child: DropdownButtonFormField<int>(
+                      value: selectedNumber,
+                      onChanged: (int? value) {
+                        setState(() {
+                          selectedNumber = value!;
+                        });
                       },
+
                       decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.customerAmount,
-                        labelStyle: TextStyle(fontSize: 15),
+                        labelText: AppLocalizations.of(context)!.quantity,
+                        labelStyle: TextStyle(fontSize: 18),
                         border: OutlineInputBorder(),
                       ),
+                      items: List<int>.generate(100, (index) => index + 1)
+                          .map((int number) {
+                        return DropdownMenuItem<int>(
+                          value: number,
+                          child: Text(number.toString()),
+                        );
+                      }).toList(),
                     ),
                   ),
+              SizedBox(width: 10,),
                   SizedBox(
                     width:120,
                     child: TextFormField(
@@ -328,7 +287,7 @@ class _MeasurementFormState extends State<MeasurementForm> {
                         return null;
                       },
                       decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.customerAmount,
+                        labelText: AppLocalizations.of(context)!.totalPay,
                         labelStyle: TextStyle(fontSize: 15),
                         border: OutlineInputBorder(),
                       ),
@@ -353,7 +312,7 @@ class _MeasurementFormState extends State<MeasurementForm> {
                           filled: true,
                           prefixIcon: Icon(
                             Icons.calendar_today,
-                            color: Colors.blue,
+                            color: Colors.black,
                           ),
                           labelText: AppLocalizations.of(context)!.orderDate,
                           labelStyle: TextStyle(fontSize: 15),
@@ -384,7 +343,7 @@ class _MeasurementFormState extends State<MeasurementForm> {
                           filled: true,
                           prefixIcon: Icon(
                             Icons.calendar_today,
-                            color: Colors.blue,
+                            color: Colors.black,
                           ),
                           labelText: AppLocalizations.of(context)!.deliveryDate,
                           border: OutlineInputBorder(),
@@ -866,7 +825,7 @@ class _MeasurementFormState extends State<MeasurementForm> {
                     onPressed: () {
 
                       currentCustomerNumber++; // Increment the current customer number
-                      String customerId = 'TMS${currentCustomerNumber.toString().padLeft(6, '0')}';
+                      String customerId = 'T${currentCustomerNumber.toString().padLeft(3,"0")}';
 
                       _submitForm();
                       Map<String, String> customer = {
@@ -874,7 +833,9 @@ class _MeasurementFormState extends State<MeasurementForm> {
                         "customerID":customerId,
                         "customerName": _nameController.text,
                         "customerPhone": _phoneController.text,
-                        "customerAmount": _amountController.text,
+                        "clothAmount":_clothAmountController.text,
+                      "firstAmount": _firstPayController .text,
+                      "totalAmount": _totalPayController .text,
                         "customerOrder": _orderController.text,
                         "customerDelivery": _deliveryController.text,
                         "customerChest": _chestController.text,
@@ -893,7 +854,8 @@ class _MeasurementFormState extends State<MeasurementForm> {
                         "customerOther1": _other1Controller.text,
                         "customerOther2": _other2Controller.text,
                         "customerOther3": _other3Controller.text,
-                        "totalOrder": _selectedNumber.toString(),
+                        "totalQuantity": _selectedNumber.toString(),
+
                       };
 
                       String customerPhone =_phoneController.text;
@@ -954,17 +916,18 @@ class _MeasurementFormState extends State<MeasurementForm> {
                       });
                     },
                     style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 10),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
+                        side: BorderSide(color: Colors.white), // Add white border
                       ),
                     ),
                     child: Text(
                       AppLocalizations.of(context)!.save,
-                      style: TextStyle(fontSize: 25),
+                      style: TextStyle(fontSize:20),
+
                     ),
-                  ),
+                    ),
                 ),
               ],
             ),

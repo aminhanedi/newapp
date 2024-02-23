@@ -1,10 +1,11 @@
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app-localization.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import '../../../../../constants/text_string.dart';
-import 'package:flutter_gen/gen_l10n/app-localization.dart';
 
 
 class upddate_record extends StatefulWidget {
@@ -12,18 +13,36 @@ class upddate_record extends StatefulWidget {
 
   final String customerskey;
 
+
+
+
+
   @override
   State<upddate_record> createState() => _upddate_recordState();
 }
 
 class _upddate_recordState extends State<upddate_record> {
-  // Define text editing controllers for each input field
-  // These controllers will be used to get and set the text in the input fields
+  final RegExp numberRegex = RegExp(r'^[0-9]+$');
+  int? _selectedNumber;
+
+
+
+  int get selectedNumber =>
+      _selectedNumber ?? 0; // Define the selectedNumber getter
+
+  set selectedNumber(int value) {
+    setState(() {
+      _selectedNumber = value;
+    });
+  }
 
   TextEditingController _customeridController = TextEditingController();
   TextEditingController _nameController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
-  TextEditingController _amountController = TextEditingController();
+  TextEditingController _firstPayController = TextEditingController();
+  TextEditingController _totalPayController = TextEditingController();
+  TextEditingController _clothAmountController = TextEditingController();
+
   TextEditingController _orderController = TextEditingController();
   TextEditingController _deliveryController = TextEditingController();
   TextEditingController _chestController = TextEditingController();
@@ -45,79 +64,74 @@ class _upddate_recordState extends State<upddate_record> {
   late DatabaseReference dbref;
 
   @override
-  @override
   void initState() {
     super.initState();
-    // Initialize the Firestore instance
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
-    // Call the getCustomerData method to fetch and populate the customer data
-    getCustomerData(firestore);
+    dbref = FirebaseDatabase.instance.ref().child("customer");
+    geCustomerData();
   }
 
-  void getCustomerData(FirebaseFirestore firestore) async {
-    DocumentSnapshot customerSnapshot =
-    await firestore.collection('customers').doc(widget.customerskey).get();
-    // Fetch the customer data from the "customers" collection using the customerskey passed from the widget
-    if (customerSnapshot.exists) {
-      Map<String, dynamic> customerData =
-      customerSnapshot.data() as Map<String, dynamic>;
-      // Get the customer data from the Map and set the corresponding text in the input fields using the text editing controllers
-      _customeridController.text = customerData["customerID"] ?? '';
-      _nameController.text = customerData["customerName"] ?? '';
-      _phoneController.text = customerData["customerPhone"] ?? '';
-      _amountController.text = customerData['customerAmount'] ?? '';
-      _orderController.text = customerData['customerOrder'] ?? '';
-      _deliveryController.text = customerData['customerDelivery'] ?? '';
+  void geCustomerData() async {
+    DataSnapshot snapshot = await dbref.child(widget.customerskey).get();
+    if (snapshot.value != null) {
+      Map customers = snapshot.value as Map;
+      _customeridController.text = customers["customerID"] ?? '';
+      _nameController.text = customers["customerName"] ?? '';
+      _phoneController.text = customers["customerPhone"] ?? '';
+      _clothAmountController.text = customers['customerAmount'] ?? '';
+      _orderController.text = customers['customerOrder'] ?? '';
+      _deliveryController.text = customers['customerDelivery'] ?? '';
+      _chestController.text = customers['customerChest'] ?? '';
+      _waistController.text = customers['customerWaist'] ?? '';
+      _shoulderController.text = customers['customerShoulder'] ?? '';
+      _hipController.text = customers['customerHip'] ?? '';
+      _inseamController.text = customers['customerInseam'] ?? '';
+      _neckController.text = customers['customerNeck'] ?? '';
+      _sleeveController.text = customers['customerSleeve'] ?? '';
+      _frontController.text = customers['customerFront'] ?? '';
+      _thighController.text = customers['customerThigh'] ?? '';
+      _kneeController.text = customers['customerKnee'] ?? '';
+      _pantslController.text = customers['customerPants'] ?? '';
+      _lengthController.text = customers['customerLength'] ?? '';
+      _other1Controller.text = customers['customerOther1'] ?? '';
+      _other2Controller.text = customers['customerOther2'] ?? '';
+      _other3Controller.text = customers['customerOther3'] ?? '';
+      _noteController.text = customers['customerNote'] ?? '';
+      _firstPayController.text = customers['firstAmount'] ?? '';
+      _totalPayController.text = customers['totalAmount'] ?? '';
+      _clothAmountController.text = customers['clothAmount'] ?? '';
+      String selectedNumber = customers['totalQuantity'] ?? '';
+      _selectedNumber = int.tryParse(selectedNumber) ?? 0;
 
-      // Fetch the measurement data from the "measurement" subcollection
-      QuerySnapshot measurementSnapshot = await firestore
-          .collection('customers')
-          .doc(widget.customerskey)
-          .collection('measurement')
-          .get();
-      if (measurementSnapshot.docs.isNotEmpty) {
-        List<Map<String, dynamic>> measurementData = measurementSnapshot.docs
-            .map((doc) => doc.data() as Map<String, dynamic>)
-            .toList();
-        // Update your logic to handle the measurement data as per your requirements
-        // For example, you can populate the measurement data in a ListView or perform any other operations
-      }
+
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:  Text(AppLocalizations.of(context)!.updateScreen,style: TextStyle(fontSize: 20,color: Colors.amberAccent),),
+        title: Text(
+          AppLocalizations.of(context)!.updateScreen,
+          textAlign: TextAlign.center,
+        ),
       ),
-      body:  Padding(
+      body: Padding(
+
         padding: EdgeInsets.all(10.0),
         //-----------------------------------form widget----------------------------//
         child: Form(
+
           child: SingleChildScrollView(
             child: Column(
               children: [
-                SizedBox(
-                  width: double.infinity,
-                  child: Container(
-                    padding: EdgeInsets.only(top: 10, left: 10, right: 10),
-                    height: 50,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.black12,
-                        strokeAlign:
-                        BorderSide.strokeAlignOutside, // Border color
-                        width: 1.0, // Border width
-                      ),
-                      borderRadius: BorderRadius.circular(9.9), // Border radius
-                    ),
+                Container(height: 20,),
 
-                  ),
-                ),
                 /////////////////////////////////////header//////////////////////////////////////////////////////
                 SizedBox(
+
                   width: double.infinity,
                   child: TextFormField(
+                    readOnly: true,
                     controller: _customeridController,
                     maxLength: 20,
                     validator: (value) {
@@ -127,7 +141,7 @@ class _upddate_recordState extends State<upddate_record> {
                       return null;
                     },
                     decoration: InputDecoration(
-                      labelText:AppLocalizations.of(context)!.customerId,
+                      labelText: AppLocalizations.of(context)!.customerId,
                       labelStyle: TextStyle(fontSize: 15),
                       border: OutlineInputBorder(),
                     ),
@@ -146,13 +160,14 @@ class _upddate_recordState extends State<upddate_record> {
                       }
                       return null;
                     },
-                    decoration:  InputDecoration(
-                      labelText:AppLocalizations.of(context)!.customerName,
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.customerName,
                       labelStyle: TextStyle(fontSize: 15),
                       border: OutlineInputBorder(),
                     ),
                   ),
                 ),
+
                 SizedBox(
                   height: 5,
                 ),
@@ -168,7 +183,7 @@ class _upddate_recordState extends State<upddate_record> {
                       }
                       return null;
                     },
-                    decoration:  InputDecoration(
+                    decoration: InputDecoration(
                       labelText: AppLocalizations.of(context)!.customerPhone,
                       labelStyle: TextStyle(fontSize: 15),
                       border: OutlineInputBorder(),
@@ -181,20 +196,24 @@ class _upddate_recordState extends State<upddate_record> {
                 SizedBox(
                   width: double.infinity,
                   child: TextFormField(
-                    controller: _amountController,
+                    controller: _clothAmountController,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(
+                          numberRegex), // Only allows input that matches the regular expression
+                    ],
                     keyboardType: TextInputType.phone,
                     maxLength: 15,
                     validator: (value) {
                       if (value!.isEmpty) {
                         return AppLocalizations.of(context)!.requiredField;
                       }
-                      if(value! == "a-z,A-z,-"){
-                        return tvalide;
+                      if (!numberRegex.hasMatch(value)) {
+                        return AppLocalizations.of(context)!.formValidator;
                       }
                       return null;
                     },
-                    decoration:  InputDecoration(
-                      labelText:AppLocalizations.of(context)!.customerAmount,
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.cloth,
                       labelStyle: TextStyle(fontSize: 15),
                       border: OutlineInputBorder(),
                     ),
@@ -203,6 +222,87 @@ class _upddate_recordState extends State<upddate_record> {
                 SizedBox(
                   height: 15,
                 ),
+
+                Wrap(children: [
+                  SizedBox(
+                    width: 120,
+                    child: TextFormField(
+                      controller: _firstPayController,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                            numberRegex), // Only allows input that matches the regular expression
+                      ],
+                      keyboardType: TextInputType.phone,
+                      maxLength:4,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return AppLocalizations.of(context)!.requiredField;
+                        }
+                        if (!numberRegex.hasMatch(value)) {
+                          return AppLocalizations.of(context)!.formValidator;
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!.firstPay,
+                        labelStyle: TextStyle(fontSize: 15),
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 10,),
+                  SizedBox(
+                    width:100,
+                    child: DropdownButtonFormField<int>(
+                      value: _selectedNumber,
+                      onChanged: (int? value) {
+                        setState(() {
+                          _selectedNumber = value!;
+                        });
+                      },
+
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!.quantity,
+                        labelStyle: TextStyle(fontSize: 18),
+                        border: OutlineInputBorder(),
+                      ),
+                      items: List<int>.generate(100, (index) => index + 1)
+                          .map((int number) {
+                        return DropdownMenuItem<int>(
+                          value: number,
+                          child: Text(number.toString()),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                  SizedBox(width: 10,),
+                  SizedBox(
+                    width:120,
+                    child: TextFormField(
+                      controller: _totalPayController,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                            numberRegex), // Only allows input that matches the regular expression
+                      ],
+                      keyboardType: TextInputType.phone,
+                      maxLength: 7,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return AppLocalizations.of(context)!.requiredField;
+                        }
+                        if (!numberRegex.hasMatch(value)) {
+                          return AppLocalizations.of(context)!.formValidator;
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!.totalPay,
+                        labelStyle: TextStyle(fontSize: 15),
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  ),
+                ],),
 
                 Wrap(
                   children: [
@@ -217,11 +317,20 @@ class _upddate_recordState extends State<upddate_record> {
                           }
                           return null;
                         },
-                        decoration:  InputDecoration(
+                        decoration: InputDecoration(
+                          filled: true,
+                          prefixIcon: Icon(
+                            Icons.calendar_today,
+                            color: Colors.blue,
+                          ),
                           labelText: AppLocalizations.of(context)!.orderDate,
                           labelStyle: TextStyle(fontSize: 15),
                           border: OutlineInputBorder(),
                         ),
+                        readOnly: true,
+                        onTap: () {
+                          _selectDateOrder(context);
+                        },
                       ),
                     ),
                     SizedBox(
@@ -240,9 +349,18 @@ class _upddate_recordState extends State<upddate_record> {
                         },
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
+                          filled: true,
+                          prefixIcon: Icon(
+                            Icons.calendar_today,
+                            color: Colors.blue,
+                          ),
                           labelText: AppLocalizations.of(context)!.deliveryDate,
                           border: OutlineInputBorder(),
                         ),
+                        readOnly: true,
+                        onTap: () {
+                          _selectDateDelivery(context);
+                        },
                       ),
                     ),
                   ],
@@ -250,27 +368,7 @@ class _upddate_recordState extends State<upddate_record> {
                 Gap(20),
                 /////////////////////////////////////////////////////main /////////////////////////////////////////////
 
-                Container(
-                  padding: EdgeInsets.only(top: 10, left: 10, right: 10),
-                  height: 50,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.black12,
-                      strokeAlign:
-                      BorderSide.strokeAlignOutside, // Border color
-                      width: 1.0, // Border width
-                    ),
-                    borderRadius: BorderRadius.circular(9.9), // Border radius
-                  ),
-                  child:  Text(
-                      AppLocalizations.of(context)!.customerMeasurement,
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.normal,
-                        color: Colors.black54),
-                  ),
-                ),
+
                 Gap(20),
                 Container(
                   child: Column(
@@ -282,17 +380,23 @@ class _upddate_recordState extends State<upddate_record> {
                               width: 100,
                               child: TextFormField(
                                 controller: _waistController,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      numberRegex), // Only allows input that matches the regular expression
+                                ],
                                 maxLength: 4,
                                 validator: (value) {
                                   if (value!.isEmpty) {
-                                    return AppLocalizations.of(context)!.requiredField;
+                                    return AppLocalizations.of(context)!
+                                        .requiredField;
                                   }
 
                                   return null;
                                 },
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
-                                  labelText:AppLocalizations.of(context)!.shoulder,
+                                  labelText:
+                                  AppLocalizations.of(context)!.shoulder,
                                   border: OutlineInputBorder(),
                                 ),
                               ),
@@ -303,105 +407,53 @@ class _upddate_recordState extends State<upddate_record> {
                             SizedBox(
                               width: 100,
                               child: TextFormField(
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      numberRegex), // Only allows input that matches the regular expression
+                                ],
                                 maxLength: 4,
                                 controller: _hipController,
                                 validator: (value) {
                                   if (value!.isEmpty) {
-                                    return AppLocalizations.of(context)!.requiredField;
+                                    return AppLocalizations.of(context)!
+                                        .requiredField;
                                   }
-                                  if (double.tryParse(value) == null) {
-                                    return tvalide;
-                                  }
-                                  return null;
-                                },
-                                keyboardType: TextInputType.number,
-                                decoration:  InputDecoration(
-                                    labelText:AppLocalizations.of(context)!.chest,
-                                    border: OutlineInputBorder()),
-
-                              ),
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            SizedBox(
-                              width: 100,
-                              child: TextFormField(
-                                controller: _shoulderController,
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return AppLocalizations.of(context)!.requiredField;
-                                  }
-
-                                  return null;
-                                },
-                                maxLength: 4,
-                                keyboardType: TextInputType.number,
-                                decoration:  InputDecoration(
-                                  labelText: AppLocalizations.of(context)!.skirt,
-                                  border: OutlineInputBorder(),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            SizedBox(
-                              width: 100,
-                              child: TextFormField(
-                                controller: _inseamController,
-                                maxLength: 4,
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return AppLocalizations.of(context)!.requiredField;
-                                  }
-
-                                  return null;
-                                },
-                                keyboardType: TextInputType.number,
-                                decoration:  InputDecoration(
-                                    labelText: AppLocalizations.of(context)!.sleeve,
-                                    border: OutlineInputBorder()),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            SizedBox(
-                              width: 100,
-                              child: TextFormField(
-                                controller: _chestController,
-                                maxLength: 4,
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return AppLocalizations.of(context)!.requiredField;
-                                  }
-
-                                  return null;
-                                },
-                                keyboardType: TextInputType.number,
-                                decoration:  InputDecoration(
-                                  labelText: AppLocalizations.of(context)!.length,
-                                  border: OutlineInputBorder(),
-                                ),
-                              ),
-                            ),
-                            SizedBox(width:10 ,),
-                            SizedBox(
-                              width: 100,
-                              child: TextFormField(
-                                controller: _neckController,
-                                maxLength: 4,
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return AppLocalizations.of(context)!.requiredField;
-                                  }
-
                                   return null;
                                 },
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
-                                  labelText:AppLocalizations.of(context)!.collar,
+                                    labelText:
+                                    AppLocalizations.of(context)!.chest,
+                                    border: OutlineInputBorder()),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            SizedBox(
+                              width: 100,
+                              child: TextFormField(
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      numberRegex), // Only allows input that matches the regular expression
+                                ],
+                                controller: _shoulderController,
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return AppLocalizations.of(context)!
+                                        .requiredField;
+                                  }
+                                  if (!numberRegex.hasMatch(value)) {
+                                    return AppLocalizations.of(context)!
+                                        .formValidator;
+                                  }
+                                  return null;
+                                },
+                                maxLength: 4,
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                  labelText:
+                                  AppLocalizations.of(context)!.skirt,
                                   border: OutlineInputBorder(),
                                 ),
                               ),
@@ -412,18 +464,27 @@ class _upddate_recordState extends State<upddate_record> {
                             SizedBox(
                               width: 100,
                               child: TextFormField(
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      numberRegex), // Only allows input that matches the regular expression
+                                ],
+                                controller: _inseamController,
                                 maxLength: 4,
-                                controller: _sleeveController,
                                 validator: (value) {
                                   if (value!.isEmpty) {
-                                    return AppLocalizations.of(context)!.requiredField;
+                                    return AppLocalizations.of(context)!
+                                        .requiredField;
                                   }
-
+                                  if (!numberRegex.hasMatch(value)) {
+                                    return AppLocalizations.of(context)!
+                                        .formValidator;
+                                  }
                                   return null;
                                 },
                                 keyboardType: TextInputType.number,
-                                decoration:  InputDecoration(
-                                    labelText: AppLocalizations.of(context)!.button,
+                                decoration: InputDecoration(
+                                    labelText:
+                                    AppLocalizations.of(context)!.sleeve,
                                     border: OutlineInputBorder()),
                               ),
                             ),
@@ -433,38 +494,152 @@ class _upddate_recordState extends State<upddate_record> {
                             SizedBox(
                               width: 100,
                               child: TextFormField(
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      numberRegex), // Only allows input that matches the regular expression
+                                ],
+                                controller: _chestController,
+                                maxLength: 4,
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return AppLocalizations.of(context)!
+                                        .requiredField;
+                                  }
+                                  if (double.tryParse(value) == null) {
+                                    return tvalide;
+                                  }
+                                  if (!numberRegex.hasMatch(value)) {
+                                    return AppLocalizations.of(context)!
+                                        .formValidator;
+                                  }
+                                  return null;
+                                },
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                  labelText:
+                                  AppLocalizations.of(context)!.length,
+                                  border: OutlineInputBorder(),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            SizedBox(
+                              width: 100,
+                              child: TextFormField(
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      numberRegex), // Only allows input that matches the regular expression
+                                ],
+                                controller: _neckController,
+                                maxLength: 4,
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return AppLocalizations.of(context)!
+                                        .requiredField;
+                                  }
+                                  if (!numberRegex.hasMatch(value)) {
+                                    return AppLocalizations.of(context)!
+                                        .formValidator;
+                                  }
+                                  return null;
+                                },
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                  labelText:
+                                  AppLocalizations.of(context)!.collar,
+                                  border: OutlineInputBorder(),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            SizedBox(
+                              width: 100,
+                              child: TextFormField(
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      numberRegex), // Only allows input that matches the regular expression
+                                ],
+                                maxLength: 4,
+                                controller: _sleeveController,
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return AppLocalizations.of(context)!
+                                        .requiredField;
+                                  }
+                                  if (!numberRegex.hasMatch(value)) {
+                                    return AppLocalizations.of(context)!
+                                        .formValidator;
+                                  }
+                                  return null;
+                                },
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                    labelText:
+                                    AppLocalizations.of(context)!.button,
+                                    border: OutlineInputBorder()),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            SizedBox(
+                              width: 100,
+                              child: TextFormField(
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      numberRegex), // Only allows input that matches the regular expression
+                                ],
                                 controller: _frontController,
                                 validator: (value) {
                                   if (value!.isEmpty) {
-                                    return AppLocalizations.of(context)!.requiredField;
-
+                                    return AppLocalizations.of(context)!
+                                        .requiredField;
+                                  }
+                                  if (!numberRegex.hasMatch(value)) {
+                                    return AppLocalizations.of(context)!
+                                        .formValidator;
                                   }
                                   return null;
                                 },
                                 maxLength: 4,
                                 keyboardType: TextInputType.number,
-                                decoration:  InputDecoration(
+                                decoration: InputDecoration(
                                   labelText: AppLocalizations.of(context)!.hip,
                                   border: OutlineInputBorder(),
                                 ),
                               ),
                             ),
-                            SizedBox(width:10 ,),
+                            SizedBox(
+                              width: 10,
+                            ),
                             SizedBox(
                               width: 100,
                               child: TextFormField(
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      numberRegex), // Only allows input that matches the regular expression
+                                ],
                                 controller: _thighController,
                                 maxLength: 4,
                                 validator: (value) {
                                   if (value!.isEmpty) {
-                                    return AppLocalizations.of(context)!.requiredField;
+                                    return AppLocalizations.of(context)!
+                                        .requiredField;
                                   }
-
+                                  if (!numberRegex.hasMatch(value)) {
+                                    return AppLocalizations.of(context)!
+                                        .formValidator;
+                                  }
                                   return null;
                                 },
                                 keyboardType: TextInputType.number,
-                                decoration:  InputDecoration(
-                                  labelText: AppLocalizations.of(context)!.inseam,
+                                decoration: InputDecoration(
+                                  labelText:
+                                  AppLocalizations.of(context)!.inseam,
                                   border: OutlineInputBorder(),
                                 ),
                               ),
@@ -472,22 +647,30 @@ class _upddate_recordState extends State<upddate_record> {
                             const SizedBox(
                               width: 10,
                             ),
-
                             SizedBox(
                               width: 100,
                               child: TextFormField(
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      numberRegex), // Only allows input that matches the regular expression
+                                ],
                                 maxLength: 4,
                                 controller: _kneeController,
                                 validator: (value) {
                                   if (value!.isEmpty) {
-                                    return AppLocalizations.of(context)!.requiredField;
+                                    return AppLocalizations.of(context)!
+                                        .requiredField;
                                   }
-
+                                  if (!numberRegex.hasMatch(value)) {
+                                    return AppLocalizations.of(context)!
+                                        .formValidator;
+                                  }
                                   return null;
                                 },
                                 keyboardType: TextInputType.number,
-                                decoration:  InputDecoration(
-                                    labelText:AppLocalizations.of(context)!.knee,
+                                decoration: InputDecoration(
+                                    labelText:
+                                    AppLocalizations.of(context)!.knee,
                                     border: OutlineInputBorder()),
                               ),
                             ),
@@ -497,78 +680,117 @@ class _upddate_recordState extends State<upddate_record> {
                             SizedBox(
                               width: 100,
                               child: TextFormField(
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      numberRegex), // Only allows input that matches the regular expression
+                                ],
                                 controller: _pantslController,
                                 validator: (value) {
                                   if (value!.isEmpty) {
-                                    return AppLocalizations.of(context)!.requiredField;
+                                    return AppLocalizations.of(context)!
+                                        .requiredField;
+                                  }
+                                  if (!numberRegex.hasMatch(value)) {
+                                    return AppLocalizations.of(context)!
+                                        .formValidator;
                                   }
                                   return null;
                                 },
                                 maxLength: 4,
                                 keyboardType: TextInputType.number,
-                                decoration:  InputDecoration(
-                                  labelText: AppLocalizations.of(context)!.thigh,
+                                decoration: InputDecoration(
+                                  labelText:
+                                  AppLocalizations.of(context)!.thigh,
                                   border: OutlineInputBorder(),
                                 ),
                               ),
                             ),
-                            SizedBox(width: 10,),
+                            SizedBox(
+                              width: 10,
+                            ),
                             SizedBox(
                               width: 100,
                               child: TextFormField(
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      numberRegex), // Only allows input that matches the regular expression
+                                ],
                                 controller: _lengthController,
-                                maxLength: 6,
+                                maxLength: 4,
                                 validator: (value) {
                                   if (value!.isEmpty) {
-                                    return AppLocalizations.of(context)!.requiredField;
+                                    return AppLocalizations.of(context)!
+                                        .requiredField;
                                   }
-
+                                  if (!numberRegex.hasMatch(value)) {
+                                    return AppLocalizations.of(context)!
+                                        .formValidator;
+                                  }
                                   return null;
                                 },
                                 keyboardType: TextInputType.number,
-                                decoration:  InputDecoration(
-                                  labelText: AppLocalizations.of(context)!.waist,
+                                decoration: InputDecoration(
+                                  labelText:
+                                  AppLocalizations.of(context)!.waist,
                                   border: OutlineInputBorder(),
                                 ),
                               ),
                             ),
-                            SizedBox(width:10 ,),
+                            SizedBox(
+                              width: 10,
+                            ),
                             SizedBox(
                               width: 100,
                               child: TextFormField(
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      numberRegex), // Only allows input that matches the regular expression
+                                ],
                                 maxLength: 4,
                                 controller: _other1Controller,
                                 keyboardType: TextInputType.number,
-                                decoration:  InputDecoration(
-                                    labelText:AppLocalizations.of(context)!.other1,
+                                decoration: InputDecoration(
+                                    labelText:
+                                    AppLocalizations.of(context)!.other1,
                                     border: OutlineInputBorder()),
                               ),
                             ),
                             const SizedBox(
                               width: 10,
                             ),
-
                             SizedBox(
                               width: 100,
                               child: TextFormField(
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      numberRegex), // Only allows input that matches the regular expression
+                                ],
                                 controller: _other2Controller,
-                                maxLength: 6,
+                                maxLength: 4,
                                 keyboardType: TextInputType.number,
-                                decoration:  InputDecoration(
-                                  labelText: AppLocalizations.of(context)!.other2,
+                                decoration: InputDecoration(
+                                  labelText:
+                                  AppLocalizations.of(context)!.other2,
                                   border: OutlineInputBorder(),
                                 ),
                               ),
                             ),
-                            SizedBox(width:10 ,),
+                            SizedBox(
+                              width: 10,
+                            ),
                             SizedBox(
                               width: 100,
                               child: TextFormField(
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      numberRegex), // Only allows input that matches the regular expression
+                                ],
                                 controller: _other3Controller,
-                                maxLength: 6,
+                                maxLength: 4,
                                 keyboardType: TextInputType.number,
-                                decoration:  InputDecoration(
-                                  labelText:AppLocalizations.of(context)!.other3,
+                                decoration: InputDecoration(
+                                  labelText:
+                                  AppLocalizations.of(context)!.other3,
                                   border: OutlineInputBorder(),
                                 ),
                               ),
@@ -579,17 +801,13 @@ class _upddate_recordState extends State<upddate_record> {
                 ),
                 ///////////////////////////////////////////////foter/////////////////////////////////////////////////////////////
                 Container(
-                  margin:   EdgeInsets.only(left: 15,right: 15,top: 15),
-
-
+                  margin: EdgeInsets.only(left: 15, right: 15, top: 15),
                   color: Colors.white38,
                   width: double.infinity,
                   child: TextFormField(
                     maxLines: 4,
-
                     controller: _noteController,
-
-                    decoration:  InputDecoration(
+                    decoration: InputDecoration(
                         label: Text(
                           AppLocalizations.of(context)!.note,
                           style:
@@ -602,10 +820,7 @@ class _upddate_recordState extends State<upddate_record> {
                               Shadow(offset: Offset(2, 5))
                             ],
                             color: Colors.yellow),
-                        border: OutlineInputBorder()
-
-                    ),
-
+                        border: OutlineInputBorder()),
                   ),
                 ),
                 Gap(15),
@@ -615,45 +830,92 @@ class _upddate_recordState extends State<upddate_record> {
                   width: double.infinity,
                   child:ElevatedButton(
                     onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          TextEditingController newAmountController = TextEditingController();
+                          double currentTotalAmount = double.parse(_totalPayController.text);
+                          double newTotalAmount = currentTotalAmount;
+                          return StatefulBuilder(
+                            builder: (context, setState) {
+                              return AlertDialog(
+                                title: Text('Update Amount'),
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text('Current Total Amount: $currentTotalAmount'),
+                                    SizedBox(height: 10),
+                                    TextField(
+                                      controller: newAmountController,
+                                      keyboardType: TextInputType.number,
+                                      decoration: InputDecoration(
+                                        labelText: 'New Amount',
+                                      ),
+                                      onChanged: (value) {
+                                        double newAmount = double.tryParse(value) ?? 0;
+                                        setState(() {
+                                          newTotalAmount = currentTotalAmount + newAmount;
+                                        });
+                                      },
+                                    ),
+                                    SizedBox(height: 10),
+                                    Text('Updated Total Amount: $newTotalAmount'),
+                                  ],
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context); // Close the dialog
+                                    },
+                                    child: Text('Cancel'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      String newAmount = newAmountController.text;
+                                      Map<String, String> customer = {
+                                        "customerName": _nameController.text,
+                                        "customerPhone": _phoneController.text,
+                                        "clothAmount": _clothAmountController.text,
+                                        "firstAmount": _firstPayController.text,
+                                        "totalAmount": newTotalAmount.toString(),
+                                        "customerOrder": _orderController.text,
+                                        "customerDelivery": _deliveryController.text,
+                                        "customerChest": _chestController.text,
+                                        "customerWaist": _waistController.text,
+                                        "customerShoulder": _shoulderController.text,
+                                        "customerHip": _hipController.text,
+                                        "customerInseam": _inseamController.text,
+                                        "customerNeck": _neckController.text,
+                                        "customerSleeve": _sleeveController.text,
+                                        "customerFront": _frontController.text,
+                                        "customerThigh": _thighController.text,
+                                        "customerKnee": _kneeController.text,
+                                        "customerPants": _pantslController.text,
+                                        "customerLength": _lengthController.text,
+                                        "customerNote": _noteController.text,
+                                        "customerOther1": _other1Controller.text,
+                                        "customerOther2": _other2Controller.text,
+                                        "customerOther3": _other3Controller.text,
+                                        "totalQuantity": _selectedNumber.toString(),
+                                      };
 
-                      if (widget.customerskey != null) {   // Check if widget.customerskey is not null
-                        Map<String, String> customer = {     // Create a Map to store the customer data
-                          "customerID": _customeridController.text,
-                          "customerName": _nameController.text,
-                          "customerPhone": _phoneController.text,
-                          "customerAmount": _amountController.text,
-                          "customerOrder": _orderController.text,
-                          "customerDelivery": _deliveryController.text,
-                          "customerChest": _chestController.text,
-                          "customerWaist": _waistController.text,
-                          "customerShoulder": _shoulderController.text,
-                          "customerHip": _hipController.text,
-                          "customerInseam": _inseamController.text,
-                          "customerNeck": _neckController.text,
-                          "customerSleeve": _sleeveController.text,
-                          "customerFront": _frontController.text,
-                          "customerThigh": _thighController.text,
-                          "customerKnee": _kneeController.text,
-                          "customerPants": _pantslController.text,
-                          "customerLength": _lengthController.text,
-                          "customerNote": _noteController.text,
-                          "customerOther1": _other1Controller.text,
-                          "customerOther2": _other2Controller.text,
-                          "customerOther3": _other3Controller.text,
-                        };
-                        // Update the customer data in the database using the customerskey
-                        dbref.child(widget.customerskey).update(customer).then((value) {
-                          Navigator.pop(context);
-                        }).catchError((error) {
-                          // Handle any potential errors that occur during the update process
-                          print("Error updating customer: $error");
-                          // You can show an error message to the user or handle the error as needed
-                        });
-                      } else {
-                        // Handle the case when widget.customerskey is null
-                        print("Invalid customerskey: ${widget.customerskey}");
-                        // You can show an error message to the user or handle the situation as needed
-                      }
+                                      dbref.child(widget.customerskey).update(customer).then((value) {
+                                        Navigator.pop(context); // Close the dialog
+                                        Navigator.pop(context); // Go back to the customer list
+                                      }).catchError((error) {
+                                        // Handle any potential errors that occur during the update process
+                                        print("Error updating customer: $error");
+                                        // You can show an error message to the user or handle the error as needed
+                                      });
+                                    },
+                                    child: Text('Update'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -662,7 +924,7 @@ class _upddate_recordState extends State<upddate_record> {
                       ),
                     ),
                     child: Text(
-                        AppLocalizations.of(context)!.update,
+                      'Update',
                       style: TextStyle(fontSize: 20),
                     ),
                   ),
@@ -673,7 +935,69 @@ class _upddate_recordState extends State<upddate_record> {
         ),
       ),
     );
+  }
 
+  void _selectDateOrder(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
 
+    if (picked != null) {
+      final formattedDate = DateFormat('yyyy-MM-dd').format(picked);
+      setState(() {
+        _orderController.text = formattedDate;
+      });
+    }
+  }
+
+  void _selectDateDelivery(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+
+    if (picked != null) {
+      final formattedDate = DateFormat('yyyy-MM-dd').format(picked);
+
+      if (_orderController.text.isNotEmpty) {
+        final orderDate = DateFormat('yyyy-MM-dd').parse(_orderController.text);
+
+        if (picked.isAfter(orderDate)) {
+          setState(() {
+            _deliveryController.text = formattedDate;
+          });
+        } else {
+          // Display an error message or perform any desired action
+          // when the selected delivery date is not greater than the order date
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('Invalid Date'),
+                content: Text(
+                    'The selected delivery date must be greater than the order date.'),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text('OK'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        }
+      } else {
+        setState(() {
+          _deliveryController.text = formattedDate;
+        });
+      }
+    }
   }
 }

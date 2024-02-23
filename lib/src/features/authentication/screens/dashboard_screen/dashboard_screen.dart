@@ -7,19 +7,17 @@ import 'package:newapp/src/features/authentication/screens/common_screen/Privacy
 import 'package:newapp/src/features/authentication/screens/common_screen/about_us.dart';
 import 'package:newapp/src/features/authentication/screens/dashboard_screen/customer_screen/add_customer.dart';
 import 'package:newapp/src/features/authentication/screens/dashboard_screen/customer_screen/gallery_screen.dart';
-import 'package:newapp/src/features/authentication/screens/dashboard_screen/customer_screen/total_order_screen.dart';
 import 'package:newapp/src/features/authentication/screens/welcome/welcome_screen.dart';
 import 'package:newapp/src/localization/language.dart';
 import '../../../../../main.dart';
 import '../../../../localization/language_localization.dart';
 import '../forget_password/forget_password_email/forget_password_email.dart';
-import 'customer_screen/firestoreDatabase/FetchMeamsurmentForm.dart';
-import 'customer_screen/firestoreDatabase/MeasurementForm.dart';
 import 'customer_screen/backup_screen.dart';
+import 'customer_screen/buttom_nav_bar/order_delivary.dart';
 import 'customer_screen/customer_list.dart';
 import 'package:flutter_gen/gen_l10n/app-localization.dart';
 import 'package:share_plus/share_plus.dart';
-import 'customer_screen/data_analyes/Analystics.dart';
+import 'customer_screen/report_screen.dart';
 
 class dashboard extends StatefulWidget {
   const dashboard({super.key});
@@ -286,7 +284,7 @@ class _dashboardState extends State<dashboard> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          Get.to(() => TMeasurementForm());
+                          Get.to(() => MeasurementForm());
 
                           print('Item clicked!');
                         },
@@ -295,7 +293,7 @@ class _dashboardState extends State<dashboard> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          Get.to(() =>Tcustomer_list_scerrn());
+                          Get.to(() =>customer_list_scerrn());
 
                           print('Item clicked!');
                         },
@@ -304,7 +302,7 @@ class _dashboardState extends State<dashboard> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          Get.to(() => const TotalListScreen());
+                          Get.to(() => const MyBottomNavBar());
 
                           print('Item clicked!');
                         },

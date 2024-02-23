@@ -28,6 +28,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blue,
       appBar: AppBar(
         title: Text("Gallery"),
         leading: IconButton(
@@ -63,6 +64,10 @@ class _GalleryScreenState extends State<GalleryScreen> {
         onPressed: getImage,
         tooltip: "Select Images",
         child: Icon(Icons.photo_camera_back),
+        shape: CircleBorder(
+          side: BorderSide(color: Colors.white,width: 2),
+
+        ),
       ),
     );
   }

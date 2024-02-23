@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:newapp/src/features/authentication/screens/dashboard_screen/Search_screen/searchScreenCL.dart';
+import 'package:newapp/src/features/authentication/screens/dashboard_screen/customer_screen/total_order_screen.dart';
 import 'package:newapp/src/features/authentication/screens/dashboard_screen/customer_screen/update_record.dart';
 import 'package:flutter_gen/gen_l10n/app-localization.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -38,7 +39,7 @@ class _customer_list_scerrnState extends State<customer_list_scerrn> {
         padding: EdgeInsets.all(10),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
+
           children: [
             Row(
               children: [
@@ -113,12 +114,43 @@ class _customer_list_scerrnState extends State<customer_list_scerrn> {
                 ),
                 Gap(10),
                 Text(
-                  '${AppLocalizations.of(context)!.customerAmount}  ${customers["customerAmount"]}',
+                  '${AppLocalizations.of(context)!.customerAmount}  ${customers["clothAmount"]}',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
                 ),
               ],
             ),
             Gap(5),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                      width: 70,
+                      child: Text(
+                        '${AppLocalizations.of(context)!.firstPay}  ${customers["firstAmount"]}',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w400),
+                      )),
+                  SizedBox(
+                      width: 120,
+                      child: Text(
+                        '${AppLocalizations.of(context)!.quantity}  ${customers["totalQuantity"]}',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w400),
+                      )),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  SizedBox(
+                    width:120,
+                    child: Text(
+                      '${AppLocalizations.of(context)!.totalAmount}  ${customers["totalAmount"]}',
+                      style: TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.w400),
+                    ),
+                  ),
+                ]),
+            Gap(10),
             Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -144,6 +176,8 @@ class _customer_list_scerrnState extends State<customer_list_scerrn> {
                     ),
                   ]),
                 ]),
+
+
             Divider(
               color: Colors.amberAccent,
               thickness: 1.0,
@@ -308,62 +342,80 @@ class _customer_list_scerrnState extends State<customer_list_scerrn> {
             ),
             Gap(10),
             Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => upddate_record(
-                                  customerskey: customers["key"])));
-                    },
-                    child: Icon(
-                      Icons.edit,
-                      color: Colors.amberAccent,
-                    ),
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(
+                  child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => total_screen(
+                                    customerskey: customers["key"])));
+                      },
+                      child:Text("More..." ,style: TextStyle(fontSize: 18),)
                   ),
-                  SizedBox(
-                    height: 20,
-                    width: 15,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text(
-                                AppLocalizations.of(context)!.conformationD),
-                            content: Text(AppLocalizations.of(context)!.areD),
-                            actions: <Widget>[
-                              TextButton(
-                                child: Text(AppLocalizations.of(context)!.no),
-                                onPressed: () {
-                                  Navigator.of(context)
-                                      .pop(); // Close the alert dialog
-                                },
-                              ),
-                              TextButton(
-                                child: Text(AppLocalizations.of(context)!.yes),
-                                onPressed: () {
-                                  reference.child(customers["key"]).remove();
-                                  Navigator.of(context)
-                                      .pop(); // Close the alert dialog
-                                },
-                              ),
-                            ],
+                ),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => upddate_record(
+                                      customerskey: customers["key"])));
+                        },
+                        child: Icon(
+                          Icons.edit,
+                          color: Colors.amberAccent,
+                        ),
+                      ),
+
+                      SizedBox(
+                        height: 20,
+                        width: 15,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text(
+                                    AppLocalizations.of(context)!.conformationD),
+                                content: Text(AppLocalizations.of(context)!.areD),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: Text(AppLocalizations.of(context)!.no),
+                                    onPressed: () {
+                                      Navigator.of(context)
+                                          .pop(); // Close the alert dialog
+                                    },
+                                  ),
+                                  TextButton(
+                                    child: Text(AppLocalizations.of(context)!.yes),
+                                    onPressed: () {
+                                      reference.child(customers["key"]).remove();
+                                      Navigator.of(context)
+                                          .pop(); // Close the alert dialog
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
                           );
                         },
-                      );
-                    },
-                    child: Icon(
-                      Icons.delete,
-                      color: Colors.red,
-                    ),
-                  ),
-                ]),
+                        child: Icon(
+                          Icons.delete,
+                          color: Colors.red,
+                        ),
+                      ),
+                    ]),
+              ],
+            ),
           ],
         ),
       ),
@@ -421,7 +473,7 @@ class _customer_list_scerrnState extends State<customer_list_scerrn> {
               );
             }
 
-            if (!snapshot.hasData) {
+             if (!snapshot.hasData) {
               // Handle empty data state
               return Center(
                 child: Text(AppLocalizations.of(context)!.noData),
@@ -431,8 +483,7 @@ class _customer_list_scerrnState extends State<customer_list_scerrn> {
             // Data is available
             Map customers = snapshot.data.snapshot.value
                 as Map; // Extract the data from the snapshot
-            customers["key"] = snapshot.data.snapshot
-                .key; // Add the snapshot key to the 'customers' map
+            customers["key"] = snapshot.data.snapshot.key; // Add the snapshot key to the 'customers' map
 
             return FirebaseAnimatedList(
               query:

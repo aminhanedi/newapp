@@ -55,7 +55,7 @@ class _BackupWidgetState extends State<BackupWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.blue,
       appBar: AppBar(
         title: Text('Backup Screen'),
       ),
@@ -78,13 +78,17 @@ class _BackupWidgetState extends State<BackupWidget> {
               onPressed: () {
                 createDatabaseBackup(); // Triggering the backup creation when the button is pressed
               },
+              style: ButtonStyle(
+                side: MaterialStateProperty.all(BorderSide(color: Colors.black)),
+              ),
               child: SizedBox(
-                  child: Text(
-                    AppLocalizations.of(context)!.createBackup, // Localized button text
-                    style: TextStyle(
-                      fontSize: 20,
-                    ),
-                  )),
+                child: Text(
+                  AppLocalizations.of(context)!.createBackup, // Localized button text
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
+                ),
+              ),
             ),
           ],
         ),
