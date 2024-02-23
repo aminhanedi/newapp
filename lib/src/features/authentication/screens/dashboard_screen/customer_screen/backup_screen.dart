@@ -67,9 +67,11 @@ class _BackupWidgetState extends State<BackupWidget> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Image.asset("assets/images/img.jpg"), // Displaying an image
-            Text(
-              AppLocalizations.of(context)!.toProtectYour, // Localized text
-              style: TextStyle(fontSize: 18),
+            SizedBox( height: 20,
+              child: Text(
+                AppLocalizations.of(context)!.toProtectYour, // Localized text
+                style: TextStyle(fontSize: 18),
+              ),
             ),
             SizedBox(
               height: 40,
