@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
+import 'package:lottie/lottie.dart';
 import 'package:newapp/src/constants/color.dart';
 import 'package:newapp/src/constants/image_string.dart';
 import 'package:newapp/src/constants/sizes.dart';
@@ -19,24 +21,32 @@ class Welcome extends StatelessWidget {
       child: Scaffold(
           // backgroundColor: isDarkMode? tSecondaryColor:twhiteColor,
           body: Container(
+            margin: EdgeInsets.only(bottom: 100),
         padding: EdgeInsets.all(tDefaultSize),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Image(
-              image: AssetImage(
-                twelcon_image,
+
+
+            Expanded(
+              flex: 8,
+              child: Lottie.asset(
+                "assets/images/welcome.json",
+                height:600, // Set the desired height here
+                 // Set the desired width here
               ),
-              height: he * 0.4,
             ),
+
             Text(AppLocalizations.of(context)!.welcomeB, style: Theme.of(context).textTheme.displaySmall),
+            Gap(15),
             Text(
-                AppLocalizations.of(context)!.welcomeSubtitle,
+              AppLocalizations.of(context)!.welcomeSubtitle,
               style: Theme.of(context).textTheme.titleLarge,
               textAlign: TextAlign.center,
             ),
+
             SizedBox(
-              height: 20,
+              height:100,
             ),
             Column(
               children: [

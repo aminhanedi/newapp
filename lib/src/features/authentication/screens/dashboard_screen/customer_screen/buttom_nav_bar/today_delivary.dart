@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_gen/gen_l10n/app-localization.dart';
@@ -15,10 +14,10 @@ class _MyWidgetState extends State<today_delivary> {
   List<dynamic> orders = [];
   int totalOrders = 0;
   double totalAmount = 0.0;
-  int totalQuantity= 0;
+  int totalQuantity = 0;
 
   DatabaseReference _databaseRef =
-  FirebaseDatabase.instance.ref().child('customer');
+      FirebaseDatabase.instance.ref().child('customer');
 
   void searchOrders(String startDate, String endDate) {
     _databaseRef
@@ -29,7 +28,7 @@ class _MyWidgetState extends State<today_delivary> {
         .listen((event) {
       if (event.snapshot.value != null) {
         final Map<dynamic, dynamic> data =
-        event.snapshot.value as Map<dynamic, dynamic>;
+            event.snapshot.value as Map<dynamic, dynamic>;
         setState(() {
           orders = data.values.toList();
           calculateTotals();
@@ -39,7 +38,7 @@ class _MyWidgetState extends State<today_delivary> {
           orders = [];
           totalOrders = 0;
           totalAmount = 0.0;
-          totalQuantity=0;
+          totalQuantity = 0;
         });
 
         showDialog(
@@ -47,8 +46,7 @@ class _MyWidgetState extends State<today_delivary> {
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text('No Orders Found'),
-              content: Text(
-                  'No orders found in  $endDate.'),
+              content: Text('No orders found in  $endDate.'),
               actions: [
                 TextButton(
                   child: Text('OK'),
@@ -63,8 +61,6 @@ class _MyWidgetState extends State<today_delivary> {
       }
     });
   }
-
-
 
 // ... Rest of the code ...
 
@@ -101,9 +97,6 @@ class _MyWidgetState extends State<today_delivary> {
     }
   }
 
-
-
-
   String? selectedOption = 'Today';
 
   String _formatNumber(int number) {
@@ -113,12 +106,13 @@ class _MyWidgetState extends State<today_delivary> {
   void _searchData() {
     if (selectedOption == 'Today') {
       DateTime now = DateTime.now();
-      String startDate = '${now.year}-${_formatNumber(now.month)}-${_formatNumber(now.day)}';
-      String endDate = '${now.year}-${_formatNumber(now.month)}-${_formatNumber(now.day)}';
+      String startDate =
+          '${now.year}-${_formatNumber(now.month)}-${_formatNumber(now.day)}';
+      String endDate =
+          '${now.year}-${_formatNumber(now.month)}-${_formatNumber(now.day)}';
       searchOrders(startDate, endDate);
     }
   }
-
 
   @override
   void initState() {
@@ -126,10 +120,8 @@ class _MyWidgetState extends State<today_delivary> {
     _searchData();
   }
 
-
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Colors.blue,
       body: Container(
@@ -238,7 +230,7 @@ class _MyWidgetState extends State<today_delivary> {
               ),
             ),
             Expanded(
-              child:ListView.builder(
+              child: ListView.builder(
                 itemCount: orders.length,
                 itemBuilder: (context, index) {
                   final customers = orders[index];
@@ -247,18 +239,14 @@ class _MyWidgetState extends State<today_delivary> {
                 },
               ),
             ),
-
-
-
-
           ],
         ),
-
       ),
     );
   }
 }
-Widget listItem({required BuildContext context, required Map customers}){
+
+Widget listItem({required BuildContext context, required Map customers}) {
   return SingleChildScrollView(
     child: Container(
       decoration: BoxDecoration(
@@ -315,16 +303,20 @@ Widget listItem({required BuildContext context, required Map customers}){
             ],
           ),
           Gap(5),
-          Row(children: [
-            Icon(Icons.people_outline, size: 18,
-              color: Colors.amberAccent,),
-            Gap(10),
-            Text(
-              '${AppLocalizations.of(context)!. quantity} ${customers["totalQuantity"]}',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-            ),
-          ],),
-
+          Row(
+            children: [
+              Icon(
+                Icons.people_outline,
+                size: 18,
+                color: Colors.amberAccent,
+              ),
+              Gap(10),
+              Text(
+                '${AppLocalizations.of(context)!.quantity} ${customers["totalQuantity"]}',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+              ),
+            ],
+          ),
           Row(
             children: [
               Icon(
@@ -355,7 +347,6 @@ Widget listItem({required BuildContext context, required Map customers}){
               ),
             ],
           ),
-
           Row(
             children: [
               Icon(
@@ -390,14 +381,12 @@ Widget listItem({required BuildContext context, required Map customers}){
                     width: 170,
                     child: Text(
                       '${AppLocalizations.of(context)!.deliveryDate}  ${customers["customerDelivery"]}',
-                      style: TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.w400),
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
                     ),
                   ),
                 ]),
               ]),
-
-
         ],
       ),
     ),
