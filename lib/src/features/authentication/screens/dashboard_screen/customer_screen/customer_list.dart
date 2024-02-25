@@ -104,317 +104,85 @@ class _customer_list_scerrnState extends State<customer_list_scerrn> {
                 ),
               ],
             ),
-            Gap(5),
-            Row(
-              children: [
-                Icon(
-                  Icons.monetization_on,
-                  size: 18,
-                  color: Colors.amberAccent,
-                ),
-                Gap(10),
-                Text(
-                  '${AppLocalizations.of(context)!.customerAmount}  ${customers["clothAmount"]}',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-                ),
-              ],
-            ),
-            Gap(5),
-            Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                      width: 70,
-                      child: Text(
-                        '${AppLocalizations.of(context)!.firstPay}  ${customers["firstAmount"]}',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w400),
-                      )),
-                  SizedBox(
-                      width: 120,
-                      child: Text(
-                        '${AppLocalizations.of(context)!.quantity}  ${customers["totalQuantity"]}',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w400),
-                      )),
-                  SizedBox(
-                    width: 5,
-                  ),
-                  SizedBox(
-                    width:120,
-                    child: Text(
-                      '${AppLocalizations.of(context)!.totalAmount}  ${customers["totalAmount"]}',
-                      style: TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.w400),
-                    ),
-                  ),
-                ]),
-            Gap(10),
-            Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Wrap(children: [
-                    SizedBox(
-                        width: 160,
-                        child: Text(
-                          '${AppLocalizations.of(context)!.orderDate}  ${customers["customerOrder"]}',
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.w400),
-                        )),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    SizedBox(
-                      width: 170,
-                      child: Text(
-                        '${AppLocalizations.of(context)!.deliveryDate}  ${customers["customerDelivery"]}',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w400),
-                      ),
-                    ),
-                  ]),
-                ]),
 
 
-            Divider(
-              color: Colors.amberAccent,
-              thickness: 1.0,
-              height: 20.0,
-            ),
-            Wrap(
-              children: [
-                SizedBox(
-                  width: 120,
-                  child: Text(
-                    '${AppLocalizations.of(context)!.shoulder}  ${customers["customerChest"]}',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-                  ),
-                ),
-                SizedBox(
-                  width: 120,
-                  child: Text(
-                    '${AppLocalizations.of(context)!.chest}  ${customers["customerFront"]}',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-                  ),
-                ),
-                SizedBox(
-                  width: 120,
-                  child: Text(
-                    '${AppLocalizations.of(context)!.skirt}  ${customers["customerNeck"]}',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-                  ),
-                ),
-              ],
-            ),
-            Gap(10),
-            Wrap(
-              children: [
-                SizedBox(
-                  width: 120,
-                  child: Text(
-                    '${AppLocalizations.of(context)!.sleeve}  ${customers["customerHip"]}',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-                  ),
-                ),
-                SizedBox(
-                  width: 120,
-                  child: Text(
-                    '${AppLocalizations.of(context)!.length} ${customers["customerInseam"]}',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-                  ),
-                ),
-                SizedBox(
-                  width: 120,
-                  child: Text(
-                    '${AppLocalizations.of(context)!.collar}  ${customers["customerPants"]}',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-                  ),
-                ),
-              ],
-            ),
-            Gap(10),
-            Wrap(
-              children: [
-                SizedBox(
-                  width: 120,
-                  child: Text(
-                    '${AppLocalizations.of(context)!.button}  ${customers["customerShoulder"]}',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-                  ),
-                ),
-                SizedBox(
-                  width: 120,
-                  child: Text(
-                    '${AppLocalizations.of(context)!.hip}  ${customers["customerSleeve"]}',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-                  ),
-                ),
-                SizedBox(
-                  width: 120,
-                  child: Text(
-                    '${AppLocalizations.of(context)!.inseam}  ${customers["customerThigh"]}',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-                  ),
-                ),
-              ],
-            ),
-            Gap(10),
-            Wrap(
-              children: [
-                SizedBox(
-                  width: 120,
-                  child: Text(
-                    '${AppLocalizations.of(context)!.knee}  ${customers["customerKnee"]}',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-                  ),
-                ),
-                SizedBox(
-                  width: 120,
-                  child: Text(
-                    '${AppLocalizations.of(context)!.thigh} ${customers["customerWaist"]}',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-                  ),
-                ),
-                SizedBox(
-                  width: 120,
-                  child: Text(
-                    '${AppLocalizations.of(context)!.waist}  ${customers["customerLength"]}',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-                  ),
-                ),
-              ],
-            ),
-            Gap(10),
-            Wrap(
-              children: [
-                SizedBox(
-                  width: 120,
-                  child: Text(
-                    '${AppLocalizations.of(context)!.other1}  ${customers["customerOther1"]}',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-                  ),
-                ),
-                SizedBox(
-                  width: 120,
-                  child: Text(
-                    '${AppLocalizations.of(context)!.other2}  ${customers["customerOther2"]}',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-                  ),
-                ),
-                SizedBox(
-                  width: 120,
-                  child: Text(
-                    '${AppLocalizations.of(context)!.other3}  ${customers["customerOther3"]}',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-                  ),
-                ),
-              ],
-            ),
-            Gap(10),
             Container(
-              padding: EdgeInsets.all(5),
-              height: 100,
-              decoration: BoxDecoration(
-                // Background color of the container
-                color: Colors.blue, // Background color of the container
-                borderRadius: BorderRadius.circular(8), // Rounded corner radius
-                border: Border.all(
-                  color: Colors.amberAccent,
-                  width: 1,
-                ), // Border properties
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.grey,
-                    offset: Offset(0, 2),
-                    blurRadius: 4,
-                  ),
-                ], // Box shadow properties
-              ),
-              child: SizedBox(
-                width: double.infinity,
-                child: Text(
-                  '${AppLocalizations.of(context)!.note}  ${customers["customerNote"]}',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-                ),
-              ), // Your child widgets go here
-            ),
-            Gap(10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(
-                  child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => total_screen(
-                                    customerskey: customers["key"])));
-                      },
-                      child:Text("More..." ,style: TextStyle(fontSize: 18),)
-                  ),
-                ),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      GestureDetector(
+              padding: EdgeInsets.only(left: 30),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                    child: GestureDetector(
                         onTap: () {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (_) => upddate_record(
+                                  builder: (_) => total_screen(
                                       customerskey: customers["key"])));
                         },
-                        child: Icon(
-                          Icons.edit,
-                          color: Colors.amberAccent,
+                        child:Text(" See More..." ,style: TextStyle(fontSize:16,color: Colors.amberAccent),)
+                    ),
+                  ),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => upddate_record(
+                                        customerskey: customers["key"])));
+                          },
+                          child: Icon(
+                            Icons.edit,
+                            color: Colors.amberAccent,
+                          ),
                         ),
-                      ),
 
-                      SizedBox(
-                        height: 20,
-                        width: 15,
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text(
-                                    AppLocalizations.of(context)!.conformationD),
-                                content: Text(AppLocalizations.of(context)!.areD),
-                                actions: <Widget>[
-                                  TextButton(
-                                    child: Text(AppLocalizations.of(context)!.no),
-                                    onPressed: () {
-                                      Navigator.of(context)
-                                          .pop(); // Close the alert dialog
-                                    },
-                                  ),
-                                  TextButton(
-                                    child: Text(AppLocalizations.of(context)!.yes),
-                                    onPressed: () {
-                                      reference.child(customers["key"]).remove();
-                                      Navigator.of(context)
-                                          .pop(); // Close the alert dialog
-                                    },
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        },
-                        child: Icon(
-                          Icons.delete,
-                          color: Colors.red,
+                        SizedBox(
+                          height: 20,
+                          width: 15,
                         ),
-                      ),
-                    ]),
-              ],
+                        GestureDetector(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text(
+                                      AppLocalizations.of(context)!.conformationD),
+                                  content: Text(AppLocalizations.of(context)!.areD),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: Text(AppLocalizations.of(context)!.no),
+                                      onPressed: () {
+                                        Navigator.of(context)
+                                            .pop(); // Close the alert dialog
+                                      },
+                                    ),
+                                    TextButton(
+                                      child: Text(AppLocalizations.of(context)!.yes),
+                                      onPressed: () {
+                                        reference.child(customers["key"]).remove();
+                                        Navigator.of(context)
+                                            .pop(); // Close the alert dialog
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                          ),
+                        ),
+                      ]),
+                ],
+              ),
             ),
           ],
         ),
@@ -429,18 +197,28 @@ class _customer_list_scerrnState extends State<customer_list_scerrn> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blue,
       appBar: AppBar(
         actions: [
           ElevatedButton(
             onPressed: () {
               Get.to(() =>
-                  SearchScreen()); // Navigate to the SearchScreen when the button is pressed
+                  SearchScreen()); // Navigate to the REPORT screen when the button is pressed
             },
-            child: Icon(
-              Icons.search,
-              size: 35,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.transparent, // Set the background color to transparent
+              elevation: 0, // Remove the button elevation
             ),
-          )
+            child: Ink(
+              decoration: BoxDecoration(
+                color: Colors.transparent, // Set the ink color to transparent
+              ),
+              child: Icon(
+                Icons.search,
+                size: 30,
+              ),
+            ),
+          ),
         ],
       ),
       body: Container(

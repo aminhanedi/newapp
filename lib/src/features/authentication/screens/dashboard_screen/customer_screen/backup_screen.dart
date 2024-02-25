@@ -3,8 +3,10 @@ import 'dart:convert'; // Importing the 'dart:convert' library for JSON encoding
 import 'package:flutter/material.dart'; // Importing the Flutter Material package
 import 'package:firebase_core/firebase_core.dart'; // Importing the Firebase Core package
 import 'package:firebase_database/firebase_database.dart'; // Importing the Firebase Realtime Database package
+import 'package:lottie/lottie.dart';
 import 'package:path_provider/path_provider.dart'; // Importing the 'path_provider' package for getting the application document directory
-import 'package:flutter_gen/gen_l10n/app-localization.dart'; // Importing the generated localization package
+import 'package:flutter_gen/gen_l10n/app-localization.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';// Importing the generated localization package
 
 class BackupWidget extends StatefulWidget {
   @override
@@ -66,7 +68,45 @@ class _BackupWidgetState extends State<BackupWidget> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Image.asset("assets/images/img.jpg"), // Displaying an image
+            Container(
+              height: 200,
+              color: Colors.blue,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  const SizedBox(width: 20.0, height: 1.0),
+                  const Text(
+                    'Be',
+                    style: TextStyle(fontSize: 43.0),
+                  ),
+                  const SizedBox(width: 20.0, height:60.0),
+                  DefaultTextStyle(
+                    style: const TextStyle(
+                      fontSize: 40.0,
+                      fontFamily: 'Horizon',
+                    ),
+                    child: AnimatedTextKit(
+                      animatedTexts: [
+                        RotateAnimatedText('AWESOME'),
+                        RotateAnimatedText('OPTIMISTIC'),
+                        RotateAnimatedText('DIFFERENT'),
+                      ],
+                      repeatForever: true,  // Make animation repeat forever
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Row(
+              children: [
+
+                Expanded(
+
+                    child:  Lottie.asset('assets/images/backup.json',height: 400)
+                ),
+
+              ],
+            ),
             SizedBox( height: 20,
               child: Text(
                 AppLocalizations.of(context)!.toProtectYour, // Localized text
@@ -74,14 +114,14 @@ class _BackupWidgetState extends State<BackupWidget> {
               ),
             ),
             SizedBox(
-              height: 40,
+              height: 20,
             ),
             ElevatedButton(
               onPressed: () {
                 createDatabaseBackup(); // Triggering the backup creation when the button is pressed
               },
               style: ButtonStyle(
-                side: MaterialStateProperty.all(BorderSide(color: Colors.black)),
+                side: MaterialStateProperty.all(BorderSide(color: Colors.black,width:2)),
               ),
               child: SizedBox(
                 child: Text(
@@ -92,6 +132,7 @@ class _BackupWidgetState extends State<BackupWidget> {
                 ),
               ),
             ),
+            Container(height: 20,),
           ],
         ),
       ),

@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:newapp/src/features/authentication/screens/common_screen/Privacy_Policy.dart';
 import 'package:newapp/src/features/authentication/screens/common_screen/about_us.dart';
 import 'package:newapp/src/features/authentication/screens/dashboard_screen/customer_screen/add_customer.dart';
@@ -293,7 +294,7 @@ class _dashboardState extends State<dashboard> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          Get.to(() =>customer_list_scerrn());
+                          Get.to(() => customer_list_scerrn());
 
                           print('Item clicked!');
                         },
