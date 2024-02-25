@@ -5,8 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_gen/gen_l10n/app-localization.dart';
 import 'package:gap/gap.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../Search_screen/search_screenTCl.dart';
 
  class MyWidget extends StatefulWidget {
   @override
@@ -116,6 +120,37 @@ class _MyWidgetState extends State<MyWidget> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                Card(
+                  margin:EdgeInsets.only(bottom: 20),
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    side: BorderSide(color: Colors.grey.shade300),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Search Orders by Date Range",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 15),
+                        Text(
+                          "Specify a date range to search for orders within that period.",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.blue,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
                 TextField(
                   controller: startDateController,
                   decoration: InputDecoration(
@@ -132,6 +167,7 @@ class _MyWidgetState extends State<MyWidget> {
                     _selectDateOrder(context);
                   },
                 ),
+                SizedBox(height: 8,),
                 TextField(
                   decoration: InputDecoration(
                     filled: true,
@@ -147,6 +183,8 @@ class _MyWidgetState extends State<MyWidget> {
                     _selectDateDelivery(context);
                   },
                 ),
+                SizedBox(height: 10,),
+
                 ElevatedButton(
                   onPressed: () {
                     String startDate = startDateController.text;
@@ -312,45 +350,69 @@ class _MyWidgetState extends State<MyWidget> {
     return Scaffold(
       backgroundColor: Colors.blue,
       appBar: AppBar(
-        title: Text("REPORT SCREEN"),
-        actions: [
-          DropdownButton<String>(
-            style: TextStyle(fontSize: 18,color: Colors.white,fontFamily:GoogleFonts.openSans().fontFamily),
-           icon: Icon(Icons.search,size:40,color:Colors.white,),
-            value: selectedOption,
-            onChanged: (String? newValue) {
-              setState(() {
-                if (newValue == 'CUSTOM') {
-                  _showDateSearchDialog(context);
-                } else {
-                  selectedOption = newValue;
-                  _searchData();
-                }
 
-              });
-            },
-        dropdownColor: Colors.blue,
-            items: <String>[
-              'CUSTOM',
-              'January',
-              'February',
-              'March',
-              'April',
-              'May',
-              'June',
-              'July',
-              'August',
-              'September',
-              'October',
-              'November',
-              'December',
-            ].map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
+        actions: [
+          Container(
+
+            padding: EdgeInsets.only(left: 15),
+            child: DropdownButton<String>(
+              style: TextStyle(fontSize: 16,color: Colors.white,fontFamily:GoogleFonts.openSans().fontFamily),
+              icon: Icon(Icons.arrow_drop_down,size:30,color:Colors.white,),
+              value: selectedOption,
+              onChanged: (String? newValue) {
+                setState(() {
+                  if (newValue == 'CUSTOM') {
+                    _showDateSearchDialog(context);
+                  } else {
+                    selectedOption = newValue;
+                    _searchData();
+                  }
+
+                });
+              },
+              dropdownColor: Colors.blue,
+              items: <String>[
+                'CUSTOM',
+                'January',
+                'February',
+                'March',
+                'April',
+                'May',
+                'June',
+                'July',
+                'August',
+                'September',
+                'October',
+                'November',
+                'December',
+              ].map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
           ),
+          ElevatedButton(
+            onPressed: () {
+              Get.to(() =>
+                  REPORT()); // Navigate to the REPORT screen when the button is pressed
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.transparent, // Set the background color to transparent
+              elevation: 0, // Remove the button elevation
+            ),
+            child: Ink(
+              decoration: BoxDecoration(
+                color: Colors.transparent, // Set the ink color to transparent
+              ),
+              child: Icon(
+                Icons.search,
+                size: 30,
+              ),
+            ),
+          ),
+
         ],
 
       ),
