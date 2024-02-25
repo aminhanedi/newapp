@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:newapp/src/features/authentication/screens/dashboard_screen/customer_screen/buttom_nav_bar/pending.dart';
 import 'package:newapp/src/features/authentication/screens/dashboard_screen/customer_screen/buttom_nav_bar/today_delivary.dart';
 import 'package:newapp/src/features/authentication/screens/dashboard_screen/customer_screen/buttom_nav_bar/today_order.dart';
+import '../../Search_screen/searchScreenCL.dart';
+import '../../Search_screen/search_screenTCl.dart';
 import 'complet.dart';
-
 
 class MyBottomNavBar extends StatefulWidget {
   const MyBottomNavBar({super.key});
@@ -14,7 +17,7 @@ class MyBottomNavBar extends StatefulWidget {
 
 class _MyButtomNavBarState extends State<MyBottomNavBar> {
   int myCurrentIndex = 0;
-  List pages =  [
+  List pages = [
     pending_order(),
     complete_order(),
     today_order(),
@@ -26,7 +29,29 @@ class _MyButtomNavBarState extends State<MyBottomNavBar> {
       extendBody: true,
       appBar: AppBar(
         centerTitle: true,
-        title: const Text("ORDER AND DELIVERY"),
+        title: const Text("  "),
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              Get.to(() =>
+                  REPORT()); // Navigate to the REPORT screen when the button is pressed
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor:
+                  Colors.transparent, // Set the background color to transparent
+              elevation: 0, // Remove the button elevation
+            ),
+            child: Ink(
+              decoration: BoxDecoration(
+                color: Colors.transparent, // Set the ink color to transparent
+              ),
+              child: Icon(
+                Icons.search,
+                size: 30,
+              ),
+            ),
+          ),
+        ],
       ),
       bottomNavigationBar: Container(
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -40,7 +65,7 @@ class _MyButtomNavBarState extends State<MyBottomNavBar> {
           borderRadius: BorderRadius.circular(15),
           child: BottomNavigationBar(
               backgroundColor: Colors.lightBlueAccent,
-            // backgroundColor: Colors.transparent,
+              // backgroundColor: Colors.transparent,
               selectedItemColor: Colors.black,
               unselectedItemColor: Colors.amberAccent,
               currentIndex: myCurrentIndex,
@@ -50,15 +75,24 @@ class _MyButtomNavBarState extends State<MyBottomNavBar> {
                 });
               },
               items: const [
-                BottomNavigationBarItem(icon: Icon(Icons.people), label: "Pending Order",backgroundColor: Colors.lightBlue),
                 BottomNavigationBarItem(
-                    icon: Icon(Icons.delivery_dining,weight: 20), label: "Delivered"),
-
+                    icon: Icon(Icons.people),
+                    label: "Pending Order",
+                    backgroundColor: Colors.lightBlue),
                 BottomNavigationBarItem(
-                    icon: Icon(Icons.local_grocery_store_rounded), label: "Today orders"),
+                    icon: Icon(Icons.delivery_dining, weight: 20),
+                    label: "Delivered",
+                    backgroundColor: Colors.lightBlue),
                 BottomNavigationBarItem(
-                    icon: Icon(Icons.people_outline), label: "Complete New"),
-
+                    icon: Icon(
+                      Icons.local_grocery_store_rounded,
+                    ),
+                    label: "Today orders",
+                    backgroundColor: Colors.lightBlue),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.people_outline),
+                    label: "Complete New,",
+                    backgroundColor: Colors.lightBlue),
               ]),
         ),
       ),
