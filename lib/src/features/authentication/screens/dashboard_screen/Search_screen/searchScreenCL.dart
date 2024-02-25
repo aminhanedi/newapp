@@ -100,7 +100,7 @@ class _SearchScreenState extends State<SearchScreen> {
         title: CupertinoSearchTextField(
           itemColor: Colors.blue,
           backgroundColor: Colors.white,
-          itemSize: 30,
+          itemSize: 25,
           borderRadius: BorderRadius.circular(10),
           style: TextStyle(),
           controller: searchController,

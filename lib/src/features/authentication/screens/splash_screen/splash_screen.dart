@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:lottie/lottie.dart';
 import 'package:newapp/src/constants/color.dart';
 import 'package:newapp/src/constants/sizes.dart';
 import 'package:newapp/src/constants/text_string.dart';
@@ -38,7 +39,7 @@ class _splashScreenState extends State<splashScreen> {
           children: [
 
             AnimatedPositioned(
-                duration: const Duration(milliseconds: 1600),
+                duration: const Duration(seconds: 3),
                 top: 150,
                 left: animate? tDefaultSize: -80,
 
@@ -81,10 +82,7 @@ class _splashScreenState extends State<splashScreen> {
                     shape: CircleBorder(),
                     child: CircleAvatar(
                       backgroundColor: Colors.grey[100],
-                      child: Image.asset(
-                        'assets/images/top_logo3.png',
-                        height: 400,
-                      ),
+                       child:  Lottie.asset('assets/images/tailoring.json',height:300),
                       radius:150.0,
                     ),
                   ),

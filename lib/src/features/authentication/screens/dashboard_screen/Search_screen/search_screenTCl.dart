@@ -90,7 +90,7 @@ class _SearchScreenState extends State<REPORT> {
         title: CupertinoSearchTextField(
           itemColor: Colors.blue,
           backgroundColor: Colors.white,
-          itemSize: 30,
+          itemSize: 25,
           borderRadius: BorderRadius.circular(10),
           style: TextStyle(),
           controller: searchController,
@@ -112,8 +112,7 @@ class _SearchScreenState extends State<REPORT> {
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.blue, // Background color of the container
-                        borderRadius:
-                            BorderRadius.circular(15), // Rounded corner radius
+                        borderRadius: BorderRadius.circular(8), // Rounded corner radius
                         border: Border.all(
                           color: Colors.amberAccent,
                           width: 2,
@@ -141,7 +140,7 @@ class _SearchScreenState extends State<REPORT> {
                               ),
                               Gap(10),
                               Text(
-                                '${AppLocalizations.of(context)!.customerId} ${customerList[index]["customerID"]}',
+                                '${AppLocalizations.of(context)!.customerId} ${customerList[index]["customerID"]} ',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w400,
@@ -149,7 +148,7 @@ class _SearchScreenState extends State<REPORT> {
                               ),
                             ],
                           ),
-                          Gap(10),
+                          Gap(5),
                           Row(
                             children: [
                               Icon(
@@ -160,14 +159,37 @@ class _SearchScreenState extends State<REPORT> {
                               Gap(10),
                               Text(
                                 '${AppLocalizations.of(context)!.customerName} ${customerList[index]["customerName"]}',
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w400),
+                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                              ),
+                            ],
+                          ),
+                          Gap(5),
+                          Row(children: [
+                            Icon(Icons.people_outline, size: 18,
+                              color: Colors.amberAccent,),
+                            Gap(10),
+                            Text(
+                              '${AppLocalizations.of(context)!. quantity} ${customerList[index]["totalQuantity"]}',
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                            ),
+                          ],),
+
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.numbers,
+                                size: 18,
+                                color: Colors.amberAccent,
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                '${AppLocalizations.of(context)!.customerPhone}${customerList[index]["customerPhone"]}',
+                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
                               ),
                               Gap(40),
                               IconButton(
                                 onPressed: () async {
-                                  String uri =
-                                      'tel:${customerList[index]["customerPhone"]}';
+                                  String uri = 'tel:${customerList[index]["customerPhone"]}';
 
                                   if (await canLaunch(uri)) {
                                     await launch(uri);
@@ -182,23 +204,7 @@ class _SearchScreenState extends State<REPORT> {
                               ),
                             ],
                           ),
-                          Gap(10),
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.call,
-                                size: 18,
-                                color: Colors.amberAccent,
-                              ),
-                              Gap(10),
-                              Text(
-                                '${AppLocalizations.of(context)!.customerPhone} ${customerList[index]["customerPhone"]}',
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w400),
-                              ),
-                            ],
-                          ),
-                          Gap(10),
+
                           Row(
                             children: [
                               Icon(
@@ -208,37 +214,39 @@ class _SearchScreenState extends State<REPORT> {
                               ),
                               Gap(10),
                               Text(
-                                '${AppLocalizations.of(context)!.customerAmount}  ${customerList[index]["customerAmount"]}',
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w400),
+                                '${AppLocalizations.of(context)!.customerAmount}  ${customerList[index]["totalAmount"]}',
+                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
                               ),
                             ],
                           ),
-                          Gap(10),
+                          Gap(5),
                           Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Wrap(children: [
                                   SizedBox(
-                                      width: 170,
+                                      width: 160,
                                       child: Text(
                                         '${AppLocalizations.of(context)!.orderDate}  ${customerList[index]["customerOrder"]}',
                                         style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w400),
+                                            fontSize: 16, fontWeight: FontWeight.w400),
                                       )),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
                                   SizedBox(
                                     width: 170,
                                     child: Text(
                                       '${AppLocalizations.of(context)!.deliveryDate}  ${customerList[index]["customerDelivery"]}',
                                       style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w400),
+                                          fontSize: 16, fontWeight: FontWeight.w400),
                                     ),
                                   ),
                                 ]),
                               ]),
+
+
                         ],
                       ),
                     ),

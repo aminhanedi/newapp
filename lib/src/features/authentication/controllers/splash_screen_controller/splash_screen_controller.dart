@@ -12,10 +12,10 @@ class splash_controoler{
     final auth=FirebaseAuth.instance;
     final user=auth.currentUser;
     if(user!=null){
-      Timer(Duration(seconds: 5),
+      Timer(Duration(seconds: 15),
       ()=>Get.to(()=>dashboard()));
     }else{
-      Timer(Duration(seconds: 5),
+      Timer(Duration(seconds: 15),
               ()=>Get.to(()=>Welcome()));
     }
   }
