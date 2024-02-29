@@ -64,76 +64,81 @@ class _BackupWidgetState extends State<BackupWidget> {
       body: Container(
         padding: EdgeInsets.all(20),
         margin: EdgeInsets.all(10),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(
-              height: 200,
-              color: Colors.blue,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  const SizedBox(width: 20.0, height: 1.0),
-                  const Text(
-                    'Be',
-                    style: TextStyle(fontSize: 43.0),
-                  ),
-                  const SizedBox(width: 20.0, height:60.0),
-                  DefaultTextStyle(
-                    style: const TextStyle(
-                      fontSize: 40.0,
-                      fontFamily: 'Horizon',
-                    ),
-                    child: AnimatedTextKit(
-                      animatedTexts: [
-                        RotateAnimatedText('AWESOME'),
-                        RotateAnimatedText('OPTIMISTIC'),
-                        RotateAnimatedText('DIFFERENT'),
-                      ],
-                      repeatForever: true,  // Make animation repeat forever
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Row(
+        child: Expanded(
+          child: Wrap(
+            children:[Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-
-                Expanded(
-
-                    child:  Lottie.asset('assets/images/backup.json',height: 400)
+                Container(
+                  height: 150,
+                  color: Colors.blue,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      const SizedBox(width: 20.0, height: 1.0),
+                      const Text(
+                        'Be',
+                        style: TextStyle(fontSize: 43.0),
+                      ),
+                      const SizedBox(width: 20.0, height:40.0),
+                      DefaultTextStyle(
+                        style: const TextStyle(
+                          fontSize: 40.0,
+                          fontFamily: 'Horizon',
+                        ),
+                        child: AnimatedTextKit(
+                          animatedTexts: [
+                            RotateAnimatedText('AWESOME'),
+                            RotateAnimatedText('OPTIMISTIC'),
+                            RotateAnimatedText('DIFFERENT'),
+                          ],
+                          repeatForever: true,  // Make animation repeat forever
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
+                Row(
+                  children: [
 
+                    Expanded(
+
+                        child:  Lottie.asset('assets/images/backup.json',height: 400)
+                    ),
+
+                  ],
+                ),
+                SizedBox( height: 20,
+                  child: Text(
+                    AppLocalizations.of(context)!.toProtectYour, // Localized text
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    createDatabaseBackup(); // Triggering the backup creation when the button is pressed
+                  },
+                  style: ButtonStyle(
+                    side: MaterialStateProperty.all(BorderSide(color: Colors.black,width:2)),
+                  ),
+                  child: SizedBox(
+                    child: Text(
+                      AppLocalizations.of(context)!.createBackup, // Localized button text
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                  ),
+                ),
+                Container(height: 20,),
               ],
             ),
-            SizedBox( height: 20,
-              child: Text(
-                AppLocalizations.of(context)!.toProtectYour, // Localized text
-                style: TextStyle(fontSize: 18),
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            ElevatedButton(
-              onPressed: () {
-                createDatabaseBackup(); // Triggering the backup creation when the button is pressed
-              },
-              style: ButtonStyle(
-                side: MaterialStateProperty.all(BorderSide(color: Colors.black,width:2)),
-              ),
-              child: SizedBox(
-                child: Text(
-                  AppLocalizations.of(context)!.createBackup, // Localized button text
-                  style: TextStyle(
-                    fontSize: 20,
-                  ),
-                ),
-              ),
-            ),
-            Container(height: 20,),
-          ],
+          ]
+          ),
         ),
       ),
     );

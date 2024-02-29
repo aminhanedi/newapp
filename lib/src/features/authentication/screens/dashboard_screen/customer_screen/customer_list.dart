@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:newapp/src/features/authentication/screens/dashboard_screen/Search_screen/searchScreenCL.dart';
-import 'package:newapp/src/features/authentication/screens/dashboard_screen/customer_screen/total_order_screen.dart';
+import 'package:newapp/src/features/authentication/screens/dashboard_screen/customer_screen/measirement_view.dart';
 import 'package:newapp/src/features/authentication/screens/dashboard_screen/customer_screen/update_record.dart';
 import 'package:flutter_gen/gen_l10n/app-localization.dart';
 import 'package:url_launcher/url_launcher.dart';

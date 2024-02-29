@@ -21,32 +21,29 @@ class Welcome extends StatelessWidget {
       child: Scaffold(
           // backgroundColor: isDarkMode? tSecondaryColor:twhiteColor,
           body: Container(
-            margin: EdgeInsets.only(bottom: 100),
+        margin: EdgeInsets.only(bottom: 100),
         padding: EdgeInsets.all(tDefaultSize),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-
-
             Expanded(
               flex: 8,
               child: Lottie.asset(
                 "assets/images/welcome.json",
-                height:600, // Set the desired height here
-                 // Set the desired width here
+                height: 600, // Set the desired height here
+                // Set the desired width here
               ),
             ),
-
-            Text(AppLocalizations.of(context)!.welcomeB, style: Theme.of(context).textTheme.displaySmall),
+            Text(AppLocalizations.of(context)!.welcomeB,
+                style: Theme.of(context).textTheme.displaySmall),
             Gap(15),
             Text(
               AppLocalizations.of(context)!.welcomeSubtitle,
               style: Theme.of(context).textTheme.titleLarge,
               textAlign: TextAlign.center,
             ),
-
             SizedBox(
-              height:100,
+              height: 100,
             ),
             Column(
               children: [
@@ -56,9 +53,9 @@ class Welcome extends StatelessWidget {
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                              builder: (contaxt) =>  login_screen()),
+                            context,
+                            MaterialPageRoute(
+                                builder: (contaxt) => login_screen()),
                           );
                         },
                         style: ElevatedButton.styleFrom(
@@ -66,33 +63,33 @@ class Welcome extends StatelessWidget {
                             foregroundColor: tSecondaryColor,
                             backgroundColor: tPrimaryColor,
                             side: BorderSide(color: tSecondaryColor),
-                            padding:
-                                const EdgeInsets.symmetric(vertical: tButtonHeight)),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: tButtonHeight)),
                         child: Text(tLogin.toUpperCase()),
                       ),
                     ),
                     SizedBox(
                       width: 10.0,
                     ),
-                    Expanded(
-                      child: OutlinedButton(
-                          onPressed: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (contaxt) => const signup_screen()),
-                            );
-                          },
-                          style: OutlinedButton.styleFrom(
-                              shape: RoundedRectangleBorder(),
-                              backgroundColor: tSecondaryColor,
-                              elevation: 0,
-                              foregroundColor: twhiteColor,
-                              side: BorderSide(color: tSecondaryColor),
-                              padding:
-                                  EdgeInsets.symmetric(vertical: tButtonHeight)),
-                          child: Text(tSignup.toUpperCase())),
-                    )
+                    // Expanded(
+                    //   child: OutlinedButton(
+                    //       onPressed: () {
+                    //         Navigator.pushReplacement(
+                    //           context,
+                    //           MaterialPageRoute(
+                    //               builder: (contaxt) => const signup_screen()),
+                    //         );
+                    //       },
+                    //       style: OutlinedButton.styleFrom(
+                    //           shape: RoundedRectangleBorder(),
+                    //           backgroundColor: tSecondaryColor,
+                    //           elevation: 0,
+                    //           foregroundColor: twhiteColor,
+                    //           side: BorderSide(color: tSecondaryColor),
+                    //           padding: EdgeInsets.symmetric(
+                    //               vertical: tButtonHeight)),
+                    //       child: Text(tSignup.toUpperCase())),
+                    // )
                   ],
                 ),
               ],

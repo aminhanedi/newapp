@@ -27,11 +27,10 @@ class _MeasurementFormState extends State<MeasurementForm> {
 
   //------------------customers------------//
 
-
   TextEditingController _nameController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
   TextEditingController _firstPayController = TextEditingController();
-  TextEditingController _totalPayController = TextEditingController();
+  TextEditingController _totalAmountController = TextEditingController();
   TextEditingController _clothAmountController = TextEditingController();
 
   //------------------order--------------------------//
@@ -61,7 +60,6 @@ class _MeasurementFormState extends State<MeasurementForm> {
 
   int currentCustomerNumber = 0;
 
-
   @override
   @override
   void initState() {
@@ -75,11 +73,8 @@ class _MeasurementFormState extends State<MeasurementForm> {
     });
   }
 
-
-
   @override
   void dispose() {
-    //_customeridController.dispose();
     _nameController.dispose();
     _phoneController.dispose();
     _clothAmountController.dispose();
@@ -115,14 +110,148 @@ class _MeasurementFormState extends State<MeasurementForm> {
       double inseam = double.parse(_inseamController.text);
 
       // Process the data or navigate to the next screen
-      // ...
+
+      currentCustomerNumber++; // Increment the current customer number
+      String customerId = 'T${currentCustomerNumber.toString().padLeft(3, "0")}';
+
+      int clothAmount = int.tryParse(_clothAmountController.text) ?? 0;
+      int totalQuantity = int.tryParse(_selectedNumber.toString()) ?? 0;
+
+      int totalAmount = totalQuantity * clothAmount;
+      setState(() {
+        // Set the total amount in the controller
+        _totalAmountController.text = totalAmount.toString();
+      });
+
+      if (totalAmount == int.tryParse(_totalAmountController.text)) {
+        Map<String, String> customer = {
+          // Your customer data here
+          "customerID": customerId,
+          "customerName": _nameController.text,
+          "customerPhone": _phoneController.text,
+          "clothAmount": _clothAmountController.text,
+          "firstAmount": _firstPayController.text,
+          "totalAmount": _totalAmountController.text,
+          "customerOrder": _orderController.text,
+          "customerDelivery": _deliveryController.text,
+          "customerChest": _chestController.text,
+          "customerWaist": _waistController.text,
+          "customerShoulder": _shoulderController.text,
+          "customerHip": _hipController.text,
+          "customerInseam": _inseamController.text,
+          "customerNeck": _neckController.text,
+          "customerSleeve": _sleeveController.text,
+          "customerFront": _frontController.text,
+          "customerThigh": _thighController.text,
+          "customerKnee": _kneeController.text,
+          "customerPants": _pantslController.text,
+          "customerLength": _lengthController.text,
+          "customerNote": _noteController.text,
+          "customerOther1": _other1Controller.text,
+          "customerOther2": _other2Controller.text,
+          "customerOther3": _other3Controller.text,
+          "totalQuantity": _selectedNumber.toString(),
+        };
+
+        String customerPhone = _phoneController.text;
+
+        dbref
+            .orderByChild("customerPhone")
+            .equalTo(customerPhone)
+            .once()
+            .then((DatabaseEvent event) {
+          DataSnapshot snapshot = event.snapshot;
+          if (snapshot.value != null) {
+            // Data already exists, handle the duplicate case
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                backgroundColor: Colors.white,
+                content: Text(
+                  "Data already exists",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Colors.red,
+                    backgroundColor: Colors.white,
+                  ),
+                ),
+              ),
+            );
+          } else {
+            // Data does not exist, push the new data
+            dbref.push().set(customer).then((value) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  backgroundColor: Colors.white,
+                  content: Text(
+                    "Data saved successfully",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.green,
+                      backgroundColor: Colors.white,
+                    ),
+                  ),
+                ),
+              );
+            }).catchError((error) {
+              // Handle any errors that occur during saving
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  backgroundColor: Colors.white,
+                  content: Text(
+                    "Error occurred while saving data",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.red,
+                      backgroundColor: Colors.white,
+                    ),
+                  ),
+                ),
+              );
+            });
+          }
+        }).catchError((error) {
+          // Handle any errors that occur during database query
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              backgroundColor: Colors.white,
+              content: Text(
+                "Error occurred while checking existing data",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 15,
+                  color: Colors.red,
+                  backgroundColor: Colors.white,
+                ),
+              ),
+            ),
+          );
+        });
+      } else {
+        // Display a text message indicating the mismatch
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            backgroundColor: Colors.white,
+            content: Text(
+              "Total amount does not match the calculated value",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 15,
+                color: Colors.red,
+                backgroundColor: Colors.white,
+              ),
+            ),
+          ),
+        );
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       appBar: AppBar(
         title: Text(
           AppLocalizations.of(context)!.insertPage,
@@ -137,7 +266,6 @@ class _MeasurementFormState extends State<MeasurementForm> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-
                 /////////////////////////////////////header//////////////////////////////////////////////////////
 
                 Gap(5),
@@ -214,86 +342,91 @@ class _MeasurementFormState extends State<MeasurementForm> {
                   height: 15,
                 ),
 
-                Wrap(children: [
-                  SizedBox(
-                    width: 120,
-                    child: TextFormField(
-                      controller: _firstPayController,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(
-                            numberRegex), // Only allows input that matches the regular expression
-                      ],
-                      keyboardType: TextInputType.phone,
-                      maxLength:4,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return AppLocalizations.of(context)!.requiredField;
-                        }
-                        if (!numberRegex.hasMatch(value)) {
-                          return AppLocalizations.of(context)!.formValidator;
-                        }
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.firstPay,
-                        labelStyle: TextStyle(fontSize: 15),
-                        border: OutlineInputBorder(),
+                Wrap(
+                  children: [
+                    SizedBox(
+                      width: 120,
+                      child: TextFormField(
+                        controller: _firstPayController,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                              numberRegex), // Only allows input that matches the regular expression
+                        ],
+                        keyboardType: TextInputType.phone,
+                        maxLength: 4,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return AppLocalizations.of(context)!.requiredField;
+                          }
+                          if (!numberRegex.hasMatch(value)) {
+                            return AppLocalizations.of(context)!.formValidator;
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context)!.firstPay,
+                          labelStyle: TextStyle(fontSize: 15),
+                          border: OutlineInputBorder(),
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(width: 10,),
-                  SizedBox(
-                    width:100,
-                    child: DropdownButtonFormField<int>(
-                      value: selectedNumber,
-                      onChanged: (int? value) {
-                        setState(() {
-                          selectedNumber = value!;
-                        });
-                      },
-
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.quantity,
-                        labelStyle: TextStyle(fontSize: 18),
-                        border: OutlineInputBorder(),
-                      ),
-                      items: List<int>.generate(100, (index) => index + 1)
-                          .map((int number) {
-                        return DropdownMenuItem<int>(
-                          value: number,
-                          child: Text(number.toString()),
-                        );
-                      }).toList(),
+                    SizedBox(
+                      width: 10,
                     ),
-                  ),
-              SizedBox(width: 10,),
-                  SizedBox(
-                    width:120,
-                    child: TextFormField(
-                      controller: _totalPayController,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(
-                            numberRegex), // Only allows input that matches the regular expression
-                      ],
-                      keyboardType: TextInputType.phone,
-                      maxLength: 5,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return AppLocalizations.of(context)!.requiredField;
-                        }
-                        if (!numberRegex.hasMatch(value)) {
-                          return AppLocalizations.of(context)!.formValidator;
-                        }
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.totalPay,
-                        labelStyle: TextStyle(fontSize: 15),
-                        border: OutlineInputBorder(),
+                    SizedBox(
+                      width: 100,
+                      child: DropdownButtonFormField<int>(
+                        value: selectedNumber,
+                        onChanged: (int? value) {
+                          setState(() {
+                            selectedNumber = value!;
+                          });
+                        },
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context)!.quantity,
+                          labelStyle: TextStyle(fontSize: 18),
+                          border: OutlineInputBorder(),
+                        ),
+                        items: List<int>.generate(100, (index) => index + 1)
+                            .map((int number) {
+                          return DropdownMenuItem<int>(
+                            value: number,
+                            child: Text(number.toString()),
+                          );
+                        }).toList(),
                       ),
                     ),
-                  ),
-                ],),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    SizedBox(
+                      width: 120,
+                      child: TextFormField(
+                        controller: _totalAmountController,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                              numberRegex), // Only allows input that matches the regular expression
+                        ],
+                        keyboardType: TextInputType.phone,
+                        maxLength: 5,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return AppLocalizations.of(context)!.requiredField;
+                          }
+                          if (!numberRegex.hasMatch(value)) {
+                            return AppLocalizations.of(context)!.formValidator;
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context)!.totalPay,
+                          labelStyle: TextStyle(fontSize: 15),
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
 
                 Wrap(
                   children: [
@@ -358,7 +491,6 @@ class _MeasurementFormState extends State<MeasurementForm> {
                 ),
                 Gap(20),
                 /////////////////////////////////////////////////////main /////////////////////////////////////////////
-
 
                 Gap(20),
                 Container(
@@ -819,115 +951,24 @@ class _MeasurementFormState extends State<MeasurementForm> {
                   margin: EdgeInsets.all(15),
                   padding: EdgeInsets.only(bottom: 0),
                   width: double.infinity,
-
+                  //--------------------------------------save btn---------------------------------------//
                   child: ElevatedButton(
-
-                    onPressed: () {
-
-                      currentCustomerNumber++; // Increment the current customer number
-                      String customerId = 'T${currentCustomerNumber.toString().padLeft(3,"0")}';
-
-                      _submitForm();
-                      Map<String, String> customer = {
-                        // Your customer data here
-                        "customerID":customerId,
-                        "customerName": _nameController.text,
-                        "customerPhone": _phoneController.text,
-                        "clothAmount":_clothAmountController.text,
-                      "firstAmount": _firstPayController .text,
-                      "totalAmount": _totalPayController .text,
-                        "customerOrder": _orderController.text,
-                        "customerDelivery": _deliveryController.text,
-                        "customerChest": _chestController.text,
-                        "customerWaist": _waistController.text,
-                        "customerShoulder": _shoulderController.text,
-                        "customerHip": _hipController.text,
-                        "customerInseam": _inseamController.text,
-                        "customerNeck": _neckController.text,
-                        "customerSleeve": _sleeveController.text,
-                        "customerFront": _frontController.text,
-                        "customerThigh": _thighController.text,
-                        "customerKnee": _kneeController.text,
-                        "customerPants": _pantslController.text,
-                        "customerLength": _lengthController.text,
-                        "customerNote": _noteController.text,
-                        "customerOther1": _other1Controller.text,
-                        "customerOther2": _other2Controller.text,
-                        "customerOther3": _other3Controller.text,
-                        "totalQuantity": _selectedNumber.toString(),
-
-                      };
-
-                      String customerPhone =_phoneController.text;
-
-                      dbref
-                          .orderByChild("customerPhone")
-                          .equalTo(customerPhone)
-                          .once()
-                          .then((DatabaseEvent event) {
-                        DataSnapshot snapshot = event.snapshot;
-                        if (snapshot.value != null) {
-                          // Data already exists, handle the duplicate case
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(
-                            backgroundColor: Colors.white,
-                            content: Text(
-                              "data already exist ",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 15,
-                                color: Colors.red,
-                                backgroundColor: Colors.white,
-                              ),
-                            ),
-                          ));
-                        } else {
-                          // Data does not exist, push the new data
-                          dbref.push().set(customer);
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(
-                            backgroundColor: Colors.white,
-                            content: Text(
-                              " 'Data saved successfully';",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 15,
-                                color: Colors.green,
-                                backgroundColor: Colors.white,
-                              ),
-                            ),
-                          ));
-                        }
-                      }).catchError((error) {
-                        // Handle any err  ors that occur
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(const SnackBar(
-                          backgroundColor: Colors.white,
-                          content: Text(
-                            "Error happened : ",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.green,
-                              backgroundColor: Colors.white,
-                            ),
-                          ),
-                        ));
-                      });
-                    },
+                    onPressed:
+                        _submitForm, // Call _submitForm when the button is pressed
                     style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 10),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
-                        side: BorderSide(color: Colors.white), // Add white border
+                        side:
+                            BorderSide(color: Colors.white), // Add white border
                       ),
                     ),
                     child: Text(
                       AppLocalizations.of(context)!.save,
-                      style: TextStyle(fontSize:20),
-
+                      style: TextStyle(fontSize: 20),
                     ),
-                    ),
+                  ),
                 ),
               ],
             ),

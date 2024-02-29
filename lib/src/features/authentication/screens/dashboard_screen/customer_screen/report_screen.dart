@@ -1,4 +1,3 @@
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +11,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../Search_screen/search_screenTCl.dart';
 
- class MyWidget extends StatefulWidget {
+class MyWidget extends StatefulWidget {
   @override
   _MyWidgetState createState() => _MyWidgetState();
 }
@@ -21,10 +20,10 @@ class _MyWidgetState extends State<MyWidget> {
   List<dynamic> orders = [];
   int totalOrders = 0;
   double totalAmount = 0.0;
-  int totalQuantity= 0;
+  int totalQuantity = 0;
 
   DatabaseReference _databaseRef =
-  FirebaseDatabase.instance.ref().child('customer');
+      FirebaseDatabase.instance.ref().child('customer');
 
   void searchOrders(String startDate, String endDate) {
     _databaseRef
@@ -35,7 +34,7 @@ class _MyWidgetState extends State<MyWidget> {
         .listen((event) {
       if (event.snapshot.value != null) {
         final Map<dynamic, dynamic> data =
-        event.snapshot.value as Map<dynamic, dynamic>;
+            event.snapshot.value as Map<dynamic, dynamic>;
         setState(() {
           orders = data.values.toList();
           calculateTotals();
@@ -45,7 +44,7 @@ class _MyWidgetState extends State<MyWidget> {
           orders = [];
           totalOrders = 0;
           totalAmount = 0.0;
-          totalQuantity=0;
+          totalQuantity = 0;
         });
 
         showDialog(
@@ -53,8 +52,7 @@ class _MyWidgetState extends State<MyWidget> {
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text('No Orders Found'),
-              content: Text(
-                  'No orders found between $startDate and $endDate.'),
+              content: Text('No orders found between $startDate and $endDate.'),
               actions: [
                 TextButton(
                   child: Text('OK'),
@@ -69,8 +67,6 @@ class _MyWidgetState extends State<MyWidget> {
       }
     });
   }
-
-
 
 // ... Rest of the code ...
 
@@ -121,7 +117,7 @@ class _MyWidgetState extends State<MyWidget> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Card(
-                  margin:EdgeInsets.only(bottom: 20),
+                  margin: EdgeInsets.only(bottom: 20),
                   elevation: 2,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
@@ -167,7 +163,9 @@ class _MyWidgetState extends State<MyWidget> {
                     _selectDateOrder(context);
                   },
                 ),
-                SizedBox(height: 8,),
+                SizedBox(
+                  height: 8,
+                ),
                 TextField(
                   decoration: InputDecoration(
                     filled: true,
@@ -183,8 +181,9 @@ class _MyWidgetState extends State<MyWidget> {
                     _selectDateDelivery(context);
                   },
                 ),
-                SizedBox(height: 10,),
-
+                SizedBox(
+                  height: 10,
+                ),
                 ElevatedButton(
                   onPressed: () {
                     String startDate = startDateController.text;
@@ -231,7 +230,7 @@ class _MyWidgetState extends State<MyWidget> {
 
       if (startDateController.text.isNotEmpty) {
         final orderDate =
-        DateFormat('yyyy-MM-dd').parse(startDateController.text);
+            DateFormat('yyyy-MM-dd').parse(startDateController.text);
 
         if (picked.isAfter(orderDate)) {
           setState(() {
@@ -273,15 +272,19 @@ class _MyWidgetState extends State<MyWidget> {
   void _searchData() {
     if (selectedOption == 'Today') {
       DateTime now = DateTime.now();
-      String startDate = '${now.year}-${_formatNumber(now.month)}-${_formatNumber(now.day)}';
-      String endDate = '${now.year}-${_formatNumber(now.month)}-${_formatNumber(now.day)}';
+      String startDate =
+          '${now.year}-${_formatNumber(now.month)}-${_formatNumber(now.day)}';
+      String endDate =
+          '${now.year}-${_formatNumber(now.month)}-${_formatNumber(now.day)}';
       searchOrders(startDate, endDate);
     } else if (selectedOption == 'Last Month') {
       DateTime today = DateTime.now();
       DateTime lastMonthStart = DateTime(today.year, today.month - 1, 1);
       DateTime lastMonthEnd = DateTime(today.year, today.month, 0);
-      String startDate = '${lastMonthStart.year}-${_formatNumber(lastMonthStart.month)}-${_formatNumber(lastMonthStart.day)}';
-      String endDate = '${lastMonthEnd.year}-${_formatNumber(lastMonthEnd.month)}-${_formatNumber(lastMonthEnd.day)}';
+      String startDate =
+          '${lastMonthStart.year}-${_formatNumber(lastMonthStart.month)}-${_formatNumber(lastMonthStart.day)}';
+      String endDate =
+          '${lastMonthEnd.year}-${_formatNumber(lastMonthEnd.month)}-${_formatNumber(lastMonthEnd.day)}';
       searchOrders(startDate, endDate);
     } else {
       // Convert month name to month index
@@ -329,8 +332,10 @@ class _MyWidgetState extends State<MyWidget> {
       int selectedYear = DateTime.now().year;
       DateTime monthStart = DateTime(selectedYear, selectedMonth, 1);
       DateTime monthEnd = DateTime(selectedYear, selectedMonth + 1, 0);
-      String startDate = '${monthStart.year}-${_formatNumber(monthStart.month)}-${_formatNumber(monthStart.day)}';
-      String endDate = '${monthEnd.year}-${_formatNumber(monthEnd.month)}-${_formatNumber(monthEnd.day)}';
+      String startDate =
+          '${monthStart.year}-${_formatNumber(monthStart.month)}-${_formatNumber(monthStart.day)}';
+      String endDate =
+          '${monthEnd.year}-${_formatNumber(monthEnd.month)}-${_formatNumber(monthEnd.day)}';
       searchOrders(startDate, endDate);
     }
   }
@@ -338,6 +343,7 @@ class _MyWidgetState extends State<MyWidget> {
   String _formatNumber(int number) {
     return number.toString().padLeft(2, '0');
   }
+
   @override
   void initState() {
     super.initState();
@@ -346,18 +352,22 @@ class _MyWidgetState extends State<MyWidget> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Colors.blue,
       appBar: AppBar(
-
         actions: [
           Container(
-
             padding: EdgeInsets.only(left: 15),
             child: DropdownButton<String>(
-              style: TextStyle(fontSize: 16,color: Colors.white,fontFamily:GoogleFonts.openSans().fontFamily),
-              icon: Icon(Icons.arrow_drop_down,size:30,color:Colors.white,),
+              style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.white,
+                  fontFamily: GoogleFonts.openSans().fontFamily),
+              icon: Icon(
+                Icons.arrow_drop_down,
+                size: 30,
+                color: Colors.white,
+              ),
               value: selectedOption,
               onChanged: (String? newValue) {
                 setState(() {
@@ -367,7 +377,6 @@ class _MyWidgetState extends State<MyWidget> {
                     selectedOption = newValue;
                     _searchData();
                   }
-
                 });
               },
               dropdownColor: Colors.blue,
@@ -399,7 +408,8 @@ class _MyWidgetState extends State<MyWidget> {
                   REPORT()); // Navigate to the REPORT screen when the button is pressed
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.transparent, // Set the background color to transparent
+              backgroundColor:
+                  Colors.transparent, // Set the background color to transparent
               elevation: 0, // Remove the button elevation
             ),
             child: Ink(
@@ -412,21 +422,17 @@ class _MyWidgetState extends State<MyWidget> {
               ),
             ),
           ),
-
         ],
-
       ),
       body: Container(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-           Row(children: [
-
-
-           ],),
-
+            Row(
+              children: [],
+            ),
             Expanded(
-              child:ListView.builder(
+              child: ListView.builder(
                 itemCount: orders.length,
                 itemBuilder: (context, index) {
                   final customers = orders[index];
@@ -435,12 +441,12 @@ class _MyWidgetState extends State<MyWidget> {
                 },
               ),
             ),
-
-
             Container(
               decoration: BoxDecoration(
                 color: Colors.blue, // Background color of the container
-                borderRadius: BorderRadius.only(topLeft:Radius.circular(15),topRight: Radius.circular(15)), // Rounded corner radius
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(15),
+                    topRight: Radius.circular(15)), // Rounded corner radius
                 border: Border.all(
                   color: Colors.amberAccent,
                   width: 2,
@@ -453,7 +459,7 @@ class _MyWidgetState extends State<MyWidget> {
                   ),
                 ], // Box shadow properties
               ),
-              height:160,
+              height: 160,
               padding: EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -461,7 +467,7 @@ class _MyWidgetState extends State<MyWidget> {
                   Text(
                     "CALCULATED DATA",
                     style: TextStyle(
-                      fontSize:14,
+                      fontSize: 14,
                       fontFamily: GoogleFonts.openSans().fontFamily,
                       fontWeight: FontWeight.bold,
                     ),
@@ -498,7 +504,6 @@ class _MyWidgetState extends State<MyWidget> {
                           fontFamily: GoogleFonts.openSans().fontFamily,
                           fontWeight: FontWeight.bold,
                         ),
-                        
                       ),
                       Icon(Icons.person),
                       Text(
@@ -511,7 +516,6 @@ class _MyWidgetState extends State<MyWidget> {
                       ),
                     ],
                   ),
-
                   SizedBox(height: 8),
                   Row(
                     children: [
@@ -538,15 +542,14 @@ class _MyWidgetState extends State<MyWidget> {
                 ],
               ),
             ),
-
           ],
         ),
-
       ),
     );
   }
 }
-Widget listItem({required BuildContext context, required Map customers}){
+
+Widget listItem({required BuildContext context, required Map customers}) {
   return SingleChildScrollView(
     child: Container(
       decoration: BoxDecoration(
@@ -603,16 +606,20 @@ Widget listItem({required BuildContext context, required Map customers}){
             ],
           ),
           Gap(5),
-          Row(children: [
-            Icon(Icons.people_outline, size: 18,
-              color: Colors.amberAccent,),
-            Gap(10),
-            Text(
-              '${AppLocalizations.of(context)!. quantity} ${customers["totalQuantity"]}',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-            ),
-          ],),
-
+          Row(
+            children: [
+              Icon(
+                Icons.people_outline,
+                size: 18,
+                color: Colors.amberAccent,
+              ),
+              Gap(10),
+              Text(
+                '${AppLocalizations.of(context)!.quantity} ${customers["totalQuantity"]}',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+              ),
+            ],
+          ),
           Row(
             children: [
               Icon(
@@ -643,7 +650,6 @@ Widget listItem({required BuildContext context, required Map customers}){
               ),
             ],
           ),
-
           Row(
             children: [
               Icon(
@@ -678,14 +684,12 @@ Widget listItem({required BuildContext context, required Map customers}){
                     width: 170,
                     child: Text(
                       '${AppLocalizations.of(context)!.deliveryDate}  ${customers["customerDelivery"]}',
-                      style: TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.w400),
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
                     ),
                   ),
                 ]),
               ]),
-
-
         ],
       ),
     ),

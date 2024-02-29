@@ -302,22 +302,22 @@ class _login_screenState extends State<login_screen> {
                                       label: Text(
                                           AppLocalizations.of(context)!.signW)),
                                 ),
-                                TextButton(
-                                    onPressed: () {
-                                      Get.to(() => const signup_screen());
-                                    },
-                                    child: Text.rich(TextSpan(
-                                        text: AppLocalizations.of(context)!
-                                            .dontHave,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyLarge,
-                                        children: [
-                                          TextSpan(
-                                              text: tSignup,
-                                              style:
-                                                  TextStyle(color: Colors.blue))
-                                        ])))
+                                // TextButton(
+                                //     onPressed: () {
+                                //       Get.to(() => const signup_screen());
+                                //     },
+                                //     child: Text.rich(TextSpan(
+                                //         text: AppLocalizations.of(context)!
+                                //             .dontHave,
+                                //         style: Theme.of(context)
+                                //             .textTheme
+                                //             .bodyLarge,
+                                //         children: [
+                                //           TextSpan(
+                                //               text: tSignup,
+                                //               style:
+                                //                   TextStyle(color: Colors.blue))
+                                //         ])))
                               ],
                             )
                           ],
