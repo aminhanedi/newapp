@@ -63,7 +63,7 @@ class _MeasurementFormState extends State<MeasurementForm> {
     dbref = FirebaseDatabase.instance.ref().child("customer");
 
     SharedPreferences.getInstance().then((prefs) {
-      int storedCustomerNumber = prefs.getInt('customerID') ?? 0;
+      int storedCustomerNumber = prefs.getInt('customerNumber') ?? 0;
       setState(() {
         currentCustomerNumber = storedCustomerNumber;
       });
@@ -112,11 +112,11 @@ class _MeasurementFormState extends State<MeasurementForm> {
       double inseam = double.parse(_inseamController.text);
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      int storedCustomerNumber = prefs.getInt('customerID') ?? 0;
+      int storedCustomerNumber = prefs.getInt('customersNumber') ?? 0;
 
       currentCustomerNumber =
           storedCustomerNumber +1; // Increment the stored customer number
-      prefs.setInt('customerID',
+      prefs.setInt('customersNumber',
           currentCustomerNumber); // Store the updated customer number
 
       Map<String, String> customer = {
@@ -171,7 +171,7 @@ class _MeasurementFormState extends State<MeasurementForm> {
           );
         } else {
           String customerId = 'T${currentCustomerNumber.toString().padLeft(
-              4, "0")}';
+              6, "0")}';
           customer["customerID"] = customerId;
 
           dbref.child(customerId).set(customer).then((value) {

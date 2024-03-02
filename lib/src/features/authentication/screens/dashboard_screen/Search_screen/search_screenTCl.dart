@@ -228,7 +228,7 @@ class _SearchScreenState extends State<REPORT> {
                                   SizedBox(
                                       width: 160,
                                       child: Text(
-                                        '${AppLocalizations.of(context)!.orderDate}  ${customerList[index]["customerOrder"]}',
+                                        '${AppLocalizations.of(context)!.orderDate}  ${customerList[index]["totalQuantity"]}',
                                         style: TextStyle(
                                             fontSize: 16, fontWeight: FontWeight.w400),
                                       )),
