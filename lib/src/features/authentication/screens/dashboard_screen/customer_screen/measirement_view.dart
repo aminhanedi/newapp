@@ -23,7 +23,6 @@ class total_screen extends StatefulWidget {
 
 class _upddate_recordState extends State<total_screen> {
   final RegExp numberRegex = RegExp(r'^[0-9]+$');
-  int? _selectedNumber;
 
 
 
@@ -34,6 +33,7 @@ class _upddate_recordState extends State<total_screen> {
   TextEditingController _firstPayController = TextEditingController();
   TextEditingController _totalPayController = TextEditingController();
   TextEditingController _clothAmountController = TextEditingController();
+  TextEditingController _quantityController = TextEditingController();
 
   TextEditingController _orderController = TextEditingController();
   TextEditingController _deliveryController = TextEditingController();
@@ -91,8 +91,8 @@ class _upddate_recordState extends State<total_screen> {
       _firstPayController.text = customers['firstAmount'] ?? '';
       _totalPayController.text = customers['totalAmount'] ?? '';
       _clothAmountController.text = customers['clothAmount'] ?? '';
-      String selectedNumber = customers['totalQuantity'] ?? '';
-      _selectedNumber = int.tryParse(selectedNumber) ?? 0;
+      _quantityController.text = customers['totalQuantity'] ?? '';
+
     }
   }
 
@@ -250,28 +250,31 @@ class _upddate_recordState extends State<total_screen> {
                       ),
                     ),
                     SizedBox(width: 10,),
+                    SizedBox(width: 10,),
                     SizedBox(
                       width: 100,
-                      child: DropdownButtonFormField<int>(
-                        value: _selectedNumber,
-                        onChanged: (int? value) {
-                          setState(() {
-                            _selectedNumber = value!;
-                          });
+                      child: TextFormField(
+                        controller: _quantityController,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                              numberRegex), // Only allows input that matches the regular expression
+                        ],
+                        keyboardType: TextInputType.phone,
+                        maxLength: 4,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return AppLocalizations.of(context)!.requiredField;
+                          }
+                          if (!numberRegex.hasMatch(value)) {
+                            return AppLocalizations.of(context)!.formValidator;
+                          }
+                          return null;
                         },
-
                         decoration: InputDecoration(
                           labelText: AppLocalizations.of(context)!.quantity,
-                          labelStyle: TextStyle(fontSize: 18),
+                          labelStyle: TextStyle(fontSize: 15),
                           border: OutlineInputBorder(),
                         ),
-                        items: List<int>.generate(100, (index) => index + 1)
-                            .map((int number) {
-                          return DropdownMenuItem<int>(
-                            value: number,
-                            child: Text(number.toString()),
-                          );
-                        }).toList(),
                       ),
                     ),
                     SizedBox(width: 10,),
@@ -370,6 +373,9 @@ class _upddate_recordState extends State<total_screen> {
                   color: Colors.blue, // Set the color for the divider
                   margin: EdgeInsets.symmetric(horizontal: 16.0), // Set the horizontal margin
                 ),
+                  Container(
+                    color: Colors.blue,
+                    height: 2,),
                   /////////////////////////////////////////////////////main /////////////////////////////////////////////
 
 

@@ -5,7 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:flutter_gen/gen_l10n/app-localization.dart';
 import 'package:newapp/src/constants/text_string.dart';
-import 'package:uuid/uuid.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class MeasurementForm extends StatefulWidget {
   @override
@@ -14,16 +15,9 @@ class MeasurementForm extends StatefulWidget {
 
 class _MeasurementFormState extends State<MeasurementForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  int? _selectedNumber; // Define the selectedNumber field
 
-  int get selectedNumber =>
-      _selectedNumber ?? 1; // Define the selectedNumber getter
+  // Define the selectedNumber field
 
-  set selectedNumber(int value) {
-    setState(() {
-      _selectedNumber = value;
-    });
-  }
 
   //------------------customers------------//
 
@@ -53,6 +47,8 @@ class _MeasurementFormState extends State<MeasurementForm> {
   TextEditingController _other1Controller = TextEditingController();
   TextEditingController _other2Controller = TextEditingController();
   TextEditingController _other3Controller = TextEditingController();
+  TextEditingController _quantityController = TextEditingController();
+
 
   final RegExp numberRegex = RegExp(r'^[0-9]+$');
 
@@ -60,11 +56,18 @@ class _MeasurementFormState extends State<MeasurementForm> {
 
   int currentCustomerNumber = 0;
 
-  @override
+
   @override
   void initState() {
     super.initState();
     dbref = FirebaseDatabase.instance.ref().child("customer");
+
+    SharedPreferences.getInstance().then((prefs) {
+      int storedCustomerNumber = prefs.getInt('customerID') ?? 0;
+      setState(() {
+        currentCustomerNumber = storedCustomerNumber;
+      });
+    });
 
     dbref.onChildAdded.listen((event) {
       String? customerId = event.snapshot.key;
@@ -99,9 +102,8 @@ class _MeasurementFormState extends State<MeasurementForm> {
     super.dispose();
   }
 
-  void _submitForm() {
+  void _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      // Form fields are valid, perform desired actions
       String name = _nameController.text;
       double shoulder = double.parse(_shoulderController.text);
       double chest = double.parse(_chestController.text);
@@ -109,116 +111,55 @@ class _MeasurementFormState extends State<MeasurementForm> {
       double hip = double.parse(_hipController.text);
       double inseam = double.parse(_inseamController.text);
 
-      // Process the data or navigate to the next screen
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      int storedCustomerNumber = prefs.getInt('customerID') ?? 0;
 
-      currentCustomerNumber++; // Increment the current customer number
-      String customerId = 'T${currentCustomerNumber.toString().padLeft(3, "0")}';
+      currentCustomerNumber =
+          storedCustomerNumber +1; // Increment the stored customer number
+      prefs.setInt('customerID',
+          currentCustomerNumber); // Store the updated customer number
 
-      int clothAmount = int.tryParse(_clothAmountController.text) ?? 0;
-      int totalQuantity = int.tryParse(_selectedNumber.toString()) ?? 0;
+      Map<String, String> customer = {
+        "customerName": _nameController.text,
+        "customerPhone": _phoneController.text,
+        "clothAmount": _clothAmountController.text,
+        "firstAmount": _firstPayController.text,
+        "totalAmount": _totalAmountController.text,
+        "customerOrder": _orderController.text,
+        "customerDelivery": _deliveryController.text,
+        "customerChest": _chestController.text,
+        "customerWaist": _waistController.text,
+        "customerShoulder": _shoulderController.text,
+        "customerHip": _hipController.text,
+        "customerInseam": _inseamController.text,
+        "customerNeck": _neckController.text,
+        "customerSleeve": _sleeveController.text,
+        "customerFront": _frontController.text,
+        "customerThigh": _thighController.text,
+        "customerKnee": _kneeController.text,
+        "customerPants": _pantslController.text,
+        "customerLength": _lengthController.text,
+        "customerNote": _noteController.text,
+        "customerOther1": _other1Controller.text,
+        "customerOther2": _other2Controller.text,
+        "customerOther3": _other3Controller.text,
+        "totalQuantity": _quantityController.text,
+      };
 
-      int totalAmount = totalQuantity * clothAmount;
-      setState(() {
-        // Set the total amount in the controller
-        _totalAmountController.text = totalAmount.toString();
-      });
+      String customerPhone = _phoneController.text;
 
-      if (totalAmount == int.tryParse(_totalAmountController.text)) {
-        Map<String, String> customer = {
-          // Your customer data here
-          "customerID": customerId,
-          "customerName": _nameController.text,
-          "customerPhone": _phoneController.text,
-          "clothAmount": _clothAmountController.text,
-          "firstAmount": _firstPayController.text,
-          "totalAmount": _totalAmountController.text,
-          "customerOrder": _orderController.text,
-          "customerDelivery": _deliveryController.text,
-          "customerChest": _chestController.text,
-          "customerWaist": _waistController.text,
-          "customerShoulder": _shoulderController.text,
-          "customerHip": _hipController.text,
-          "customerInseam": _inseamController.text,
-          "customerNeck": _neckController.text,
-          "customerSleeve": _sleeveController.text,
-          "customerFront": _frontController.text,
-          "customerThigh": _thighController.text,
-          "customerKnee": _kneeController.text,
-          "customerPants": _pantslController.text,
-          "customerLength": _lengthController.text,
-          "customerNote": _noteController.text,
-          "customerOther1": _other1Controller.text,
-          "customerOther2": _other2Controller.text,
-          "customerOther3": _other3Controller.text,
-          "totalQuantity": _selectedNumber.toString(),
-        };
-
-        String customerPhone = _phoneController.text;
-
-        dbref
-            .orderByChild("customerPhone")
-            .equalTo(customerPhone)
-            .once()
-            .then((DatabaseEvent event) {
-          DataSnapshot snapshot = event.snapshot;
-          if (snapshot.value != null) {
-            // Data already exists, handle the duplicate case
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                backgroundColor: Colors.white,
-                content: Text(
-                  "Data already exists",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 15,
-                    color: Colors.red,
-                    backgroundColor: Colors.white,
-                  ),
-                ),
-              ),
-            );
-          } else {
-            // Data does not exist, push the new data
-            dbref.push().set(customer).then((value) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  backgroundColor: Colors.white,
-                  content: Text(
-                    "Data saved successfully",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: Colors.green,
-                      backgroundColor: Colors.white,
-                    ),
-                  ),
-                ),
-              );
-            }).catchError((error) {
-              // Handle any errors that occur during saving
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  backgroundColor: Colors.white,
-                  content: Text(
-                    "Error occurred while saving data",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: Colors.red,
-                      backgroundColor: Colors.white,
-                    ),
-                  ),
-                ),
-              );
-            });
-          }
-        }).catchError((error) {
-          // Handle any errors that occur during database query
+      dbref
+          .orderByChild("customerPhone")
+          .equalTo(customerPhone)
+          .once()
+          .then((DatabaseEvent event) {
+        DataSnapshot snapshot = event.snapshot;
+        if (snapshot.value != null) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               backgroundColor: Colors.white,
               content: Text(
-                "Error occurred while checking existing data",
+                "Data already exists",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 15,
@@ -228,14 +169,49 @@ class _MeasurementFormState extends State<MeasurementForm> {
               ),
             ),
           );
-        });
-      } else {
-        // Display a text message indicating the mismatch
+        } else {
+          String customerId = 'T${currentCustomerNumber.toString().padLeft(
+              4, "0")}';
+          customer["customerID"] = customerId;
+
+          dbref.child(customerId).set(customer).then((value) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                backgroundColor: Colors.white,
+                content: Text(
+                  "Data saved successfully",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Colors.green,
+                    backgroundColor: Colors.white,
+                  ),
+                ),
+              ),
+            );
+          }).catchError((error) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                backgroundColor: Colors.white,
+                content: Text(
+                  "Error occurred while saving data",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Colors.red,
+                    backgroundColor: Colors.white,
+                  ),
+                ),
+              ),
+            );
+          });
+        }
+      }).catchError((error) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             backgroundColor: Colors.white,
             content: Text(
-              "Total amount does not match the calculated value",
+              "Error occurred while querying database",
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 15,
@@ -245,10 +221,33 @@ class _MeasurementFormState extends State<MeasurementForm> {
             ),
           ),
         );
-      }
+      });
     }
-  }
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Measurement Form"),
+      ),
+      body: Form(
+        key: _formKey,
+        child: SingleChildScrollView(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              // Rest of the form fields
+            ],
+          ),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _submitForm,
+        child: Icon(Icons.save),
+      ),
+    );
+  }
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -370,32 +369,35 @@ class _MeasurementFormState extends State<MeasurementForm> {
                         ),
                       ),
                     ),
-                    SizedBox(
-                      width: 10,
-                    ),
+                    SizedBox(width: 10,),
                     SizedBox(
                       width: 100,
-                      child: DropdownButtonFormField<int>(
-                        value: selectedNumber,
-                        onChanged: (int? value) {
-                          setState(() {
-                            selectedNumber = value!;
-                          });
+                      child: TextFormField(
+                        controller: _quantityController,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                              numberRegex), // Only allows input that matches the regular expression
+                        ],
+                        keyboardType: TextInputType.phone,
+                        maxLength: 4,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return AppLocalizations.of(context)!.requiredField;
+                          }
+                          if (!numberRegex.hasMatch(value)) {
+                            return AppLocalizations.of(context)!.formValidator;
+                          }
+                          return null;
                         },
                         decoration: InputDecoration(
                           labelText: AppLocalizations.of(context)!.quantity,
-                          labelStyle: TextStyle(fontSize: 18),
+                          labelStyle: TextStyle(fontSize: 15),
                           border: OutlineInputBorder(),
                         ),
-                        items: List<int>.generate(100, (index) => index + 1)
-                            .map((int number) {
-                          return DropdownMenuItem<int>(
-                            value: number,
-                            child: Text(number.toString()),
-                          );
-                        }).toList(),
                       ),
                     ),
+                    Gap(5),
+
                     SizedBox(
                       width: 10,
                     ),
@@ -490,6 +492,9 @@ class _MeasurementFormState extends State<MeasurementForm> {
                   ],
                 ),
                 Gap(20),
+                Container(
+                  color: Colors.blue,
+                  height: 2,),
                 /////////////////////////////////////////////////////main /////////////////////////////////////////////
 
                 Gap(20),
