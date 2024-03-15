@@ -35,9 +35,9 @@ class _signup_screenState extends State<signup_screen> {
 
   //------------------REGISTRATION-----------------//
   registration() async {
-    if (password != null &&
-        fullNameController.text != "" &&
-        EmailController.text != "") {
+    if (passwordController.text.isNotEmpty &&
+        fullNameController.text.isNotEmpty &&
+        EmailController.text.isNotEmpty) {
       try {
         UserCredential userCredential =
             await FirebaseAuth.instance.createUserWithEmailAndPassword(

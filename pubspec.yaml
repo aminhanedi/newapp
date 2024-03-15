@@ -72,6 +72,11 @@ dependencies:
   rxdart: ^0.27.7
   lottie:
   photo_view: ^0.14.0
+  pdf: ^3.10.8
+  permission_handler: ^11.0.1
+  file_picker: ^6.2.0
+  file_saver: ^0.2.12
+
 
 
 

@@ -5,6 +5,7 @@ import 'package:flutter_gen/gen_l10n/app-localization.dart';
 import 'package:gap/gap.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+
 class REPORT extends StatefulWidget {
   const REPORT({Key? key}) : super(key: key);
 
@@ -228,7 +229,7 @@ class _SearchScreenState extends State<REPORT> {
                                   SizedBox(
                                       width: 160,
                                       child: Text(
-                                        '${AppLocalizations.of(context)!.orderDate}  ${customerList[index]["totalQuantity"]}',
+                                        '${AppLocalizations.of(context)!.orderDate}  ${customerList[index]["customerOrder"]}',
                                         style: TextStyle(
                                             fontSize: 16, fontWeight: FontWeight.w400),
                                       )),

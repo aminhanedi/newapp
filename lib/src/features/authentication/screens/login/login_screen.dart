@@ -8,7 +8,6 @@ import 'package:newapp/src/constants/image_string.dart';
 import 'package:newapp/src/constants/sizes.dart';
 import 'package:newapp/src/constants/text_string.dart';
 import 'package:newapp/src/features/authentication/screens/forget_password/forget_password_email/forget_password_email.dart';
-import 'package:newapp/src/features/authentication/screens/signup/signup.dart';
 import 'package:flutter_gen/gen_l10n/app-localization.dart';
 import '../../../../services/google_auth.dart';
 import '../dashboard_screen/dashboard_screen.dart';

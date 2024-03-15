@@ -15,9 +15,10 @@ import '../../../../localization/language_localization.dart';
 import '../forget_password/forget_password_email/forget_password_email.dart';
 import 'customer_screen/backup_screen.dart';
 import 'customer_screen/buttom_nav_bar/order_delivary.dart';
-import 'customer_screen/customer_list.dart';
+import 'Search_screen/customer_list.dart';
 import 'package:flutter_gen/gen_l10n/app-localization.dart';
 import 'package:share_plus/share_plus.dart';
+import 'customer_screen/customer_view.dart';
 import 'customer_screen/report_screen.dart';
 
 class dashboard extends StatefulWidget {
@@ -294,7 +295,7 @@ class _dashboardState extends State<dashboard> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          Get.to(() => customer_list_scerrn());
+                          Get.to(() => SearchScreen(customerKey: '',));
 
                           print('Item clicked!');
                         },
@@ -334,7 +335,7 @@ class _dashboardState extends State<dashboard> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          Get.to(() => MyWidget());
+                          Get.to(() => MyWidget(customerKey: '',));
                         },
                         child: itemDashboard(translation(context).analyes,
                             CupertinoIcons.graph_circle, Colors.green),

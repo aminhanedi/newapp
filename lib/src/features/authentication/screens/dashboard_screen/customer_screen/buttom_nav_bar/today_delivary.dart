@@ -45,11 +45,11 @@ class _MyWidgetState extends State<today_delivary> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('No Orders Found'),
-              content: Text('No orders found in  $endDate.'),
+              title: Text(   AppLocalizations.of(context)!.noOrder,),
+              content: Text(   AppLocalizations.of(context)!.noOrderAlert,),
               actions: [
                 TextButton(
-                  child: Text('OK'),
+                  child: Text( AppLocalizations.of(context)!.ok,),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -122,39 +122,78 @@ class _MyWidgetState extends State<today_delivary> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.blue,
+    return  Scaffold(
+      backgroundColor: Colors.black12,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _showContainerDialog(context);
+        },
+        child: Icon(Icons.calculate_sharp),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+            side: BorderSide(width:2 ,color: Colors.black12)
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+
+
+
       body: Container(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Container(
+
+            Expanded(
+              child:ListView.builder(
+                itemCount: orders.length,
+                itemBuilder: (context, index) {
+                  final customers = orders[index];
+
+                  return listItem(context: context, customers: customers);
+                },
+              ),
+            ),
+
+
+
+
+          ],
+        ),
+
+      ),
+    );
+  }
+  void _showContainerDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return Dialog(
+          child: Expanded(
+            child: Container(
               decoration: BoxDecoration(
-                color: Colors.blue, // Background color of the container
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(15),
-                    topRight: Radius.circular(15)), // Rounded corner radius
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
                 border: Border.all(
-                  color: Colors.amberAccent,
-                  width: 2,
-                ), // Border properties
+                  color: Colors.blue,
+                  width: 4,
+                ),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.grey,
-                    offset: Offset(0, 2),
-                    blurRadius: 4,
+                    offset: Offset(0, 0),
+                    blurRadius: 0,
                   ),
-                ], // Box shadow properties
+                ],
               ),
-              height: 145,
+              height: 160,
               padding: EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "CALCULATED DATA",
+                    AppLocalizations.of(context)!.calculatedD,
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 18,
                       fontFamily: GoogleFonts.openSans().fontFamily,
                       fontWeight: FontWeight.bold,
                     ),
@@ -163,7 +202,7 @@ class _MyWidgetState extends State<today_delivary> {
                   Row(
                     children: [
                       Text(
-                        'TOTAL AMOUNT: ',
+                        AppLocalizations.of(context)!.totalA,
                         style: TextStyle(
                           fontSize: 14,
                           fontFamily: GoogleFonts.openSans().fontFamily,
@@ -185,7 +224,7 @@ class _MyWidgetState extends State<today_delivary> {
                   Row(
                     children: [
                       Text(
-                        'TOTAL CUSTOMER: ',
+                        AppLocalizations.of(context)!.totalC,
                         style: TextStyle(
                           fontSize: 14,
                           fontFamily: GoogleFonts.openSans().fontFamily,
@@ -207,7 +246,7 @@ class _MyWidgetState extends State<today_delivary> {
                   Row(
                     children: [
                       Text(
-                        'ORDER Quantities: ',
+                        AppLocalizations.of(context)!.totalO,
                         style: TextStyle(
                           fontSize: 14,
                           fontFamily: GoogleFonts.openSans().fontFamily,
@@ -229,53 +268,40 @@ class _MyWidgetState extends State<today_delivary> {
                 ],
               ),
             ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: orders.length,
-                itemBuilder: (context, index) {
-                  final customers = orders[index];
-
-                  return listItem(context: context, customers: customers);
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
-
-Widget listItem({required BuildContext context, required Map customers}) {
+Widget listItem({required BuildContext context, required Map customers}){
   return SingleChildScrollView(
     child: Container(
       decoration: BoxDecoration(
-        color: Colors.blue, // Background color of the container
+        color: Colors.white, // Background color of the container
         borderRadius: BorderRadius.circular(8), // Rounded corner radius
-        border: Border.all(
-          color: Colors.amberAccent,
-          width: 2,
-        ), // Border properties
+
         boxShadow: [
           BoxShadow(
-            color: Colors.grey,
-            offset: Offset(0, 2),
-            blurRadius: 4,
+            color: Colors.black45,
+            offset: Offset(5, 3),
+            blurRadius: 3,
           ),
         ], // Box shadow properties
       ),
-      margin: EdgeInsets.only(bottom: 10),
+      margin: EdgeInsets.only(bottom: 10,left: 15,right: 15),
       padding: EdgeInsets.all(10),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+
           Row(
             children: [
               Icon(
                 Icons.important_devices,
                 size: 18,
-                color: Colors.amberAccent,
+                color: Colors.blue,
               ),
               Gap(10),
               Text(
@@ -293,7 +319,7 @@ Widget listItem({required BuildContext context, required Map customers}) {
               Icon(
                 Icons.person,
                 size: 18,
-                color: Colors.amberAccent,
+                color: Colors.blue,
               ),
               Gap(10),
               Text(
@@ -303,26 +329,22 @@ Widget listItem({required BuildContext context, required Map customers}) {
             ],
           ),
           Gap(5),
-          Row(
-            children: [
-              Icon(
-                Icons.people_outline,
-                size: 18,
-                color: Colors.amberAccent,
-              ),
-              Gap(10),
-              Text(
-                '${AppLocalizations.of(context)!.quantity} ${customers["totalQuantity"]}',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-              ),
-            ],
-          ),
+          Row(children: [
+            Icon(Icons.people_outline, size: 18,
+              color: Colors.blue,),
+            Gap(10),
+            Text(
+              '${AppLocalizations.of(context)!. quantity} ${customers["totalQuantity"]}',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+            ),
+          ],),
+
           Row(
             children: [
               Icon(
                 Icons.numbers,
                 size: 18,
-                color: Colors.amberAccent,
+                color: Colors.blue,
               ),
               SizedBox(width: 10),
               Text(
@@ -347,12 +369,13 @@ Widget listItem({required BuildContext context, required Map customers}) {
               ),
             ],
           ),
+
           Row(
             children: [
               Icon(
                 Icons.monetization_on,
                 size: 18,
-                color: Colors.amberAccent,
+                color: Colors.blue,
               ),
               Gap(10),
               Text(
@@ -381,12 +404,14 @@ Widget listItem({required BuildContext context, required Map customers}) {
                     width: 170,
                     child: Text(
                       '${AppLocalizations.of(context)!.deliveryDate}  ${customers["customerDelivery"]}',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                      style: TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.w400),
                     ),
                   ),
                 ]),
               ]),
+
+
         ],
       ),
     ),

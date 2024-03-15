@@ -6,12 +6,16 @@ import 'package:flutter_gen/gen_l10n/app-localization.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../Search_screen/search_screenTCl.dart';
 
 class MyWidget extends StatefulWidget {
+  final String customerKey;
+
+  MyWidget({required this.customerKey});
   @override
   _MyWidgetState createState() => _MyWidgetState();
 }
@@ -22,8 +26,9 @@ class _MyWidgetState extends State<MyWidget> {
   double totalAmount = 0.0;
   int totalQuantity = 0;
 
+
   DatabaseReference _databaseRef =
-      FirebaseDatabase.instance.ref().child('customer');
+  FirebaseDatabase.instance.ref().child('customer');
 
   void searchOrders(String startDate, String endDate) {
     _databaseRef
@@ -34,7 +39,7 @@ class _MyWidgetState extends State<MyWidget> {
         .listen((event) {
       if (event.snapshot.value != null) {
         final Map<dynamic, dynamic> data =
-            event.snapshot.value as Map<dynamic, dynamic>;
+        event.snapshot.value as Map<dynamic, dynamic>;
         setState(() {
           orders = data.values.toList();
           calculateTotals();
@@ -45,14 +50,18 @@ class _MyWidgetState extends State<MyWidget> {
           totalOrders = 0;
           totalAmount = 0.0;
           totalQuantity = 0;
+          totalMeasurements = 0;
         });
 
         showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('No Orders Found'),
-              content: Text('No orders found between $startDate and $endDate.'),
+              title: Text(AppLocalizations.of(context)!.noOrder),
+              content: Text(
+                  '${AppLocalizations.of(context)!
+                      .noOrderFound} $startDate ${AppLocalizations.of(context)!
+                      .and} $endDate.'),
               actions: [
                 TextButton(
                   child: Text('OK'),
@@ -68,10 +77,32 @@ class _MyWidgetState extends State<MyWidget> {
     });
   }
 
-// ... Rest of the code ...
+  // ... Rest of the code ...
 
   void calculateTotals() {
     totalOrders = orders.length;
+
+    totalMeasurements = 0;
+
+    for (final order in orders) {
+      final customerId = order['customerId'];
+      if (customerId != null) {
+        DatabaseReference customerRef =
+        _databaseRef.child(customerId).child('measurements');
+
+        customerRef.once().then((DatabaseEvent snapshot) {
+          if (snapshot.snapshot.value != null) {
+            final Map<dynamic, dynamic> measurements =
+            snapshot.snapshot.value as Map<dynamic, dynamic>;
+            setState(() {
+              totalMeasurements += measurements.length;
+            });
+          }
+        });
+      }
+    }
+
+    // Calculate totalAmount and totalQuantity as before
     totalAmount = orders.fold(0.0, (double sum, order) {
       final orderAmount = order['totalAmount'];
       if (orderAmount == null || orderAmount == '') {
@@ -100,8 +131,10 @@ class _MyWidgetState extends State<MyWidget> {
     if (totalOrders == 0) {
       totalAmount = 0.0;
       totalQuantity = 0;
+      totalMeasurements = 0;
     }
   }
+
 
   TextEditingController startDateController = TextEditingController();
   TextEditingController endDateController = TextEditingController();
@@ -129,7 +162,7 @@ class _MyWidgetState extends State<MyWidget> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
-                          "Search Orders by Date Range",
+                          AppLocalizations.of(context)!.searchOrder,
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -137,7 +170,7 @@ class _MyWidgetState extends State<MyWidget> {
                         ),
                         SizedBox(height: 15),
                         Text(
-                          "Specify a date range to search for orders within that period.",
+                          AppLocalizations.of(context)!.specify,
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.blue,
@@ -191,7 +224,7 @@ class _MyWidgetState extends State<MyWidget> {
                     searchOrders(startDate, endDate);
                     Navigator.of(context).pop(); // Close the dialog
                   },
-                  child: Text('Search'),
+                  child: Text(AppLocalizations.of(context)!.search),
                 ),
               ],
             ),
@@ -230,7 +263,7 @@ class _MyWidgetState extends State<MyWidget> {
 
       if (startDateController.text.isNotEmpty) {
         final orderDate =
-            DateFormat('yyyy-MM-dd').parse(startDateController.text);
+        DateFormat('yyyy-MM-dd').parse(startDateController.text);
 
         if (picked.isAfter(orderDate)) {
           setState(() {
@@ -243,13 +276,12 @@ class _MyWidgetState extends State<MyWidget> {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text('Invalid Date'),
-                content: Text(
-                  'The selected delivery date must be greater than the order date.',
+                title: Text(AppLocalizations.of(context)!.invalidDate),
+                content: Text(AppLocalizations.of(context)!.invalidDateA,
                 ),
                 actions: <Widget>[
                   TextButton(
-                    child: Text('OK'),
+                    child: Text(AppLocalizations.of(context)!.ok,),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -267,7 +299,7 @@ class _MyWidgetState extends State<MyWidget> {
     }
   }
 
-  String? selectedOption = 'February';
+  String? selectedOption = 'March';
 
   void _searchData() {
     if (selectedOption == 'Today') {
@@ -282,13 +314,17 @@ class _MyWidgetState extends State<MyWidget> {
       DateTime lastMonthStart = DateTime(today.year, today.month - 1, 1);
       DateTime lastMonthEnd = DateTime(today.year, today.month, 0);
       String startDate =
-          '${lastMonthStart.year}-${_formatNumber(lastMonthStart.month)}-${_formatNumber(lastMonthStart.day)}';
+          '${lastMonthStart.year}-${_formatNumber(
+          lastMonthStart.month)}-${_formatNumber(lastMonthStart.day)}';
       String endDate =
-          '${lastMonthEnd.year}-${_formatNumber(lastMonthEnd.month)}-${_formatNumber(lastMonthEnd.day)}';
+          '${lastMonthEnd.year}-${_formatNumber(
+          lastMonthEnd.month)}-${_formatNumber(lastMonthEnd.day)}';
       searchOrders(startDate, endDate);
     } else {
       // Convert month name to month index
-      int selectedMonth = DateTime.now().month;
+      int selectedMonth = DateTime
+          .now()
+          .month;
       switch (selectedOption) {
         case 'January':
           selectedMonth = 1;
@@ -329,13 +365,17 @@ class _MyWidgetState extends State<MyWidget> {
       }
 
       DateTime now = DateTime.now();
-      int selectedYear = DateTime.now().year;
+      int selectedYear = DateTime
+          .now()
+          .year;
       DateTime monthStart = DateTime(selectedYear, selectedMonth, 1);
       DateTime monthEnd = DateTime(selectedYear, selectedMonth + 1, 0);
       String startDate =
-          '${monthStart.year}-${_formatNumber(monthStart.month)}-${_formatNumber(monthStart.day)}';
+          '${monthStart.year}-${_formatNumber(
+          monthStart.month)}-${_formatNumber(monthStart.day)}';
       String endDate =
-          '${monthEnd.year}-${_formatNumber(monthEnd.month)}-${_formatNumber(monthEnd.day)}';
+          '${monthEnd.year}-${_formatNumber(monthEnd.month)}-${_formatNumber(
+          monthEnd.day)}';
       searchOrders(startDate, endDate);
     }
   }
@@ -344,16 +384,11 @@ class _MyWidgetState extends State<MyWidget> {
     return number.toString().padLeft(2, '0');
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _searchData();
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         actions: [
           Container(
@@ -362,7 +397,9 @@ class _MyWidgetState extends State<MyWidget> {
               style: TextStyle(
                   fontSize: 16,
                   color: Colors.white,
-                  fontFamily: GoogleFonts.openSans().fontFamily),
+                  fontFamily: GoogleFonts
+                      .openSans()
+                      .fontFamily),
               icon: Icon(
                 Icons.arrow_drop_down,
                 size: 30,
@@ -371,7 +408,7 @@ class _MyWidgetState extends State<MyWidget> {
               value: selectedOption,
               onChanged: (String? newValue) {
                 setState(() {
-                  if (newValue == 'CUSTOM') {
+                  if (newValue == AppLocalizations.of(context)!.custom) {
                     _showDateSearchDialog(context);
                   } else {
                     selectedOption = newValue;
@@ -381,7 +418,7 @@ class _MyWidgetState extends State<MyWidget> {
               },
               dropdownColor: Colors.blue,
               items: <String>[
-                'CUSTOM',
+                AppLocalizations.of(context)!.custom,
                 'January',
                 'February',
                 'March',
@@ -409,7 +446,7 @@ class _MyWidgetState extends State<MyWidget> {
             },
             style: ElevatedButton.styleFrom(
               backgroundColor:
-                  Colors.transparent, // Set the background color to transparent
+              Colors.transparent, // Set the background color to transparent
               elevation: 0, // Remove the button elevation
             ),
             child: Ink(
@@ -443,12 +480,12 @@ class _MyWidgetState extends State<MyWidget> {
             ),
             Container(
               decoration: BoxDecoration(
-                color: Colors.blue, // Background color of the container
+                color: Colors.white, // Background color of the container
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(15),
                     topRight: Radius.circular(15)), // Rounded corner radius
                 border: Border.all(
-                  color: Colors.amberAccent,
+                  color: Colors.black12,
                   width: 2,
                 ), // Border properties
                 boxShadow: [
@@ -461,85 +498,101 @@ class _MyWidgetState extends State<MyWidget> {
               ),
               height: 160,
               padding: EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "CALCULATED DATA",
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontFamily: GoogleFonts.openSans().fontFamily,
-                      fontWeight: FontWeight.bold,
+              child: Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.calculatedD,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontFamily: GoogleFonts
+                            .openSans()
+                            .fontFamily,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Text(
-                        'TOTAL AMOUNT: ',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontFamily: GoogleFonts.openSans().fontFamily,
-                          fontWeight: FontWeight.bold,
+                    SizedBox(height: 5),
+                    Row(
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!.totalA,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontFamily: GoogleFonts
+                                .openSans()
+                                .fontFamily,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      Icon(Icons.money),
-                      Text(
-                        '\$${totalAmount.toStringAsFixed(2)}',
-                        style: TextStyle(
-                          fontSize: 16,
-                          backgroundColor: Colors.lightGreenAccent,
-                          fontFamily: GoogleFonts.openSans().fontFamily,
+                        Icon(Icons.money),
+                        Text(
+                          '\$${totalAmount.toStringAsFixed(2)}',
+                          style: TextStyle(
+                            fontSize: 16,
+                            backgroundColor: Colors.lightGreenAccent,
+                            fontFamily: GoogleFonts
+                                .openSans()
+                                .fontFamily,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Text(
-                        'TOTAL CUSTOMER: ',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontFamily: GoogleFonts.openSans().fontFamily,
-                          fontWeight: FontWeight.bold,
+                      ],
+                    ),
+                    SizedBox(height: 5),
+                    Row(
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!.totalC,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontFamily: GoogleFonts
+                                .openSans()
+                                .fontFamily,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      Icon(Icons.person),
-                      Text(
-                        '$totalOrders',
-                        style: TextStyle(
-                          fontSize: 16,
-                          backgroundColor: Colors.lightGreenAccent,
-                          fontFamily: GoogleFonts.openSans().fontFamily,
+                        Icon(Icons.person),
+                        Text(
+                          '\#$totalOrders.00',
+                          style: TextStyle(
+                            fontSize: 16,
+                            backgroundColor: Colors.lightGreenAccent,
+                            fontFamily: GoogleFonts
+                                .openSans()
+                                .fontFamily,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Text(
-                        'ORDER Quantities: ',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontFamily: GoogleFonts.openSans().fontFamily,
-                          fontWeight: FontWeight.bold,
+                      ],
+                    ),
+                    SizedBox(height: 5),
+                    Row(
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!.totalO,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontFamily: GoogleFonts
+                                .openSans()
+                                .fontFamily,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      Icon(Icons.people),
-                      Gap(10),
-                      Text(
-                        '$totalQuantity',
-                        style: TextStyle(
-                          fontSize: 16,
-                          backgroundColor: Colors.lightGreenAccent,
-                          fontFamily: GoogleFonts.openSans().fontFamily,
+                        Icon(Icons.people),
+                        Gap(10),
+                        Text(
+                          '\#$totalQuantity.00',
+                          style: TextStyle(
+                            fontSize: 16,
+                            backgroundColor: Colors.lightGreenAccent,
+                            fontFamily: GoogleFonts
+                                .openSans()
+                                .fontFamily,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
@@ -547,151 +600,183 @@ class _MyWidgetState extends State<MyWidget> {
       ),
     );
   }
-}
 
-Widget listItem({required BuildContext context, required Map customers}) {
-  return SingleChildScrollView(
-    child: Container(
-      decoration: BoxDecoration(
-        color: Colors.blue, // Background color of the container
-        borderRadius: BorderRadius.circular(8), // Rounded corner radius
-        border: Border.all(
-          color: Colors.amberAccent,
-          width: 2,
-        ), // Border properties
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey,
-            offset: Offset(0, 2),
-            blurRadius: 4,
-          ),
-        ], // Box shadow properties
-      ),
-      margin: EdgeInsets.only(bottom: 10),
-      padding: EdgeInsets.all(10),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(
-                Icons.important_devices,
-                size: 18,
-                color: Colors.amberAccent,
-              ),
-              Gap(10),
-              Text(
-                '${AppLocalizations.of(context)!.customerId} ${customers["customerID"]}',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ],
-          ),
-          Gap(5),
-          Row(
-            children: [
-              Icon(
-                Icons.person,
-                size: 18,
-                color: Colors.amberAccent,
-              ),
-              Gap(10),
-              Text(
-                '${AppLocalizations.of(context)!.customerName} ${customers["customerName"]}',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-              ),
-            ],
-          ),
-          Gap(5),
-          Row(
-            children: [
-              Icon(
-                Icons.people_outline,
-                size: 18,
-                color: Colors.amberAccent,
-              ),
-              Gap(10),
-              Text(
-                '${AppLocalizations.of(context)!.quantity} ${customers["totalQuantity"]}',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              Icon(
-                Icons.numbers,
-                size: 18,
-                color: Colors.amberAccent,
-              ),
-              SizedBox(width: 10),
-              Text(
-                '${AppLocalizations.of(context)!.customerPhone}${customers["customerPhone"]}',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-              ),
-              Gap(40),
-              IconButton(
-                onPressed: () async {
-                  String uri = 'tel:${customers["customerPhone"]}';
+  DatabaseReference customersRef = FirebaseDatabase.instance.ref() ;
+  List<Map<dynamic, dynamic>> customerList = [];
+  int totalMeasurements = 0;
 
-                  if (await canLaunch(uri)) {
-                    await launch(uri);
-                  } else {
-                    throw 'Could not launch $uri';
-                  }
-                },
-                icon: Icon(Icons.call,
-                    color: Colors.lightGreenAccent,
-                    size: 30,
-                    shadows: [BoxShadow(offset: Offset(0, 5))]),
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              Icon(
-                Icons.monetization_on,
-                size: 18,
-                color: Colors.amberAccent,
-              ),
-              Gap(10),
-              Text(
-                '${AppLocalizations.of(context)!.customerAmount}  ${customers["totalAmount"]}',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-              ),
-            ],
-          ),
-          Gap(5),
-          Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+  @override
+  void initState() {
+    super.initState();
+    _searchData();
+    fetchCustomers();
+  }
+
+  void fetchCustomers() {
+    customersRef.child(widget.customerKey).child('measurements').onValue.listen((event) {
+      if (event.snapshot.value != null) {
+        Map<dynamic, dynamic> data = event.snapshot.value as Map<dynamic, dynamic>;
+        setState(() {
+          totalMeasurements = data.length;
+        });
+      }
+    });
+  }
+
+
+  Widget listItem({required BuildContext context, required Map customers}) {
+    return SingleChildScrollView(
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white70, // Background color of the container
+          borderRadius: BorderRadius.circular(8), // Rounded corner radius
+
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey,
+              offset: Offset(0, 3),
+              blurRadius: 2,
+            ),
+          ], // Box shadow properties
+        ),
+        margin: EdgeInsets.only(bottom: 10),
+        padding: EdgeInsets.all(10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
               children: [
-                Wrap(children: [
-                  SizedBox(
-                      width: 160,
-                      child: Text(
-                        '${AppLocalizations.of(context)!.orderDate}  ${customers["customerOrder"]}',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w400),
-                      )),
-                  SizedBox(
-                    width: 10,
+                Icon(
+                  Icons.important_devices,
+                  size: 18,
+                  color: Colors.black,
+                ),
+                Gap(10),
+                Text(
+                  '${AppLocalizations.of(context)!
+                      .customerId} ${customers["customerID"]}',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
                   ),
-                  SizedBox(
-                    width: 170,
-                    child: Text(
-                      '${AppLocalizations.of(context)!.deliveryDate}  ${customers["customerDelivery"]}',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                ),
+              ],
+            ),
+            Gap(5),
+            Row(
+              children: [
+                Icon(
+                  Icons.person,
+                  size: 18,
+                  color: Colors.black,
+                ),
+                Gap(10),
+                Text(
+                  '${AppLocalizations.of(context)!
+                      .customerName} ${customers["customerName"]}',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                ),
+              ],
+            ),
+            Gap(5),
+            Row(
+              children: [
+                Icon(
+                  Icons.people_outline,
+                  size: 18,
+                  color: Colors.black,
+                ),
+                Gap(10),
+                Text(
+                  '${AppLocalizations.of(context)!
+                      .quantity} ${customers["aa"]}',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Icon(
+                  Icons.numbers,
+                  size: 18,
+                  color: Colors.black,
+                ),
+                SizedBox(width: 10),
+                Text(
+                  '${AppLocalizations.of(context)!
+                      .customerPhone}${customers["customerPhone"]}',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                ),
+                Gap(40),
+                IconButton(
+                  onPressed: () async {
+                    String uri = 'tel:${customers["customerPhone"]}';
+
+                    if (await canLaunch(uri)) {
+                      await launch(uri);
+                    } else {
+                      throw 'Could not launch $uri';
+                    }
+                  },
+                  icon: Icon(Icons.call,
+                      color: Colors.lightGreenAccent,
+                      size: 30,
+                      shadows: [BoxShadow(offset: Offset(0, 5))]),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Icon(
+                  Icons.monetization_on,
+                  size: 18,
+                  color: Colors.black,
+                ),
+                Gap(10),
+                Text(
+                  '${AppLocalizations.of(context)!
+                      .customerAmount}  ${customers["totalAmount"]}',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                ),
+              ],
+            ),
+            Gap(5),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Wrap(children: [
+                    SizedBox(
+                        width: 160,
+                        child: Text(
+                          '${AppLocalizations.of(context)!
+                              .orderDate}  ${customers["customerOrder"]}',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w400),
+                        )),
+                    SizedBox(
+                      width: 10,
                     ),
-                  ),
+                    SizedBox(
+                      width: 170,
+                      child: Text(
+                        '${AppLocalizations.of(context)!
+                            .deliveryDate}  ${customers["customerDelivery"]}',
+                        style:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                      ),
+                    ),
+
+                  ]),
                 ]),
-              ]),
-        ],
+            Text(
+              'Total Measurements: $totalMeasurements',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+            ),
+          ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 }

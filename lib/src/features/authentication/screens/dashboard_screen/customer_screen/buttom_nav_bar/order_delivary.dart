@@ -4,9 +4,9 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:newapp/src/features/authentication/screens/dashboard_screen/customer_screen/buttom_nav_bar/pending.dart';
 import 'package:newapp/src/features/authentication/screens/dashboard_screen/customer_screen/buttom_nav_bar/today_delivary.dart';
 import 'package:newapp/src/features/authentication/screens/dashboard_screen/customer_screen/buttom_nav_bar/today_order.dart';
-import '../../Search_screen/searchScreenCL.dart';
+import '../customer_view.dart';
 import '../../Search_screen/search_screenTCl.dart';
-import 'complet.dart';
+import 'delivered.dart';
 
 class MyBottomNavBar extends StatefulWidget {
   const MyBottomNavBar({super.key});
@@ -57,7 +57,7 @@ class _MyButtomNavBarState extends State<MyBottomNavBar> {
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         decoration: BoxDecoration(boxShadow: [
           BoxShadow(
-              color: Colors.amberAccent.withOpacity(0.8),
+              color: Colors.black.withOpacity(0.8),
               blurRadius: 40,
               offset: const Offset(10, 15))
         ]),
@@ -66,8 +66,8 @@ class _MyButtomNavBarState extends State<MyBottomNavBar> {
           child: BottomNavigationBar(
               backgroundColor: Colors.lightBlueAccent,
               // backgroundColor: Colors.transparent,
-              selectedItemColor: Colors.black,
-              unselectedItemColor: Colors.amberAccent,
+              selectedItemColor: Colors.white,
+              unselectedItemColor: Colors.blue,
               currentIndex: myCurrentIndex,
               onTap: (index) {
                 setState(() {
@@ -78,21 +78,21 @@ class _MyButtomNavBarState extends State<MyBottomNavBar> {
                 BottomNavigationBarItem(
                     icon: Icon(Icons.people),
                     label: "Pending Order",
-                    backgroundColor: Colors.lightBlue),
+                    backgroundColor: Colors.black),
                 BottomNavigationBarItem(
                     icon: Icon(Icons.delivery_dining, weight: 20),
                     label: "Delivered",
-                    backgroundColor: Colors.lightBlue),
+                    backgroundColor: Colors.black),
                 BottomNavigationBarItem(
                     icon: Icon(
                       Icons.local_grocery_store_rounded,
                     ),
                     label: "Today orders",
-                    backgroundColor: Colors.lightBlue),
+                    backgroundColor: Colors.black),
                 BottomNavigationBarItem(
                     icon: Icon(Icons.people_outline),
                     label: "Complete New,",
-                    backgroundColor: Colors.lightBlue),
+                    backgroundColor: Colors.black),
               ]),
         ),
       ),

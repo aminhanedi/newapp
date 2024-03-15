@@ -17,6 +17,7 @@ Future<void> main() async {
   FirebaseAppCheck.instance.activate();
 //-------------network controller ------------------------//
   DependencyInjection.init();
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
